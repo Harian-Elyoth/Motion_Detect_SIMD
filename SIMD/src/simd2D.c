@@ -35,8 +35,6 @@ void avg3_reg_vf32matrix(vfloat32** X, int n_card, n, vfloat32 **Y)
     vfloat32 y, y1, y2, y3;
 
     // Affichage de X
-
-    DEBUG(puts("X :"));
     for (int i = 0; i < n; ++i) // 0 - 7
     {
         for (int j = 0; j < n_card; ++j) // 0 - 1
@@ -59,7 +57,7 @@ void avg3_reg_vf32matrix(vfloat32** X, int n_card, n, vfloat32 **Y)
 
             y1 = VEC_ADD3(aa0, a1, aa1);
 
-            DEBUG(puts(""));
+            // DEBUG(puts(""));
 
             b0 = _mm_load_ps((float32*) &X[i][j-1]);
             // DEBUG(display_vfloat32(b0, "%4.0f", "b0 :")); printf(" ");
@@ -78,7 +76,7 @@ void avg3_reg_vf32matrix(vfloat32** X, int n_card, n, vfloat32 **Y)
 
             y2 = VEC_ADD3(bb0, b1, bb1);
 
-            DEBUG(puts(""));
+            // DEBUG(puts(""));
 
             c0 = _mm_load_ps((float32*) &X[i+1][j-1]);
             // DEBUG(display_vfloat32(c0, "%4.0f", "c0 :")); printf(" ");
