@@ -32,64 +32,77 @@ void avg3_reg_vf32matrix(vfloat32** X, int n_card, n, vfloat32 **Y)
     vfloat32 aa0, bb0, cc0;
     vfloat32 aa1, bb1, cc1;
 
-    vfloat32 y;
+    vfloat32 y, y1, y2, y3;
 
     // Affichage de X
 
     DEBUG(puts("X :"));
-    for (int i = 0; i < n; ++i)
+    for (int i = 0; i < n; ++i) // 0 - 7
     {
-        a0 = _mm_load_ps((float32*) &X[i-1][-1]);
-        DEBUG(display_vfloat32(a0, "%4.0f", "a0 :")); printf(" ");
+        for (int j = 0; j < n_card; ++j) // 0 - 1
+        {
 
-        a1 = _mm_load_ps((float32*) &X[i-1][0]);
-        DEBUG(display_vfloat32(a1, "%4.0f", " - a1 :")); printf(" ");
+            a0 = _mm_load_ps((float32*) &X[i-1][j - 1]);
+            // DEBUG(display_vfloat32(a0, "%4.0f", "a0 :")); printf(" ");
 
-        aa0 = VEC_LEFT_1(a0,a1);
-        DEBUG(display_vfloat32(aa0, "%4.0f", " - aa0 :")); printf(" ");
+            a1 = _mm_load_ps((float32*) &X[i-1][j]);
+            // DEBUG(display_vfloat32(a1, "%4.0f", " - a1 :")); printf(" ");
 
-        a2 = _mm_load_ps((float32*) &X[i-1][1]);
-        DEBUG(display_vfloat32(a2, "%4.0f", " - a2 :")); printf(" ");
+            aa0 = VEC_LEFT_1(a0,a1);
+            // DEBUG(display_vfloat32(aa0, "%4.0f", " - aa0 :")); printf(" ");
 
-        aa1 = VEC_RIGHT_1(a1,a2);
-        DEBUG(display_vfloat32(aa1, "%4.0f", " - aa1 :")); printf(" ");
+            a2 = _mm_load_ps((float32*) &X[i-1][j+1]);
+            // DEBUG(display_vfloat32(a2, "%4.0f", " - a2 :")); printf(" ");
 
-        DEBUG(puts(""));
+            aa1 = VEC_RIGHT_1(a1,a2);
+            // DEBUG(display_vfloat32(aa1, "%4.0f", " - aa1 :")); printf(" ");
 
-        b0 = _mm_load_ps((float32*) &X[i][-1]);
-        DEBUG(display_vfloat32(b0, "%4.0f", "b0 :")); printf(" ");
+            y1 = VEC_ADD3(aa0, a1, aa1);
 
-        b1 = _mm_load_ps((float32*) &X[i][0]);
-        DEBUG(display_vfloat32(b1, "%4.0f", " - b1 :")); printf(" ");
+            DEBUG(puts(""));
 
-        bb0 = VEC_LEFT_1(b0,b1);
-        DEBUG(display_vfloat32(bb0, "%4.0f", " - bb0 :")); printf(" ");
+            b0 = _mm_load_ps((float32*) &X[i][j-1]);
+            // DEBUG(display_vfloat32(b0, "%4.0f", "b0 :")); printf(" ");
 
-        b2 = _mm_load_ps((float32*) &X[i][1]);
-        DEBUG(display_vfloat32(b2, "%4.0f", " - b2 :")); printf(" ");
+            b1 = _mm_load_ps((float32*) &X[i][j]);
+            // DEBUG(display_vfloat32(b1, "%4.0f", " - b1 :")); printf(" ");
 
-        bb1 = VEC_RIGHT_1(b1,b2);
-        DEBUG(display_vfloat32(bb1, "%4.0f", " - bb1 :")); printf(" ");
+            bb0 = VEC_LEFT_1(b0,b1);
+            // DEBUG(display_vfloat32(bb0, "%4.0f", " - bb0 :")); printf(" ");
 
-        DEBUG(puts(""));
+            b2 = _mm_load_ps((float32*) &X[i][j+1]);
+            // DEBUG(display_vfloat32(b2, "%4.0f", " - b2 :")); printf(" ");
 
-        c0 = _mm_load_ps((float32*) &X[i+1][-1]);
-        DEBUG(display_vfloat32(c0, "%4.0f", "c0 :")); printf(" ");
+            bb1 = VEC_RIGHT_1(b1,b2);
+            // DEBUG(display_vfloat32(bb1, "%4.0f", " - bb1 :")); printf(" ");
 
-        c1 = _mm_load_ps((float32*) &X[i+1][0]);
-        DEBUG(display_vfloat32(c1, "%4.0f", " - c1 :")); printf(" ");
+            y2 = VEC_ADD3(bb0, b1, bb1);
 
-        cc0 = VEC_LEFT_1(c0,c1);
-        DEBUG(display_vfloat32(cc0, "%4.0f", " - cc0 :")); printf(" ");
+            DEBUG(puts(""));
 
-        c2 = _mm_load_ps((float32*) &X[i+1][1]);
-        DEBUG(display_vfloat32(c2, "%4.0f", " - c2 :")); printf(" ");
+            c0 = _mm_load_ps((float32*) &X[i+1][j-1]);
+            // DEBUG(display_vfloat32(c0, "%4.0f", "c0 :")); printf(" ");
 
-        cc1 = VEC_RIGHT_1(c1,c2);
-        DEBUG(display_vfloat32(cc1, "%4.0f", " - cc1 :")); printf(" ");
+            c1 = _mm_load_ps((float32*) &X[i+1][j]);
+            // DEBUG(display_vfloat32(c1, "%4.0f", " - c1 :")); printf(" ");
 
-        DEBUG(puts(""));
-        DEBUG(puts(""));
+            cc0 = VEC_LEFT_1(c0,c1);
+            // DEBUG(display_vfloat32(cc0, "%4.0f", " - cc0 :")); printf(" ");
+
+            c2 = _mm_load_ps((float32*) &X[i+1][j+1]);
+            // DEBUG(display_vfloat32(c2, "%4.0f", " - c2 :")); printf(" ");
+
+            cc1 = VEC_RIGHT_1(c1,c2);
+            // DEBUG(display_vfloat32(cc1, "%4.0f", " - cc1 :")); printf(" ");
+
+            y3 = VEC_ADD3(cc0, c1, cc1);    
+
+            y = _mm_mul_ps(VEC_SET(0.111111), VEC_ADD3(y1, y2, y3));
+            _mm_store_ps((float*) &Y[i][j], y);
+
+            // DEBUG(puts(""));
+            // DEBUG(puts(""));
+        }
     }
     
     // CODE A COMPLETER
@@ -125,15 +138,161 @@ void avg3_red_vf32matrix(vfloat32** X, int n, vfloat32 **Y)
     // CODE A COMPLETER
 }
 // --------------------------------------------------------
-void avg5_reg_vf32matrix(vfloat32** X, int n, vfloat32 **Y)
+void avg5_reg_vf32matrix(vfloat32** X, int n_card, int n, vfloat32 **Y)
 // --------------------------------------------------------
 {
     int i, j;
     vfloat32 a0, b0, c0, d0, e0;
     vfloat32 a1, b1, c1, d1, e1;
     vfloat32 a2, b2, c2, d2, e2;
-    vfloat32 a3, b3, c3, d3, e3;
-    vfloat32 a4, b4, c4, d4, e4;
+
+    vfloat32 aa0, aa1, aa3, aa4;
+    vfloat32 bb0, bb1, bb3, bb4;
+    vfloat32 cc0, cc1, cc3, cc4;
+    vfloat32 dd0, dd1, dd3, dd4;
+    vfloat32 ee0, ee1, ee3, ee4;
+
+    vfloat32 y, y1, y2, y3, y4, y5;
+
+
+    for (int i = 0; i < n; ++i)
+    {
+        for (int j = 0; j < n_card; ++j)
+        {
+            
+            a0 = VEC_LOAD_2D(i-2, j-1, X);
+            // DEBUG(display_vfloat32(a0, "%4.0f", "a0 :")); printf("\n");
+
+            a1 = VEC_LOAD_2D(i-2, j, X);
+            // DEBUG(display_vfloat32(a1, "%4.0f", "a1 :")); printf("\n");
+
+            aa0 = VEC_2x2(a0, a1);
+            // DEBUG(display_vfloat32(aa0, "%4.0f", "aa0 :")); printf("\n");
+
+            aa1 = VEC_LEFT_1(a0, a1);
+            // DEBUG(display_vfloat32(aa1, "%4.0f", "aa1 :")); printf("\n");
+
+            a2 = VEC_LOAD_2D(i-2, j+1, X);
+            // DEBUG(display_vfloat32(a2, "%4.0f", "a2 :")); printf("\n");
+
+            aa3 = VEC_RIGHT_1(a1, a2);
+            // DEBUG(display_vfloat32(aa3, "%4.0f", "aa3 :")); printf("\n");
+
+            aa4 = VEC_2x2(a1, a2);
+            // DEBUG(display_vfloat32(aa4, "%4.0f", "aa4 :")); printf("\n");
+
+            y1 = VEC_ADD5(aa0, aa1, a1, aa3, aa4);
+
+/* -------------------------------------------------------------------------*/
+
+            b0 = VEC_LOAD_2D(i-1, j-1, X);
+            // DEBUG(display_vfloat32(b0, "%4.0f", "b0 :")); printf("\n");
+
+            b1 = VEC_LOAD_2D(i-1, j, X);
+            // DEBUG(display_vfloat32(b1, "%4.0f", "b1 :")); printf("\n");
+
+            bb0 = VEC_2x2(b0, b1);
+            // DEBUG(display_vfloat32(bb0, "%4.0f", "bb0 :")); printf("\n");
+
+            bb1 = VEC_LEFT_1(b0, b1);
+            // DEBUG(display_vfloat32(bb1, "%4.0f", "bb1 :")); printf("\n");
+
+            b2 = VEC_LOAD_2D(i-1, j+1, X);
+            // DEBUG(display_vfloat32(b2, "%4.0f", "b2 :")); printf("\n");
+
+            bb3 = VEC_RIGHT_1(b1, b2);
+            // DEBUG(display_vfloat32(bb3, "%4.0f", "bb3 :")); printf("\n");
+
+            bb4 = VEC_2x2(b1, b2);
+            // DEBUG(display_vfloat32(bb4, "%4.0f", "bb4 :")); printf("\n");
+
+            y2 = VEC_ADD5(bb0, bb1, b1, bb3, bb4);
+
+/* -------------------------------------------------------------------------*/
+
+            c0 = VEC_LOAD_2D(i, j-1, X);
+            // DEBUG(display_vfloat32(c0, "%4.0f", "c0 :")); printf("\n");
+
+            c1 = VEC_LOAD_2D(i, j, X);
+            // DEBUG(display_vfloat32(c1, "%4.0f", "c1 :")); printf("\n");
+
+            cc0 = VEC_2x2(c0, c1);
+            // DEBUG(display_vfloat32(cc0, "%4.0f", "cc0 :")); printf("\n");
+
+            cc1 = VEC_LEFT_1(c0, c1);
+            // DEBUG(display_vfloat32(cc1, "%4.0f", "cc1 :")); printf("\n");
+
+            c2 = VEC_LOAD_2D(i, j+1, X);
+            // DEBUG(display_vfloat32(c2, "%4.0f", "c2 :")); printf("\n");
+
+            cc3 = VEC_RIGHT_1(c1, c2);
+            // DEBUG(display_vfloat32(cc3, "%4.0f", "cc3 :")); printf("\n");
+
+            cc4 = VEC_2x2(c1, c2);
+            // DEBUG(display_vfloat32(cc4, "%4.0f", "cc4 :")); printf("\n");
+
+            y3 = VEC_ADD5(cc0, cc1, c1, cc3, cc4);
+
+/* -------------------------------------------------------------------------*/
+
+            d0 = VEC_LOAD_2D(i+1, j-1, X);
+            // DEBUG(display_vfloat32(d0, "%4.0f", "d0 :")); printf("\n");
+
+            d1 = VEC_LOAD_2D(i+1, j, X);
+            // DEBUG(display_vfloat32(d1, "%4.0f", "d1 :")); printf("\n");
+
+            dd0 = VEC_2x2(d0, d1);
+            // DEBUG(display_vfloat32(dd0, "%4.0f", "dd0 :")); printf("\n");
+
+            dd1 = VEC_LEFT_1(d0, d1);
+            // DEBUG(display_vfloat32(dd1, "%4.0f", "dd1 :")); printf("\n");
+
+            d2 = VEC_LOAD_2D(i+1, j+1, X);
+            // DEBUG(display_vfloat32(d2, "%4.0f", "d2 :")); printf("\n");
+
+            dd3 = VEC_RIGHT_1(d1, d2);
+            // DEBUG(display_vfloat32(dd3, "%4.0f", "dd3 :")); printf("\n");
+
+            dd4 = VEC_2x2(d1, d2);
+            // DEBUG(display_vfloat32(dd4, "%4.0f", "dd4 :")); printf("\n");
+
+            y4 = VEC_ADD5(dd0, dd1, d1, dd3, dd4);
+
+/* -------------------------------------------------------------------------*/
+
+            e0 = VEC_LOAD_2D(i+2, j-1, X);
+            // DEBUG(display_vfloat32(e0, "%4.0f", "e0 :")); printf("\n");
+
+            e1 = VEC_LOAD_2D(i+2, j, X);
+            // DEBUG(display_vfloat32(e1, "%4.0f", "e1 :")); printf("\n");
+
+            ee0 = VEC_2x2(e0, e1);
+            // DEBUG(display_vfloat32(ee0, "%4.0f", "ee0 :")); printf("\n");
+
+            ee1 = VEC_LEFT_1(e0, e1);
+            // DEBUG(display_vfloat32(ee1, "%4.0f", "ee1 :")); printf("\n");
+
+            e2 = VEC_LOAD_2D(i+2, j+1, X);
+            // DEBUG(display_vfloat32(e2, "%4.0f", "e2 :")); printf("\n");
+
+            ee3 = VEC_RIGHT_1(e1, e2);
+            // DEBUG(display_vfloat32(ee3, "%4.0f", "ee3 :")); printf("\n");
+
+            ee4 = VEC_2x2(e1, e2);
+            // DEBUG(display_vfloat32(ee4, "%4.0f", "ee4 :")); printf("\n");
+
+            y5 = VEC_ADD5(ee0, ee1, e1, ee3, ee4);
+
+/* -------------------------------------------------------------------------*/
+
+            y = _mm_mul_ps(VEC_SET(0.04), VEC_ADD5(y1, y2, y3, y4, y5));
+            _mm_store_ps((float*) &Y[i][j], y);
+
+            // DEBUG(puts(""));
+            // DEBUG(puts(""));
+        }
+    }
+
     
     // CODE A COMPLETER
 }
@@ -200,10 +359,10 @@ void test2D(int n)
     // ------------------------- //
     
     // 1 for 3x3 
-    b = 1; 
+    // b = 1; 
 
     // 2 for 5x5
-    // b = 2; 
+    b = 2; 
 
     card = card = card_vfloat32();
     
@@ -256,7 +415,7 @@ void test2D(int n)
     CHRONO(avg3_red_vf32matrix(vX, n/card, vY3),cycles); printf("avg 3x3 red  "); DEBUG(display_vf32matrix(vY3, vi0, vi1, vj0, vj1, format, "Y3")); BENCH(printf(format, cycles/(n*n))); BENCH(puts(""));
     BENCH(puts(""));
     
-    CHRONO(avg5_reg_vf32matrix(vX, n/card, vY5),cycles); printf("avg 5x5 reg  "); DEBUG(display_vf32matrix(vY5, vi0, vi1, vj0, vj1, format, "Y5")); BENCH(printf(format, cycles/(n*n))); BENCH(puts(""));
+    CHRONO(avg5_reg_vf32matrix(vX, n/card, n, vY5),cycles); printf("avg 5x5 reg  "); DEBUG(display_vf32matrix(vY5, vi0, vi1, vj0, vj1, format, "Y5")); BENCH(printf(format, cycles/(n*n))); BENCH(puts(""));
     CHRONO(avg5_rot_vf32matrix(vX, n/card, vY5),cycles); printf("avg 5x5 rot  "); DEBUG(display_vf32matrix(vY5, vi0, vi1, vj0, vj1, format, "Y5")); BENCH(printf(format, cycles/(n*n))); BENCH(puts(""));
     CHRONO(avg5_red_vf32matrix(vX, n/card, vY5),cycles); printf("avg 5x5 red  "); DEBUG(display_vf32matrix(vY5, vi0, vi1, vj0, vj1, format, "Y5")); BENCH(printf(format, cycles/(n*n))); BENCH(puts(""));
     //CHRONO(avg5_vf32matrix(vX, n/card, vY5),cycles); printf("avg 5x5   "); DEBUG(display_vf32matrix(vY5, vi0, vi1, vj0, vj1, format, "Y5")); BENCH(printf(format, cycles/(n*n))); BENCH(puts(""));
