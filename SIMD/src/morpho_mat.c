@@ -83,17 +83,17 @@ void dilatation(int ** X, int h, int w, int ** Y, int kernel_size){
     int isOne = 0;
     for(int i = padding ; i < h - padding ; i++){
         for(int j = padding ; j < w - padding ; j++){
-            //Detection d'un zero sur le kernel autour du IJ
-            //Si il y a un zero, dans le kernel alors le Yij prends 0, sinon il prends 1
+            //Detection d'un UN sur le kernel autour du IJ
+            //Si il y a un UN, dans le kernel alors le Yij prends 1, sinon il prends 0
             for(int k = i - padding ; k < i - padding + kernel_size ; k++){
                 for(int l = j - padding ; l < j - padding + kernel_size ; l++){
                     isOne = X[k][l];
                     if(isOne){
-                        //Si il y a au moins 1 zero dans le kernel on met le pixel Yij à zero
+                        //Si il y a au moins 1 UN dans le kernel on met le pixel Yij à UN
                         Y[i][j] = 1;
                         break;
                     }
-                } //Ici on fait des break pour ne pas avoir a regarder le reste du kernel si on detecte 1 zero
+                } //Ici on fait des break pour ne pas avoir a regarder le reste du kernel si on detecte 1 UN
                 if(isOne){
                     break;
                 }
