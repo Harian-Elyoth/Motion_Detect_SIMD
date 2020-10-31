@@ -21,7 +21,7 @@
 
 
 // --------------------------------------------------------
-void avg3_reg_vf32matrix(vfloat32** X, int n_card, n, vfloat32 **Y)
+void avg3_reg_vf32matrix(vfloat32** X, int n_card, int n, vfloat32 **Y)
 // --------------------------------------------------------
 {
     int i, j;
@@ -362,7 +362,7 @@ void test2D(int n)
     // 2 for 5x5
     b = 2; 
 
-    card = card = card_vfloat32();
+    card = card_vfloat32();
     
     si0 = 0; si1 = n-1;
     sj0 = 0; sj1 = n-1;

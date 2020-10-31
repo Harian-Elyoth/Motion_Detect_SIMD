@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 #include "nrdef.h"
 #include "nrutil.h"
@@ -22,17 +23,16 @@
 #define MIN(x, y) (((x) < (y)) ? (x) : (y))
 #define MAX(x, y) (((x) > (y)) ? (x) : (y))
 
-
-// img size
-#define SIZE_X 320
-#define SIZE_Y 240
-
 // facteur ecart type
 #define N 3
 
 // valeurs ecart type min et max (fix)
 #define VMIN 1
 #define VMAX 254
+
+// img size
+int SIZE_X = 320;
+int SIZE_Y = 240;
 
 // BORD
 int b;
@@ -72,12 +72,13 @@ void allocate_matrix(){
 	// indices matrices avec bord
 	mx0b = mx0-b; mx1b = mx1+b;
 	my0b = my0-b; my1b = my1+b;
-
-	printf("mx0b : %d ", mx0b);
-	printf("mx1b : %d ", mx1b);
-	printf("my0b : %d ", my0b);
-	printf("my1b : %d ", my1b);
-	printf("\n");
+	
+	DEBUG(puts("")); 
+	DEBUG(printf("mx0b : %d\n", mx0b)); 
+	DEBUG(printf("mx1b : %d\n", mx1b)); 
+	DEBUG(printf("my0b : %d\n", my0b)); 
+	DEBUG(printf("my1b : %d\n", my1b));
+	DEBUG(puts("")); 
 
 	image0 = ui8matrix(mx0b, mx1b, my0b, my1b);
 	image1 = ui8matrix(mx0b, mx1b, my0b, my1b);
@@ -121,20 +122,6 @@ void load_imgs(){
 			std0[i][j]  = VMIN;
 		}
 	}
-}
-
-void print_img(uint8 ** img, int nrl, int nrh, int ncl, int nch) {
-	for (int i = ncl; i <= nch; ++i)
-	{
-		for (int j = nrl; j <= nrh; ++j)
-		{
-			printf("%d ", img[i][j]);
-		}
-
-		printf("\n");
-	}
-
-	printf("\n");
 }
 
 void SigmaDelta(){
@@ -275,15 +262,54 @@ void test_pgm_img(){
 	}
 }
 
-void main_SD(int argc, char *argv[]){
-	allocate_matrix();
-	load_imgs();
-	//test_pgm_img();
-	// print_img(image0, mx0b, mx1b, my0b, my1b);
-	// print_img(image1, mx0b, mx1b, my0b, my1b);
-	// print_img(mean0, mx0b, mx1b, my0b, my1b);
-	// print_img(std0, mx0b, mx1b, my0b, my1b);
+void test_SD(bool is_test){
 
-	SigmaDelta();
-	print_img(img_bin, my0b, my1b, mx0b, mx1b);
+	if(is_test)	{
+		SIZE_X=6; SIZE_Y=6;
+	}
+	else{
+		SIZE_X=320; SIZE_Y=240;
+	}
+
+
+	char *format = "%d ";
+
+	// chronometrie
+    int iter, niter = 4;
+    int run, nrun = 5;
+    double t0, t1, dt, tmin, t;
+    double cycles;
+
+	// alloue les matrices images, moyennes, ecart-types, diff, binaire
+	allocate_matrix();
+
+	if (!is_test){
+
+		// charge les deux premières images du set
+		load_imgs();
+	}
+	else{
+		// charge deux images pgm test taille 6x6 
+		// ATTENTION : Changer SIZE_X et SIZE_Y
+		test_pgm_img();
+	}
+
+	// affiche les images initiales
+	DEBUG(display_ui8matrix(image0, mx0b, mx1b, my0b, my1b, format, "1ere image : ")); DEBUG(puts(""));
+	DEBUG(display_ui8matrix(image1, mx0b, mx1b, my0b, my1b, format, "2eme image : ")); DEBUG(puts(""));
+
+	CHRONO(SigmaDelta(),cycles);
+	// BENCH(printf(format, cycles/(SIZE_X*SIZE_Y)));
+	BENCH(printf("cycles = %0.6f", cycles));
+	BENCH(puts(""));
+
+	// affiche l'image binaire resultante
+	DEBUG(display_ui8matrix(img_bin, mx0b, mx1b, my0b, my1b, format, "image binaire : ")); DEBUG(puts(""));
+}
+
+void main_SD(int argc, char *argv[]){
+	
+	DEBUG(test_SD(true));
+	
+	BENCH(test_SD(false));
 }
