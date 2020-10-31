@@ -23,12 +23,42 @@
 //==================== MACROS ============================
 
 #define TEST_X_SIZE 10
-#define MatPrint(X, H, W) for(int i = 0 ; i < H ; i++){ for(int j = 0 ; j < W ; j++){ printf("%d\t", X[i][j]); } printf("\n");}
-#define IntMatAlloc(X, H, W) int ** X = (int **)malloc(sizeof(int *) * H);for(int i = 0 ; i < H ; i++){X[i] = (int *)malloc(sizeof(int) * W);}
+#define MatPrint(X, H, W) for(uint8 i = 0 ; i < H ; i++){ for(uint8 j = 0 ; j < W ; j++){ printf("%d\t", X[i][j]); } printf("\n");}
+#define IntMatAlloc(X, H, W) uint8 ** X = (uint8 **)malloc(sizeof(uint8 *) * H);for(uint8 i = 0 ; i < H ; i++){X[i] = (uint8 *)malloc(sizeof(uint8) * W);}
 //======================= PROGRAM =======================
 
-void erosion(int ** X, int h, int w, int ** Y, int kernel_size){
-    int padding;
+// Kernel 3x3
+// indice scalaire sans bord
+void erosion_3(uint8 ** X, uint8 ** Y){
+
+    for(uint8 i = mx0 ; i < mx1 ; i++){
+        for(uint8 j = my0 ; j < my1 ; j++){
+            
+            //Detection d'un zero sur le kernel autour du IJ
+            //Si il y a un zero, dans le kernel alors le Yij prends 0, sinon il prends 1
+
+            Y[i][j] = (X[i - 1][j - 1] && X[i - 1][j] && X[i - 1][j + 1] && X[i][j - 1] && X[i][j] && X[i][j + 1] && X[i + 1][j - 1] && X[i + 1][j] && X[i + 1][j + 1]);
+        }
+    }
+}
+
+// Kernel 5x5
+// indice scalaire sans bord
+void erosion_5(uint8 ** X, uint8 ** Y){
+
+    for(uint8 i = mx0 ; i < mx1 ; i++){
+        for(uint8 j = my0 ; j < my1 ; j++){
+            
+            //Detection d'un zero sur le kernel autour du IJ
+            //Si il y a un zero, dans le kernel alors le Yij prends 0, sinon il prends 1
+
+            //Y[i][j] = (X[i - 1][j - 1] && X[i - 1][j] && X[i - 1][j + 1] && X[i][j - 1] && X[i][j] && X[i][j + 1] && X[i + 1][j - 1] && X[i + 1][j] && X[i + 1][j + 1]);
+        }
+    }
+}
+
+void erosion(uint8 ** X, uint8 h, uint8 w, uint8 ** Y, uint8 kernel_size){
+    uint8 padding;
     if(kernel_size == 3){
         padding = 1;
     }
@@ -40,15 +70,15 @@ void erosion(int ** X, int h, int w, int ** Y, int kernel_size){
         exit(-1);
     }
 
-    int isZero = 0;
-    for(int i = padding ; i < h - padding ; i++){
-        for(int j = padding ; j < w - padding ; j++){
+    uint8 isZero = 0;
+    for(uint8 i = padding ; i < h - padding ; i++){
+        for(uint8 j = padding ; j < w - padding ; j++){
             //Detection d'un zero sur le kernel autour du IJ
             //Si il y a un zero, dans le kernel alors le Yij prends 0, sinon il prends 1
             Y[i][j] = (X[i - 1][j - 1] && X[i - 1][j] && X[i - 1][j + 1] && X[i][j - 1] && X[i][j] && X[i][j + 1] && X[i + 1][j - 1] && X[i + 1][j] && X[i + 1][j + 1]);
             /*
-            for(int k = i - padding ; k < i - padding + kernel_size ; k++){
-                for(int l = j - padding ; l < j - padding + kernel_size ; l++){
+            for(uint8 k = i - padding ; k < i - padding + kernel_size ; k++){
+                for(uint8 l = j - padding ; l < j - padding + kernel_size ; l++){
                     isZero = !X[k][l];
                     if(isZero){
                         //Si il y a au moins 1 zero dans le kernel on met le pixel Yij à zero
@@ -70,8 +100,38 @@ void erosion(int ** X, int h, int w, int ** Y, int kernel_size){
     }
 }
 
-void dilatation(int ** X, int h, int w, int ** Y, int kernel_size){
-    int padding;
+// Kernel 3x3
+// indice scalaire sans bord
+void dilatation_3(uint8 ** X, uint8 ** Y){
+
+    for(uint8 i = mx0 ; i < mx1 ; i++){
+        for(uint8 j = my0 ; j < my1 ; j++){
+            
+            //Detection d'un UN sur le kernel autour du IJ
+            //Si il y a un UN, dans le kernel alors le Yij prends 1, sinon il prends 0
+
+            Y[i][j] = (X[i - 1][j - 1] || X[i - 1][j] || X[i - 1][j + 1] || X[i][j - 1] || X[i][j] || X[i][j + 1] || X[i + 1][j - 1] || X[i + 1][j] || X[i + 1][j + 1]);
+        }
+    }
+}
+
+// Kernel 5x()
+// indice scalaire sans bord
+void dilatation_5(uint8 ** X, uint8 ** Y){
+
+    for(uint8 i = mx0 ; i < mx1 ; i++){
+        for(uint8 j = my0 ; j < my1 ; j++){
+            
+            //Detection d'un UN sur le kernel autour du IJ
+            //Si il y a un UN, dans le kernel alors le Yij prends 1, sinon il prends 0
+
+            //Y[i][j] = (X[i - 1][j - 1] || X[i - 1][j] || X[i - 1][j + 1] || X[i][j - 1] || X[i][j] || X[i][j + 1] || X[i + 1][j - 1] || X[i + 1][j] || X[i + 1][j + 1]);
+        }
+    }
+}
+
+void dilatation(uint8 ** X, uint8 h, uint8 w, uint8 ** Y, uint8 kernel_size){
+    uint8 padding;
     if(kernel_size == 3){
         padding = 1;
     }
@@ -83,16 +143,16 @@ void dilatation(int ** X, int h, int w, int ** Y, int kernel_size){
         exit(-1);
     }
 
-    int isOne = 0;
-    for(int i = padding ; i < h - padding ; i++){
-        for(int j = padding ; j < w - padding ; j++){
+    uint8 isOne = 0;
+    for(uint8 i = padding ; i < h - padding ; i++){
+        for(uint8 j = padding ; j < w - padding ; j++){
             //Detection d'un UN sur le kernel autour du IJ
             //Si il y a un UN, dans le kernel alors le Yij prends 1, sinon il prends 0
             Y[i][j] = (X[i - 1][j - 1] || X[i - 1][j] || X[i - 1][j + 1] || X[i][j - 1] || X[i][j] || X[i][j + 1] || X[i + 1][j - 1] || X[i + 1][j] || X[i + 1][j + 1]);
 
             /*
-            for(int k = i - padding ; k < i - padding + kernel_size ; k++){
-                for(int l = j - padding ; l < j - padding + kernel_size ; l++){
+            for(uint8 k = i - padding ; k < i - padding + kernel_size ; k++){
+                for(uint8 l = j - padding ; l < j - padding + kernel_size ; l++){
                     isOne = X[k][l];
                     if(isOne){
                         //Si il y a au moins 1 UN dans le kernel on met le pixel Yij à UN
@@ -113,20 +173,31 @@ void dilatation(int ** X, int h, int w, int ** Y, int kernel_size){
     }
 }
 
-void morpho(int ** X, int h, int w, int ** Y, int kernel_size){
-    IntMatAlloc(TEMP1, h, w);
-    erosion(X, h, w, TEMP1, kernel_size);
-    IntMatAlloc(TEMP2, h, w);
-    dilatation(TEMP1, h, w, TEMP2, kernel_size);
-    dilatation(TEMP2, h, w, TEMP1, kernel_size);
-    erosion(TEMP1, h, w, Y, kernel_size);
+void morpho(uint8 ** X, uint8 ** Y){
+
+    tmp1 = ui8matrix(mx0b, mx1b, my0b, my1b);
+    tmp2 = ui8matrix(mx0b, mx1b, my0b, my1b);
+
+    erosion_3(X, tmp1);
+    dilatation_3(tmp1, tmp2);
+    erosion_3(tmp2, tmp1);
+    dilatation_3(tmp1, Y);
+
+    // IntMatAlloc(TEMP1, h, w);
+    // IntMatAlloc(TEMP2, h, w);
+
+    // erosion(X, h, w, TEMP1, kernel_size);
+    // dilatation(TEMP1, h, w, TEMP2, kernel_size);
+    // dilatation(TEMP2, h, w, TEMP1, kernel_size);
+    // erosion(TEMP1, h, w, Y, kernel_size);
 
 }
 
-void test_morphos(int ** X, int size){
+void test_morphos(uint8 ** X, uint8 size){
 
     printf("================ MATRICE ==============\n");
     MatPrint(X, TEST_X_SIZE, TEST_X_SIZE);
+
     IntMatAlloc(Y, TEST_X_SIZE, TEST_X_SIZE);
     IntMatAlloc(Z, TEST_X_SIZE, TEST_X_SIZE);
     erosion(X, TEST_X_SIZE, TEST_X_SIZE, Y, 3);
@@ -137,12 +208,12 @@ void test_morphos(int ** X, int size){
     MatPrint(Z, TEST_X_SIZE, TEST_X_SIZE);
 }
 
-int main(int argc, char const *argv[])
+uint8 main_morpho(uint8 argc, char const *argv[])
 {
     IntMatAlloc(X, TEST_X_SIZE, TEST_X_SIZE);
     IntMatAlloc(Y, TEST_X_SIZE, TEST_X_SIZE);
-    for(int i = 0 ; i < TEST_X_SIZE ; i++){
-        for(int j = 0 ; j < TEST_X_SIZE ; j++){
+    for(uint8 i = 0 ; i < TEST_X_SIZE ; i++){
+        for(uint8 j = 0 ; j < TEST_X_SIZE ; j++){
             if((i == j || i == j - 1 || i == j + 1 || i == j - 2 || i == j + 2)){
                 X[i][j] = 1;
             }

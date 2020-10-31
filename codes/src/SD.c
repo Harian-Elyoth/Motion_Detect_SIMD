@@ -94,9 +94,9 @@ void allocate_matrix(){
 	img_diff = ui8matrix(mx0b, mx1b, my0b, my1b);
 	img_bin = ui8matrix(mx0b, mx1b, my0b, my1b); 
 
-	for (int i = 0; i < SIZE_X; ++i)
+	for (int i = mx0b; i < mx1b; ++i)
 	{
-		for (int j = 0; j < SIZE_Y; ++j)
+		for (int j = my0b; j < my1b; ++j)
 		{
 			mean0[i][j] = image0[i][j];
 			std0[i][j]  = VMIN;
