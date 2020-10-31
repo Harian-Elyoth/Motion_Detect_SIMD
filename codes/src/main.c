@@ -15,7 +15,6 @@
 
 #include "simd1D.h"
 #include "simd2D.h"
-
 #include "SD.h"
 
 void info(void)

@@ -1,8 +1,9 @@
-# generer par Sublime / Mac
+#generer par l'editeur de text
+.vscode/
 .DS_Store
 
-# object files
+#object files
 codes/obj
 
-# executable files 
+#executable files
 codes/exe
