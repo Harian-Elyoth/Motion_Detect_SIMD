@@ -141,46 +141,6 @@ void load_imgs(){
 	}
 }
 
-void load_dataset(){
-	/* -- Faire le traitement pour transformer les chemins -- */
-
-	const char *path = "../car3/car_";
-	const char *ext  = ".pgm";
-	char num1[5] = "";
-	char num2[5] = "";
-
-	int count = 3000;
-
-	for (int i = 1; i < NB_IMG ; ++i)
-	{
-
-		char filename0[25] = "";
-		strcat(filename0, path);
-
-		snprintf(num1, 5, "%d", count);
-		const char *nb1 = num1;
-
-		strcat(filename0, nb1);
-		strcat(filename0, ext);
-
-		count += 1;
-
-		char filename1[25] = "";
-
-		snprintf(num2, 5, "%d", count);
-		const char *nb2 = num2;
-
-		strcat(filename1, path);
-		strcat(filename1, nb2);
-		strcat(filename1, ext);
-
-		// DEBUG(printf("file 0 : %s\n", filename0));
-		// DEBUG(printf("file 1 : %s\n", filename1));
-
-		// CHARGER LES IMAGES PUIS FAIRE TRAITEMENTS
-	}
-}
-
 void step_1(){
 	// step 1 : Mt estimation 
 
@@ -245,12 +205,12 @@ void step_4(){
 		for (int j = mj0b; j < mj1b; ++j)
 		{
 			if (img_diff[i][j] < std1[i][j]){
-				// img_bin[i][j] = 0;
-				img_bin[i][j] = 255;
+				img_bin[i][j] = 0;
+				// img_bin[i][j] = 255;
 			}
 			else{
-				// img_bin[i][j] = 1;
-				img_bin[i][j] = 0;
+				img_bin[i][j] = 1;
+				// img_bin[i][j] = 0;
 			}
 		}
 	}
@@ -333,9 +293,9 @@ void test_pgm_img(){
 	}
 }
 
-void test_SD(bool is_test){
+void test_SD(int is_test){
 
-	if(is_test)	{
+	if(is_test == 1)	{
 		WIDTH=6; HEIGHT=8;
 	}
 	else{
@@ -359,8 +319,7 @@ void test_SD(bool is_test){
 		load_imgs();
 	}
 	else{
-		// charge deux images pgm test taille 6x6 
-		// ATTENTION : Changer WIDTH et HEIGHT
+		// charge deux images pgm test taille 6x8 
 		test_pgm_img();
 	}
 
@@ -378,18 +337,133 @@ void test_SD(bool is_test){
 	// affiche l'image binaire resultante
 	DEBUG(display_ui8matrix(img_bin, mi0b, mi1b, mj0b, mj1b, format, "image binaire : ")); DEBUG(puts(""));
 
+	bin_to_pgm("SD_out_pgm");
+
 	// free all matrix
 	void free_matrix();
+}
+
+void test_SD_dataset(){
+
+	// chronometrie
+    int iter, niter = 4;
+    int run, nrun = 5;
+    double t0, t1, dt, tmin, t;
+    double cycles;
+
+    char *format = "%d ";
+
+	// initiate mean0 et std0
+	for (int i = mi0b; i < mi1b; ++i)
+	{
+		for (int j = mj0b; j < mj1b; ++j)
+		{
+			mean0[i][j] = image0[i][j];
+			std0[i][j]  = VMIN;
+		}
+	}
+
+	// alloue les matrices images, moyennes, ecart-types, diff, binaire
+	allocate_matrix();
+
+	const char *path = "../car3/car_";
+	const char *path_out = "SD_out_";
+	const char *ext  = ".pgm";
+	char num1[5] = "";
+	char num2[5] = "";
+	char num_out[5] = "";
+
+	int count = 3000;
+
+	for (int i = 1; i < NB_IMG ; ++i)
+	{
+
+		char filename0[25] = "";
+		strcat(filename0, path);
+
+		snprintf(num1, 5, "%d", count);
+		const char *nb1 = num1;
+
+		strcat(filename0, nb1);
+		strcat(filename0, ext);
+
+		count += 1;
+
+		char filename1[25] = "";
+
+		snprintf(num2, 5, "%d", count);
+		const char *nb2 = num2;
+
+		strcat(filename1, path);
+		strcat(filename1, nb2);
+		strcat(filename1, ext);
+
+		// DEBUG(printf("file 0 : %s\n", filename0));
+		// DEBUG(printf("file 1 : %s\n", filename1));
+
+		// CHARGER LES IMAGES PUIS FAIRE TRAITEMENTS
+
+		MLoadPGM_ui8matrix(filename0, mi0b, mi1b, mj0b, mj1b, image0);
+		MLoadPGM_ui8matrix(filename1, mi0b, mi1b, mj0b, mj1b, image1);
+
+		CHRONO(SigmaDelta(),cycles);
+
+		BENCH(printf("cycles/X*Y = %0.6f", cycles/(WIDTH*HEIGHT))); BENCH(puts(""));
+
+		/*-------------------------------------------------------*/
+
+		// FAIRE ROTATTION MATRICE MOYENNE, VARIANCE ET IMAGE
+
+		/*-------------------------------------------------------*/
+
+		// built pgm filename out
+		char filename_out[25] = "";
+		strcat(filename_out, path_out);
+
+		snprintf(num_out, 5, "%d", i);
+		const char *nb_out = num_out;
+
+		strcat(filename_out, nb_out);
+		strcat(filename_out, ext);
+
+		bin_to_pgm(filename_out);
+	}
+
+	// free all matrix
+	void free_matrix();
+}
+
+void bin_to_pgm(char* filename){
+
+	// allocate pgm matrix
+	uint8** pgm_out = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+
+	for (int i = mi0b; i < mi1b; ++i)
+	{
+		for (int j = mj0b; j < mj1b; ++j)
+		{
+			if (img_bin[i][j] == 0){
+				pgm_out[i][j] = 255;
+			}
+			else{
+				pgm_out[i][j] = 0;
+			}
+		}
+	}
+
+	char Fname[25] = "";
+	const char *path = "pgm_imgs/";
+	strcat(Fname, path);
+	strcat(Fname, filename);
 
 	// save result on pgm file
-	SavePGM_ui8matrix(img_bin, mi0b, mi1b, mj0b, mj1b, "pgm_imgs/SD_out.pgm");
+	SavePGM_ui8matrix(pgm_out, mi0b, mi1b, mj0b, mj1b, Fname);
 }
 
 
 void main_SD(int argc, char *argv[]){
 	
-	// DEBUG(test_SD(true));
-	load_dataset();
+	DEBUG(test_SD(1));
 
-	BENCH(test_SD(false));
+	BENCH(test_SD(0));
 }
