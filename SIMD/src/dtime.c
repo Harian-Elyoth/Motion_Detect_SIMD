@@ -56,7 +56,7 @@
 /***********************/
 #include <math.h>
 
-#include "def.h"
+#include "nrdef.h"
 #include "dtime.h"
 /*********************************/
 /* Timer code.                   */

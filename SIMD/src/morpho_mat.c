@@ -45,6 +45,8 @@ void erosion(int ** X, int h, int w, int ** Y, int kernel_size){
         for(int j = padding ; j < w - padding ; j++){
             //Detection d'un zero sur le kernel autour du IJ
             //Si il y a un zero, dans le kernel alors le Yij prends 0, sinon il prends 1
+            Y[i][j] = (X[i - 1][j - 1] && X[i - 1][j] && X[i - 1][j + 1] && X[i][j - 1] && X[i][j] && X[i][j + 1] && X[i + 1][j - 1] && X[i + 1][j] && X[i + 1][j + 1]);
+            /*
             for(int k = i - padding ; k < i - padding + kernel_size ; k++){
                 for(int l = j - padding ; l < j - padding + kernel_size ; l++){
                     isZero = !X[k][l];
@@ -63,6 +65,7 @@ void erosion(int ** X, int h, int w, int ** Y, int kernel_size){
                 Y[i][j] = 1;
             }
             isZero = 0;
+            */
         }
     }
 }
@@ -85,6 +88,9 @@ void dilatation(int ** X, int h, int w, int ** Y, int kernel_size){
         for(int j = padding ; j < w - padding ; j++){
             //Detection d'un UN sur le kernel autour du IJ
             //Si il y a un UN, dans le kernel alors le Yij prends 1, sinon il prends 0
+            Y[i][j] = (X[i - 1][j - 1] || X[i - 1][j] || X[i - 1][j + 1] || X[i][j - 1] || X[i][j] || X[i][j + 1] || X[i + 1][j - 1] || X[i + 1][j] || X[i + 1][j + 1]);
+
+            /*
             for(int k = i - padding ; k < i - padding + kernel_size ; k++){
                 for(int l = j - padding ; l < j - padding + kernel_size ; l++){
                     isOne = X[k][l];
@@ -102,6 +108,7 @@ void dilatation(int ** X, int h, int w, int ** Y, int kernel_size){
                 Y[i][j] = 0;
             }
             isOne = 0;
+            */
         }
     }
 }
