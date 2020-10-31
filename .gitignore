@@ -3,9 +3,7 @@
 .DS_Store
 
 #object files
-
 codes/obj
 
 #executable files
-
 codes/exe

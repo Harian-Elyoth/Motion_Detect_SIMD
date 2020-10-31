@@ -55,7 +55,6 @@
 /* #define TIMER_LINUX       */
 /***********************/
 #include <math.h>
-
 #include "nrdef.h"
 #include "dtime.h"
 /*********************************/

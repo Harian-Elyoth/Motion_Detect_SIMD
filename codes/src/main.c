@@ -15,6 +15,7 @@
 
 #include "simd1D.h"
 #include "simd2D.h"
+#include "SD.h"
 
 void info(void)
 {
@@ -26,10 +27,15 @@ void info(void)
     puts("DEBUG ON");
 #endif
 }
+
 int main(int argc, char *argv[])
 {
     info();
+    
     // main_1D(argc, argv);
-    main_2D(argc, argv);
+    // main_2D(argc, argv);
+
+    main_SD(argc, argv);
+
     return 0;   
 }
