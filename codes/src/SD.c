@@ -192,6 +192,8 @@ void SigmaDelta(){
 	}
 }
 
+
+
 // ce fichier de test est fortement inspiré de la source suivante : https://www.tutorialspoint.com/c-program-to-write-an-image-in-pgm-format 
 void test_pgm_img(){
    int i, j;
@@ -271,13 +273,7 @@ void test_SD(bool is_test){
 		SIZE_X=320; SIZE_Y=240;
 	}
 
-
 	char *format = "%d ";
-
-	// chronometrie
-    int iter, niter = 4;
-    int run, nrun = 5;
-    double t0, t1, dt, tmin, t;
     double cycles;
 
 	// alloue les matrices images, moyennes, ecart-types, diff, binaire
@@ -299,9 +295,11 @@ void test_SD(bool is_test){
 	DEBUG(display_ui8matrix(image1, mx0b, mx1b, my0b, my1b, format, "2eme image : ")); DEBUG(puts(""));
 
 	CHRONO(SigmaDelta(),cycles);
-	// BENCH(printf(format, cycles/(SIZE_X*SIZE_Y)));
-	BENCH(printf("cycles = %0.6f", cycles));
-	BENCH(puts(""));
+
+	BENCH(printf("cycles = %0.6f", cycles)); BENCH(puts(""));
+
+	BENCH(printf("cycles/X*Y = %0.6f", cycles/(SIZE_X*SIZE_Y))); BENCH(puts(""));
+
 
 	// affiche l'image binaire resultante
 	DEBUG(display_ui8matrix(img_bin, mx0b, mx1b, my0b, my1b, format, "image binaire : ")); DEBUG(puts(""));
@@ -310,6 +308,6 @@ void test_SD(bool is_test){
 void main_SD(int argc, char *argv[]){
 	
 	DEBUG(test_SD(true));
-	
+
 	BENCH(test_SD(false));
 }
