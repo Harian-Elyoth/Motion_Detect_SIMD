@@ -5,8 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <string.h>
 
 #include "nrdef.h"
 #include "nrutil.h"
@@ -25,6 +24,9 @@
 #define MIN(x, y) (((x) < (y)) ? (x) : (y))
 #define MAX(x, y) (((x) > (y)) ? (x) : (y))
 
+// NB IMAGES
+#define NB_IMG 200
+
 // facteur ecart type
 #define N 3
 
@@ -33,14 +35,15 @@
 #define VMAX 254
 
 // img size
-int SIZE_X = 320;
-int SIZE_Y = 240;
+int WIDTH = 6; // correspond au nb de colonne  => indice boucle j
+int HEIGHT = 8; // correspond au nb de ligne   => indice boucle i
 
 // BORD
 int b;
 
-int mx0, mx1, my0, my1; 	// indices scalaire
-int mx0b, mx1b, my0b, my1b; // indices scalaires avec bord
+
+int mi0, mi1, mj0, mj1; 	// indices scalaire
+int mi0b, mi1b, mj0b, mj1b; // indices scalaires avec bord
 
 // images
 uint8** image0;
@@ -68,57 +71,69 @@ void allocate_matrix(){
 	//int b = 2;
 
 	// indices matrices
-	mx0 = 0; mx1 = SIZE_X-1;
-	my0 = 0; my1 = SIZE_Y-1;
+	mi0 = 0; mi1 = HEIGHT-1;
+	mj0 = 0; mj1 = WIDTH-1;
 	
 	// indices matrices avec bord
-	mx0b = mx0-b; mx1b = mx1+b;
-	my0b = my0-b; my1b = my1+b;
+	mi0b = mi0-b; mi1b = mi1+b;
+	mj0b = mj0-b; mj1b = mj1+b;
 	
 	DEBUG(puts("")); 
-	DEBUG(printf("mx0b : %d\n", mx0b)); 
-	DEBUG(printf("mx1b : %d\n", mx1b)); 
-	DEBUG(printf("my0b : %d\n", my0b)); 
-	DEBUG(printf("my1b : %d\n", my1b));
+	DEBUG(printf("mi0b : %d\n", mi0b)); 
+	DEBUG(printf("mi1b : %d\n", mi1b)); 
+	DEBUG(printf("mj0b : %d\n", mj0b)); 
+	DEBUG(printf("mj1b : %d\n", mj1b));
 	DEBUG(puts("")); 
 
-	image0 = ui8matrix(mx0b, mx1b, my0b, my1b);
-	image1 = ui8matrix(mx0b, mx1b, my0b, my1b);
+	image0 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	image1 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
 
-	mean0 = ui8matrix(mx0b, mx1b, my0b, my1b);
-	mean1 = ui8matrix(mx0b, mx1b, my0b, my1b);
+	mean0 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	mean1 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
 
-	std0 = ui8matrix(mx0b, mx1b, my0b, my1b);
-	std1 = ui8matrix(mx0b, mx1b, my0b, my1b);
+	std0 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	std1 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
 
-	img_diff = ui8matrix(mx0b, mx1b, my0b, my1b);
-	img_bin = ui8matrix(mx0b, mx1b, my0b, my1b); 
+	img_diff = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	img_bin = ui8matrix(mi0b, mi1b, mj0b, mj1b);
 
-	for (int i = mx0b; i < mx1b; ++i)
+	for (int i = mi0b; i < mi1b; ++i)
 	{
-		for (int j = my0b; j < my1b; ++j)
+		for (int j = mj0b; j < mj1b; ++j)
 		{
 			mean0[i][j] = image0[i][j];
 			std0[i][j]  = VMIN;
 		}
 	}
+}
+
+void free_matrix(){
+	free_ui8matrix(image0, mi0b, mi1b, mj0b, mj1b);
+	free_ui8matrix(image1, mi0b, mi1b, mj0b, mj1b);
+
+	free_ui8matrix(mean0, mi0b, mi1b, mj0b, mj1b);
+	free_ui8matrix(mean1, mi0b, mi1b, mj0b, mj1b);
+
+	free_ui8matrix(std0, mi0b, mi1b, mj0b, mj1b);
+	free_ui8matrix(std1, mi0b, mi1b, mj0b, mj1b);
+
+	free_ui8matrix(img_diff, mi0b, mi1b, mj0b, mj1b);
+	free_ui8matrix(img_bin, mi0b, mi1b, mj0b, mj1b);
 }
 
 void load_imgs(){
 
-	/* -- Faire le traitement pour transformer les chemins -- */
+	char *filename0 = "../car3/car_3038.pgm";
+	char *filename1 = "../car3/car_3039.pgm";
 
-	char *filename0 = "../car3/car_3000.pgm";
-	char *filename1 = "../car3/car_3001.pgm";
-
-	MLoadPGM_ui8matrix(filename0,  mx0b, mx1b, my0b, my1b, image0);
-	MLoadPGM_ui8matrix(filename1,  mx0b, mx1b, my0b, my1b, image1);
+	MLoadPGM_ui8matrix(filename0, mi0b, mi1b, mj0b, mj1b, image0);
+	MLoadPGM_ui8matrix(filename1, mi0b, mi1b, mj0b, mj1b, image1);
 
 	// initiate mean0 et std0
 
-	for (int i = 0; i < SIZE_X; ++i)
+	for (int i = mi0b; i < mi1b; ++i)
 	{
-		for (int j = 0; j < SIZE_Y; ++j)
+		for (int j = mj0b; j < mj1b; ++j)
 		{
 			mean0[i][j] = image0[i][j];
 			std0[i][j]  = VMIN;
@@ -126,13 +141,52 @@ void load_imgs(){
 	}
 }
 
-void SigmaDelta(){
+void load_dataset(){
+	/* -- Faire le traitement pour transformer les chemins -- */
 
+	const char *path = "../car3/car_";
+	const char *ext  = ".pgm";
+	char num1[5] = "";
+	char num2[5] = "";
+
+	int count = 3000;
+
+	for (int i = 1; i < NB_IMG ; ++i)
+	{
+
+		char filename0[25] = "";
+		strcat(filename0, path);
+
+		snprintf(num1, 5, "%d", count);
+		const char *nb1 = num1;
+
+		strcat(filename0, nb1);
+		strcat(filename0, ext);
+
+		count += 1;
+
+		char filename1[25] = "";
+
+		snprintf(num2, 5, "%d", count);
+		const char *nb2 = num2;
+
+		strcat(filename1, path);
+		strcat(filename1, nb2);
+		strcat(filename1, ext);
+
+		// DEBUG(printf("file 0 : %s\n", filename0));
+		// DEBUG(printf("file 1 : %s\n", filename1));
+
+		// CHARGER LES IMAGES PUIS FAIRE TRAITEMENTS
+	}
+}
+
+void step_1(){
 	// step 1 : Mt estimation 
 
-	for (int i = mx0b; i < mx1b; ++i)
+	for (int i = mi0b; i < mi1b; ++i)
 	{
-		for (int j = my0b; j < my1b; ++j)
+		for (int j = mj0b; j < mj1b; ++j)
 		{
 			if (mean0[i][j] < image1[i][j]){
 				mean1[i][j] = mean0[i][j] + 1;
@@ -145,21 +199,25 @@ void SigmaDelta(){
 			}
 		}
 	}
+}
 
+void step_2(){
 	// step 2 : Ot computation
 
-	for (int i = mx0b; i < mx1b; ++i){
+	for (int i = mi0b; i < mi1b; ++i){
 
-		for (int j = my0b; j < my1b; ++j){
+		for (int j = mj0b; j < mj1b; ++j){
 			img_diff[i][j] = abs(mean1[i][j] - image1[i][j]);
 		}
 	}
+}
 
+void step_3(){
 	// step 3 : Vt update and clamping
 
-	for (int i = mx0b; i < mx1b; ++i)
+	for (int i = mi0b; i < mi1b; ++i)
 	{
-		for (int j = my0b; j < my1b; ++j)
+		for (int j = mj0b; j < mj1b; ++j)
 		{
 			if (std0[i][j] < N * img_diff[i][j]){
 				std1[i][j] = std0[i][j] + 1;
@@ -177,46 +235,55 @@ void SigmaDelta(){
 			std1[i][j] = MAX(MIN(std1[i][j], VMAX), VMIN);
 		}
 	}
+}
 
+void step_4(){
 	// step 4 : Et estimation
 
-	for (int i = mx0b; i < mx1b; ++i)
+	for (int i = mi0b; i < mi1b; ++i)
 	{
-		for (int j = my0b; j < my1b; ++j)
+		for (int j = mj0b; j < mj1b; ++j)
 		{
 			if (img_diff[i][j] < std1[i][j]){
-				img_bin[i][j] = 0;
+				// img_bin[i][j] = 0;
+				img_bin[i][j] = 255;
 			}
 			else{
-				img_bin[i][j] = 1;
+				// img_bin[i][j] = 1;
+				img_bin[i][j] = 0;
 			}
 		}
 	}
 }
 
-
+void SigmaDelta(){
+	step_1();
+	step_2();
+	step_3();
+	step_4();
+}
 
 // ce fichier de test est fortement inspiré de la source suivante : https://www.tutorialspoint.com/c-program-to-write-an-image-in-pgm-format 
 void test_pgm_img(){
    int i, j;
-   int w = 6, h = 6;
+   int w = 6, h = 8;
 
-   int image[6][6] = {
-      { 255, 255, 255, 255, 255, 255 },
-      { 255, 255, 255, 255, 255, 255 },
-      { 255, 255, 255, 255, 255, 255 },
-      { 255, 255, 255, 255, 255, 255 },
-      { 255, 255, 255, 255, 255, 255 },
-      { 255, 255, 255, 255, 255, 255 },
+   int image[6][8] = {
+      { 255, 255, 255, 255, 255, 255, 255, 255 },
+      { 255, 255, 255, 255, 255, 255, 255, 255 },
+      { 255, 255, 255, 255, 255, 255, 255, 255 },
+      { 255, 255, 255, 255, 255, 255, 255, 255 },
+      { 255, 255, 255, 255, 255, 255, 255, 255 },
+      { 255, 255, 255, 255, 255, 255, 255, 255 },
    };
 
-   int image2[6][6] = {
-      { 200, 200, 200, 200, 200, 200 },
-      { 200, 200, 200, 200, 200, 200 },
-      { 200, 200, 200, 200, 200, 200 },
-      { 200, 200, 200, 200, 200, 200 },
-      { 200, 200, 200, 200, 200, 200 },
-      { 200, 200, 200, 200, 200, 200 },
+   int image2[6][8] = {
+      { 200, 200, 200, 200, 200, 200, 200, 200 },
+      { 200, 200, 200, 200, 200, 200, 200, 200 },
+      { 200, 200, 200, 200, 200, 200, 200, 200 },
+      { 200, 200, 200, 200, 200, 200, 200, 200 },
+      { 200, 200, 200, 200, 200, 200, 200, 200 },
+      { 200, 200, 200, 200, 200, 200, 200, 200 },
    };
 
 	FILE* pgm1;
@@ -253,12 +320,12 @@ void test_pgm_img(){
 	char *filename0 = "pgm_imgs/my_pgm1.pgm";
 	char *filename1 = "pgm_imgs/my_pgm2.pgm";
 
-	MLoadPGM_ui8matrix(filename0,  mx0b, mx1b, my0b, my1b, image0);
-	MLoadPGM_ui8matrix(filename1,  mx0b, mx1b, my0b, my1b, image1);
+	MLoadPGM_ui8matrix(filename0, mi0b, mi1b, mj0b, mj1b, image0);
+	MLoadPGM_ui8matrix(filename1, mi0b, mi1b, mj0b, mj1b, image1);
 
-	for (int i = 0; i < SIZE_X; ++i)
+	for (int i = mi0b; i < mi1b; ++i)
 	{
-		for (int j = 0; j < SIZE_Y; ++j)
+		for (int j = mj0b; j < mj1b; ++j)
 		{
 			mean0[i][j] = image0[i][j];
 			std0[i][j]  = VMIN;
@@ -269,11 +336,16 @@ void test_pgm_img(){
 void test_SD(bool is_test){
 
 	if(is_test)	{
-		SIZE_X=6; SIZE_Y=6;
+		WIDTH=6; HEIGHT=8;
 	}
 	else{
-		SIZE_X=320; SIZE_Y=240;
+		WIDTH=320; HEIGHT=240;
 	}
+
+	// chronometrie
+    int iter, niter = 4;
+    int run, nrun = 5;
+    double t0, t1, dt, tmin, t;
 
 	char *format = "%d ";
     double cycles;
@@ -288,28 +360,36 @@ void test_SD(bool is_test){
 	}
 	else{
 		// charge deux images pgm test taille 6x6 
-		// ATTENTION : Changer SIZE_X et SIZE_Y
+		// ATTENTION : Changer WIDTH et HEIGHT
 		test_pgm_img();
 	}
 
 	// affiche les images initiales
-	DEBUG(display_ui8matrix(image0, mx0b, mx1b, my0b, my1b, format, "1ere image : ")); DEBUG(puts(""));
-	DEBUG(display_ui8matrix(image1, mx0b, mx1b, my0b, my1b, format, "2eme image : ")); DEBUG(puts(""));
+	DEBUG(display_ui8matrix(image0, mi0b, mi1b, mj0b, mj1b, format, "1ere image : ")); DEBUG(puts(""));
+	DEBUG(display_ui8matrix(image1, mi0b, mi1b, mj0b, mj1b, format, "2eme image : ")); DEBUG(puts(""));
 
 	CHRONO(SigmaDelta(),cycles);
 
 	BENCH(printf("cycles = %0.6f", cycles)); BENCH(puts(""));
 
-	BENCH(printf("cycles/X*Y = %0.6f", cycles/(SIZE_X*SIZE_Y))); BENCH(puts(""));
+	BENCH(printf("cycles/X*Y = %0.6f", cycles/(WIDTH*HEIGHT))); BENCH(puts(""));
 
 
 	// affiche l'image binaire resultante
-	DEBUG(display_ui8matrix(img_bin, mx0b, mx1b, my0b, my1b, format, "image binaire : ")); DEBUG(puts(""));
+	DEBUG(display_ui8matrix(img_bin, mi0b, mi1b, mj0b, mj1b, format, "image binaire : ")); DEBUG(puts(""));
+
+	// free all matrix
+	void free_matrix();
+
+	// save result on pgm file
+	SavePGM_ui8matrix(img_bin, mi0b, mi1b, mj0b, mj1b, "pgm_imgs/SD_out.pgm");
 }
+
 
 void main_SD(int argc, char *argv[]){
 	
-	DEBUG(test_SD(true));
+	// DEBUG(test_SD(true));
+	load_dataset();
 
 	BENCH(test_SD(false));
 }
