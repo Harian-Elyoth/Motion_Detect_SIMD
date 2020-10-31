@@ -21,7 +21,7 @@
 
 
 // --------------------------------------------------------
-void avg3_reg_vf32matrix(vfloat32** X, int n_card, n, vfloat32 **Y)
+void avg3_reg_vf32matrix(vfloat32** X, int n_card, vfloat32 **Y)
 // --------------------------------------------------------
 {
     int i, j;
@@ -408,7 +408,7 @@ void test2D(int n)
     // -- calcul -- //
     // ------------ //
     
-    CHRONO(avg3_reg_vf32matrix(vX, n/card, n, vY3),cycles); printf("avg 3x3 reg  "); DEBUG(display_vf32matrix(vY3, vi0, vi1, vj0, vj1, format, "Y3")); BENCH(printf(format, cycles/(n*n))); BENCH(puts(""));
+    CHRONO(avg3_reg_vf32matrix(vX, n/card, vY3),cycles); printf("avg 3x3 reg  "); DEBUG(display_vf32matrix(vY3, vi0, vi1, vj0, vj1, format, "Y3")); BENCH(printf(format, cycles/(n*n))); BENCH(puts(""));
     CHRONO(avg3_rot_vf32matrix(vX, n/card, vY3),cycles); printf("avg 3x3 rot  "); DEBUG(display_vf32matrix(vY3, vi0, vi1, vj0, vj1, format, "Y3")); BENCH(printf(format, cycles/(n*n))); BENCH(puts(""));
     CHRONO(avg3_red_vf32matrix(vX, n/card, vY3),cycles); printf("avg 3x3 red  "); DEBUG(display_vf32matrix(vY3, vi0, vi1, vj0, vj1, format, "Y3")); BENCH(printf(format, cycles/(n*n))); BENCH(puts(""));
     BENCH(puts(""));
