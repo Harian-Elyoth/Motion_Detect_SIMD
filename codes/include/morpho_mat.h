@@ -1,5 +1,5 @@
 /* --------------------- */
-/* ------- SD.h -------- */
+/* ------- morpho_mat.h -------- */
 /* --------------------- */
 
 #ifndef __MORPHO_MAT_H__
@@ -11,7 +11,7 @@ extern "C" {
 #endif
 
 // fonction principale     
-int main_morpho(int argc, char const *argv[])
+int main_morpho(int argc, char const *argv[]);
 
 #ifdef __cplusplus
 }
