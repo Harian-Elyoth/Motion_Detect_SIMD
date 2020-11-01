@@ -20,6 +20,8 @@
 #include "mymacro.h"
 #include "simd_macro.h"
 
+#include "morpho_mat.h"
+
 //==================== MACROS ============================
 
 //IMAGE_SIZE
@@ -30,7 +32,7 @@
 
 int b;
 
-int mx0, mx1, my0, my1; //indices scalaire
+int mx0, mx1, my0, my1;     //indices scalaire
 int mx0b, mx1b, my0b, my1b; // indices scalaires avec bord
 
 
@@ -113,7 +115,7 @@ void dilatation_3(uint8 ** X, uint8 ** Y){
     }
 }
 
-// Kernel 5x()
+// Kernel 5x5
 // indice scalaire sans bord
 void dilatation_5(uint8 ** X, uint8 ** Y){
 
@@ -142,8 +144,6 @@ void dilatation_5(uint8 ** X, uint8 ** Y){
     }
 }
 
-
-
 void morpho_3(uint8 ** X, uint8 ** Y){
 
     b = 1;
@@ -158,8 +158,6 @@ void morpho_3(uint8 ** X, uint8 ** Y){
     dilatation_3(tmp1, tmp2);
     erosion_3(tmp2, tmp1);
     dilatation_3(tmp1, Y);
-
-
 }
 
 void morpho_5(uint8 ** X, uint8 ** Y){
@@ -176,12 +174,10 @@ void morpho_5(uint8 ** X, uint8 ** Y){
     dilatation_5(tmp1, tmp2);
     erosion_5(tmp2, tmp1);
     dilatation_5(tmp1, Y);
-
-
 }
 
 
-uint8 main_morpho(uint8 argc, char const *argv[])
+void main_morpho(int argc, char *argv[])
 {
 
 
@@ -189,5 +185,4 @@ uint8 main_morpho(uint8 argc, char const *argv[])
     //test_morphos(X, TEST_X_SIZE);
 
 
-    return 0;
 }

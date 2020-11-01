@@ -62,6 +62,7 @@ uint8 ** img_diff;
 // image binaire (sortie)
 uint8 ** img_bin;	
 
+
 void allocate_matrix(){
 	// 1 for 3x3 
 	b = 1; 
