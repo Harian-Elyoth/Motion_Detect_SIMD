@@ -61,6 +61,7 @@ depend:
 clean:
 	rm -f $(OBJ)
 	rm -f ${LIB_PATH}/${PRODUCT}
+	rm -f pgm_imgs/*.pgm
 
 tar:
 	tar -cvf deriche_SSE.tar Makefile src include
