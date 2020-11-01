@@ -16,6 +16,7 @@
 #include "simd1D.h"
 #include "simd2D.h"
 #include "SD_morpho.h"
+#include "SD_simd.h"
 
 void info(void)
 {
@@ -35,7 +36,7 @@ int main(int argc, char *argv[])
     // main_1D(argc, argv);
     // main_2D(argc, argv);
 
-    main_SD_morpho(argc, argv);
+    main_SD_simd(argc, argv);
 
     return 0;   
 }

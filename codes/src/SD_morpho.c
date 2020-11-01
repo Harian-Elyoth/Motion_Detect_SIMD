@@ -43,11 +43,11 @@
 #define VMIN 1
 #define VMAX 254
 
-//======================= PROGRAM =======================
-
 // img size
-int WIDTH  = 320; // correspond au nb de colonne  => indice boucle j
-int HEIGHT = 240; // correspond au nb de ligne   => indice boucle i
+#define WIDTH  320; // correspond au nb de colonne  => indice boucle j
+#define HEIGHT 240; // correspond au nb de ligne   => indice boucle i
+
+//======================= PROGRAM =======================
 
 // BORD
 int b;
@@ -94,8 +94,8 @@ void allocate_matrix(int kernel_size){
 	}
 	
 	// indices matrices
-	mi0 = 0; mi1 = HEIGHT-1;
-	mj0 = 0; mj1 = WIDTH-1;
+	mi0 = 0; mi1 = HEIGHT - 1;
+	mj0 = 0; mj1 = WIDTH  - 1;
 	
 	// indices matrices avec bord
 	mi0b = mi0-b; mi1b = mi1+b;
@@ -380,10 +380,6 @@ void bin_to_pgm(char* filename){
 
 void test_SD_morpho(){
 
-	// dimensions imgs set
-	WIDTH = 320;
-	HEIGHT = 240;
-
 	// chronometrie
     int iter, niter = 4;
     int run, nrun = 5;
@@ -436,12 +432,12 @@ void test_SD_morpho(){
 		CHRONO(SigmaDelta(),cycles);
 
 		BENCH(printf("SIGMA DELTA : "));
-		BENCH(printf("it = %d, cycles/X*Y = %0.6f", i, cycles/(WIDTH*HEIGHT))); BENCH(puts(""));
+		BENCH(printf("it = %d, cycles/X*Y = %0.6f", i, cycles/(WIDTH * HEIGHT))); BENCH(puts(""));
 
 		CHRONO(morpho_3(img_bin, img_filtered),cycles);
 
 		BENCH(printf("MORPHOLOGIE : "));
-		BENCH(printf("it = %d, cycles/X*Y = %0.6f", i, cycles/(WIDTH*HEIGHT))); BENCH(puts(""));
+		BENCH(printf("it = %d, cycles/X*Y = %0.6f", i, cycles/(WIDTH * HEIGHT))); BENCH(puts(""));
 
 		// built pgm filename out
 		char filename_out[25] = "";
