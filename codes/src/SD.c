@@ -35,12 +35,11 @@
 #define VMAX 254
 
 // img size
-int WIDTH = 6; // correspond au nb de colonne  => indice boucle j
-int HEIGHT = 8; // correspond au nb de ligne   => indice boucle i
+int WIDTH  = 320; // correspond au nb de colonne  => indice boucle j
+int HEIGHT = 240; // correspond au nb de ligne   => indice boucle i
 
 // BORD
 int b;
-
 
 int mi0, mi1, mj0, mj1; 	// indices scalaire
 int mi0b, mi1b, mj0b, mj1b; // indices scalaires avec bord
@@ -96,15 +95,6 @@ void allocate_matrix(){
 
 	img_diff = ui8matrix(mi0b, mi1b, mj0b, mj1b);
 	img_bin = ui8matrix(mi0b, mi1b, mj0b, mj1b);
-
-	for (int i = mi0b; i < mi1b; ++i)
-	{
-		for (int j = mj0b; j < mj1b; ++j)
-		{
-			mean0[i][j] = image0[i][j];
-			std0[i][j]  = VMIN;
-		}
-	}
 }
 
 void free_matrix(){
@@ -123,14 +113,13 @@ void free_matrix(){
 
 void load_imgs(){
 
-	char *filename0 = "../car3/car_3038.pgm";
-	char *filename1 = "../car3/car_3039.pgm";
+	char *filename0 = "../car3/car_3037.pgm";
+	char *filename1 = "../car3/car_3038.pgm";
 
 	MLoadPGM_ui8matrix(filename0, mi0b, mi1b, mj0b, mj1b, image0);
 	MLoadPGM_ui8matrix(filename1, mi0b, mi1b, mj0b, mj1b, image1);
 
 	// initiate mean0 et std0
-
 	for (int i = mi0b; i < mi1b; ++i)
 	{
 		for (int j = mj0b; j < mj1b; ++j)
@@ -142,7 +131,7 @@ void load_imgs(){
 }
 
 void step_1(){
-	// step 1 : Mt estimation 
+	// DEBUG(printf("step 1 : Mt estimation \n"));
 
 	for (int i = mi0b; i < mi1b; ++i)
 	{
@@ -162,7 +151,7 @@ void step_1(){
 }
 
 void step_2(){
-	// step 2 : Ot computation
+	// DEBUG(printf("step 2 : Ot computation\n"));
 
 	for (int i = mi0b; i < mi1b; ++i){
 
@@ -173,7 +162,7 @@ void step_2(){
 }
 
 void step_3(){
-	// step 3 : Vt update and clamping
+	// DEBUG(printf("step 3 : Vt update and clamping\n"));
 
 	for (int i = mi0b; i < mi1b; ++i)
 	{
@@ -198,7 +187,7 @@ void step_3(){
 }
 
 void step_4(){
-	// step 4 : Et estimation
+	// DEBUG(printf("step 4 : Et estimation\n"));
 
 	for (int i = mi0b; i < mi1b; ++i)
 	{
@@ -206,11 +195,9 @@ void step_4(){
 		{
 			if (img_diff[i][j] < std1[i][j]){
 				img_bin[i][j] = 0;
-				// img_bin[i][j] = 255;
 			}
 			else{
 				img_bin[i][j] = 1;
-				// img_bin[i][j] = 0;
 			}
 		}
 	}
@@ -224,7 +211,7 @@ void SigmaDelta(){
 }
 
 // ce fichier de test est fortement inspiré de la source suivante : https://www.tutorialspoint.com/c-program-to-write-an-image-in-pgm-format 
-void test_pgm_img(){
+void gen_pgm_img(){
    int i, j;
    int w = 6, h = 8;
 
@@ -277,11 +264,11 @@ void test_pgm_img(){
 	}
 	fclose(pgm2);
 
-	char *filename0 = "pgm_imgs/my_pgm1.pgm";
-	char *filename1 = "pgm_imgs/my_pgm2.pgm";
+	char *filename_pgm0 = "pgm_imgs/my_pgm1.pgm";
+	char *filename_pgm1 = "pgm_imgs/my_pgm2.pgm";
 
-	MLoadPGM_ui8matrix(filename0, mi0b, mi1b, mj0b, mj1b, image0);
-	MLoadPGM_ui8matrix(filename1, mi0b, mi1b, mj0b, mj1b, image1);
+	MLoadPGM_ui8matrix(filename_pgm0, mi0b, mi1b, mj0b, mj1b, image0);
+	MLoadPGM_ui8matrix(filename_pgm1, mi0b, mi1b, mj0b, mj1b, image1);
 
 	for (int i = mi0b; i < mi1b; ++i)
 	{
@@ -313,14 +300,13 @@ void test_SD(int is_test){
 	// alloue les matrices images, moyennes, ecart-types, diff, binaire
 	allocate_matrix();
 
-	if (!is_test){
-
-		// charge les deux premières images du set
-		load_imgs();
+	if (is_test == 1){
+		// charge deux images pgm test taille 6x8 
+		gen_pgm_img();
 	}
 	else{
-		// charge deux images pgm test taille 6x8 
-		test_pgm_img();
+		// charge les deux premières images du set
+		load_imgs();
 	}
 
 	// affiche les images initiales
@@ -333,17 +319,20 @@ void test_SD(int is_test){
 
 	BENCH(printf("cycles/X*Y = %0.6f", cycles/(WIDTH*HEIGHT))); BENCH(puts(""));
 
-
 	// affiche l'image binaire resultante
 	DEBUG(display_ui8matrix(img_bin, mi0b, mi1b, mj0b, mj1b, format, "image binaire : ")); DEBUG(puts(""));
 
-	bin_to_pgm("SD_out_pgm");
+	bin_to_pgm("SD_out.pgm");
 
 	// free all matrix
 	void free_matrix();
 }
 
 void test_SD_dataset(){
+
+	// dimensions imgs set
+	WIDTH = 320;
+	HEIGHT = 240;
 
 	// chronometrie
     int iter, niter = 4;
@@ -353,25 +342,8 @@ void test_SD_dataset(){
 
     char *format = "%d ";
 
-	// initiate mean0 et std0
-	for (int i = mi0b; i < mi1b; ++i)
-	{
-		for (int j = mj0b; j < mj1b; ++j)
-		{
-			mean0[i][j] = image0[i][j];
-			std0[i][j]  = VMIN;
-		}
-	}
-
-	// alloue les matrices images, moyennes, ecart-types, diff, binaire
+    // alloue les matrices images, moyennes, ecart-types, diff, binaire
 	allocate_matrix();
-
-	const char *path = "../car3/car_";
-	const char *path_out = "SD_out_";
-	const char *ext  = ".pgm";
-	char num1[5] = "";
-	char num2[5] = "";
-	char num_out[5] = "";
 
 	int count = 3000;
 
@@ -379,24 +351,14 @@ void test_SD_dataset(){
 	{
 
 		char filename0[25] = "";
-		strcat(filename0, path);
 
-		snprintf(num1, 5, "%d", count);
-		const char *nb1 = num1;
-
-		strcat(filename0, nb1);
-		strcat(filename0, ext);
+		snprintf(filename0, 25, "../car3/car_%d.pgm", count);
 
 		count += 1;
 
 		char filename1[25] = "";
 
-		snprintf(num2, 5, "%d", count);
-		const char *nb2 = num2;
-
-		strcat(filename1, path);
-		strcat(filename1, nb2);
-		strcat(filename1, ext);
+		snprintf(filename1, 25, "../car3/car_%d.pgm", count);
 
 		// DEBUG(printf("file 0 : %s\n", filename0));
 		// DEBUG(printf("file 1 : %s\n", filename1));
@@ -406,25 +368,26 @@ void test_SD_dataset(){
 		MLoadPGM_ui8matrix(filename0, mi0b, mi1b, mj0b, mj1b, image0);
 		MLoadPGM_ui8matrix(filename1, mi0b, mi1b, mj0b, mj1b, image1);
 
+		if (i == 1){
+
+			// initiate mean0 et std0
+			for (int i = mi0b; i < mi1b; ++i)
+			{
+				for (int j = mj0b; j < mj1b; ++j)
+				{
+					mean0[i][j] = image0[i][j];
+					std0[i][j]  = VMIN;
+				}
+			}
+		}
+
 		CHRONO(SigmaDelta(),cycles);
 
-		BENCH(printf("cycles/X*Y = %0.6f", cycles/(WIDTH*HEIGHT))); BENCH(puts(""));
-
-		/*-------------------------------------------------------*/
-
-		// FAIRE ROTATTION MATRICE MOYENNE, VARIANCE ET IMAGE
-
-		/*-------------------------------------------------------*/
+		BENCH(printf("it : %d, cycles/X*Y = %0.6f", i, cycles/(WIDTH*HEIGHT))); BENCH(puts(""));
 
 		// built pgm filename out
 		char filename_out[25] = "";
-		strcat(filename_out, path_out);
-
-		snprintf(num_out, 5, "%d", i);
-		const char *nb_out = num_out;
-
-		strcat(filename_out, nb_out);
-		strcat(filename_out, ext);
+		snprintf(filename_out, 25, "SD_out_%d.pgm", i);
 
 		bin_to_pgm(filename_out);
 	}
@@ -463,7 +426,7 @@ void bin_to_pgm(char* filename){
 
 void main_SD(int argc, char *argv[]){
 	
-	DEBUG(test_SD(1));
+	DEBUG(test_SD_dataset());
 
-	BENCH(test_SD(0));
+	BENCH(test_SD_dataset());	
 }

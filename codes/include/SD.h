@@ -21,7 +21,7 @@ void step_4();
 
 void SigmaDelta();
 
-void test_pgm_img();
+void gen_pgm_img();
 void test_SD(int is_test);
 void test_SD_dataset();
 void bin_to_pgm(char* filename);
