@@ -98,6 +98,45 @@ void allocate_matrix(){
 	img_bin = ui8matrix(mi0b, mi1b, mj0b, mj1b);
 }
 
+void duplicate_border(){
+
+	for (int i = mi0b; i <= mi1b; ++i)
+	{
+		for (int j = mj0b; j <= mj1b; ++j)
+		{
+			for (int k = 0; k <= b; ++k)
+			{
+
+				// economise des tours de boucles => plus performant !
+
+				if(i > mi0 && i <= mi1){
+					if (j == mj0)
+					{
+						j = mj1;
+					}
+				}
+
+				// Bord Gauche
+				image0[i][mj0 - k] = image0[i][mj0];
+				image1[i][mj0 - k] = image1[i][mj0];
+
+				// Bord Droit
+				image0[i][mj1 + k] = image0[i][mj1];
+				image1[i][mj1 + k] = image1[i][mj1];
+
+				// Bord Haut
+				image0[mi0 - k][j] = image0[mi0][j];
+				image1[mi0 - k][j] = image1[mi0][j];
+
+				// Bord Bas
+				image0[mi1 + k][j] = image0[mi1][j];
+				image1[mi1 + k][j] = image1[mi1][j];
+			}
+		}
+	}
+
+}
+
 void free_matrix(){
 	free_ui8matrix(image0, mi0b, mi1b, mj0b, mj1b);
 	free_ui8matrix(image1, mi0b, mi1b, mj0b, mj1b);
@@ -310,7 +349,13 @@ void test_SD(int is_test){
 		load_imgs();
 	}
 
-	// affiche les images initiales
+	// affiche les images initiales avec bord vide
+	DEBUG(display_ui8matrix(image0, mi0b, mi1b, mj0b, mj1b, format, "1ere image (bord a 0) : ")); DEBUG(puts(""));
+	DEBUG(display_ui8matrix(image1, mi0b, mi1b, mj0b, mj1b, format, "2eme image (bord a 0) : ")); DEBUG(puts(""));
+
+	duplicate_border();
+
+	// affiche les images initiales avec bord dupliques
 	DEBUG(display_ui8matrix(image0, mi0b, mi1b, mj0b, mj1b, format, "1ere image : ")); DEBUG(puts(""));
 	DEBUG(display_ui8matrix(image1, mi0b, mi1b, mj0b, mj1b, format, "2eme image : ")); DEBUG(puts(""));
 
@@ -382,6 +427,8 @@ void test_SD_dataset(){
 			}
 		}
 
+		duplicate_border();
+
 		CHRONO(SigmaDelta(),cycles);
 
 		BENCH(printf("it : %d, cycles/X*Y = %0.6f", i, cycles/(WIDTH*HEIGHT))); BENCH(puts(""));
@@ -424,9 +471,9 @@ void bin_to_pgm(char* filename){
 	SavePGM_ui8matrix(pgm_out, mi0b, mi1b, mj0b, mj1b, Fname);
 }
 
-
 void main_SD(int argc, char *argv[]){
 	
+	// DEBUG(test_SD(1));
 	DEBUG(test_SD_dataset());
 
 	BENCH(test_SD_dataset());	
