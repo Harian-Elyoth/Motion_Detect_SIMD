@@ -20,7 +20,7 @@
 #include "mymacro.h"
 #include "simd_macro.h"
 
-#include "morpho_mat.h"
+#include "morpho.h"
 
 //==================== MACROS ============================
 

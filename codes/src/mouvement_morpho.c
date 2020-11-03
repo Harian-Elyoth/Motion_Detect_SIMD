@@ -22,9 +22,7 @@
 #include "mymacro.h"
 #include "simd_macro.h"
 
-#include "SD.h"
-#include "morpho_mat.h"
-#include "SD_morpho.h"
+#include "mouvement_morpho.h"
 
 
 //==================== MACROS ============================

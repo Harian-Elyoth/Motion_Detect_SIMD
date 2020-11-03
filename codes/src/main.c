@@ -15,8 +15,8 @@
 
 #include "simd1D.h"
 #include "simd2D.h"
-#include "SD_morpho.h"
-#include "SD_simd.h"
+#include "mouvement_morpho.h"
+#include "mouvement_SIMD.h"
 
 void info(void)
 {

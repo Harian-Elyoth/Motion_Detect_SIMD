@@ -2,8 +2,8 @@
 /* ------- morpho_mat.h -------- */
 /* ----------------------------- */
 
-#ifndef __MORPHO_MAT_H__
-#define __MORPHO_MAT_H__
+#ifndef __MORPHO_H__
+#define __MORPHO_H__
 
 #ifdef __cplusplus
 #pragma message ("C++")

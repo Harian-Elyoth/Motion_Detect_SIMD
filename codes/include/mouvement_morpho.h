@@ -1,9 +1,9 @@
-/* ---------------------------- */
-/* ------- SD_morpho.h -------- */
-/* ---------------------------- */
+/* ----------------------------------- */
+/* ------- mouvement_morpho.h -------- */
+/* ----------------------------------- */
 
-#ifndef __SD_MORPHO_H__
-#define __SD_MORPHO_H__
+#ifndef __MOUVEMENT_MORPHO_H__
+#define __MOUVEMENT_MORPHO_H__
 
 #ifdef __cplusplus
 #pragma message ("C++")
