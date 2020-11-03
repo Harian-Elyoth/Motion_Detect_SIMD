@@ -136,6 +136,43 @@ void free_vmatrix(){
 	free_vui8matrix(img_bin, vmi0b, vmi1b, vmj0b, vmj1b);
 }
 
+void duplicate_vborder(){
+
+	for (int i = mi0b; i <= mi1b; ++i)
+	{
+		for (int j = mj0b; j <= mj1b; ++j)
+		{
+			for (int k = 0; k <= b; ++k)
+			{
+				// economise des tours de boucles => plus performant !
+
+				if(i > mi0 && i <= mi1){
+					if (j == mj0)
+					{
+						j = mj1;
+					}
+				}
+
+				// Bord Gauche
+				image0[i][mj0 - k] = image0[i][mj0];
+				image1[i][mj0 - k] = image1[i][mj0];
+
+				// Bord Droit
+				image0[i][mj1 + k] = image0[i][mj1];
+				image1[i][mj1 + k] = image1[i][mj1];
+
+				// Bord Haut
+				image0[mi0 - k][j] = image0[mi0][j];
+				image1[mi0 - k][j] = image1[mi0][j];
+
+				// Bord Bas
+				image0[mi1 + k][j] = image0[mi1][j];
+				image1[mi1 + k][j] = image1[mi1][j];
+			}
+		}
+	}
+}
+
 void load_img_to_matrix(char *filename0, char *filename1){
 
 	uint8 ** img0 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
@@ -167,11 +204,10 @@ void load_img_to_matrix(char *filename0, char *filename1){
 	}
 
 	DEBUG(printf("After conversion\n");)DEBUG(puts(""));
-
 }
 
 // ce fichier de test est fortement inspiré de la source suivante : https://www.tutorialspoint.com/c-program-to-write-an-image-in-pgm-format 
-void gen_pgm_img(){
+void gen_pgm_img_simd(){
    	int i, j;
    	int w = 32, h = 16;
 
@@ -194,33 +230,13 @@ void gen_pgm_img(){
 	load_img_to_matrix("pgm_imgs/my_pgm1.pgm", "pgm_imgs/my_pgm2.pgm");
 }
 
-// void step_1_simd(){
-// 	//step 1 : Mt estimation
-
-// 	for (int i = mi0b; i < mi1b; ++i)
-// 	{
-// 		for (int j = mj0b; j < mj1b; ++j)
-// 		{
-
-// 			if (mean0[i][j] < image1[i][j]){
-// 				mean1[i][j] = mean0[i][j] + 1;
-// 			}
-// 			else if (mean0[i][j] > image1[i][j]){
-// 				mean1[i][j] = mean0[i][j] - 1;
-// 			}
-// 			else{
-// 				mean1[i][j] = mean0[i][j];
-// 			}
-// 		}
-// 	}
-// }
-
-
 void test_SD_simd(){
 
 	allocate_vmatrix();
 
-	gen_pgm_img();
+	gen_pgm_img_simd();
+
+	duplicate_vborder();
 
 	DEBUG(puts(""));
 
@@ -230,7 +246,7 @@ void test_SD_simd(){
 
 }
 
-void main_SD_simd(int argc, char *argv[])
+void main_mouvement_simd(int argc, char *argv[])
 {
 	DEBUG(test_SD_simd());
 }
