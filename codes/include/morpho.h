@@ -1,9 +1,9 @@
 /* ----------------------------- */
-/* ------- morpho_mat.h -------- */
+/* ------- morpho.h -------- */
 /* ----------------------------- */
 
-#ifndef __MORPHO_MAT_H__
-#define __MORPHO_MAT_H__
+#ifndef __MORPHO_H__
+#define __MORPHO_H__
 
 #ifdef __cplusplus
 #pragma message ("C++")
@@ -20,8 +20,6 @@ void dilatation_5(uint8 ** X, uint8 ** Y);
 void morpho_3(uint8 ** X, uint8 ** Y);
 void morpho_5(uint8 ** X, uint8 ** Y);
 
-// fonction principale     
-void main_morpho(int argc, char *argv[]);
 
 #ifdef __cplusplus
 }

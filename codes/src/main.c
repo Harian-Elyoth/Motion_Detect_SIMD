@@ -15,7 +15,9 @@
 
 #include "simd1D.h"
 #include "simd2D.h"
-#include "SD_morpho.h"
+
+#include "test_mouvement.h"
+#include "test_mouvement_morpho.h"
 
 void info(void)
 {
@@ -32,10 +34,10 @@ int main(int argc, char *argv[])
 {
     info();
     
-    // main_1D(argc, argv);
-    // main_2D(argc, argv);
+    main_test_mouvement_morpho(argc, argv);
 
-    main_SD_morpho(argc, argv);
+    // main_SD_morpho(argc, argv);
+    // main_SD_simd(argc, argv);
 
     return 0;   
 }

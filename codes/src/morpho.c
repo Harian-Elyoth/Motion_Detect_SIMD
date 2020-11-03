@@ -20,24 +20,8 @@
 #include "mymacro.h"
 #include "simd_macro.h"
 
-#include "morpho_mat.h"
-
-//==================== MACROS ============================
-
-//IMAGE_SIZE
-#define SIZE_X 320
-#define SIZE_Y 240
-
-//======================= PROGRAM =======================
-
-int b;
-
-int mx0, mx1, my0, my1;     //indices scalaire
-int mx0b, mx1b, my0b, my1b; // indices scalaires avec bord
-
-
-mx0 = 0; mx1 = SIZE_X-1;
-my0 = 0; my1 = SIZE_Y-1;
+#include "mouvement.h"
+#include "morpho.h"
 
 
 // Kernel 3x3
@@ -49,8 +33,8 @@ void erosion_3(uint8 ** X, uint8 ** Y){
     uint8 c0, c1, c2;
     uint8 s;
 
-    for(int i = mx0 ; i < mx1 ; i++){
-        for(int j = my0 ; j < my1 ; j++){
+    for(int i = mi0 ; i < mi1 ; i++){
+        for(int j = mj0 ; j < mj1 ; j++){
             
             //Detection d'un zero sur le kernel autour du IJ
             //Si il y a un zero, dans le kernel alors le Yij prends 0, sinon il prends 1
@@ -74,8 +58,8 @@ void erosion_5(uint8 ** X, uint8 ** Y){
     uint8 e0, e1, e2, e3, e4;
     uint8 s;
 
-    for(int i = mx0 ; i < mx1 ; i++){
-        for(int j = my0 ; j < my1 ; j++){
+    for(int i = mi0 ; i < mi1 ; i++){
+        for(int j = mj0 ; j < mj1 ; j++){
 
             a0 = X[i - 2][j - 2] ; b0 = X[i - 2][j - 1] ; c0 = X[i - 2][j ] ; d0 = X[i - 2][j + 1]; e0 = X[i - 2][j + 2];
             a1 = X[i - 1][j - 2]; b1 = X[i - 1][j - 1]; c1 = X[i - 1][j ]; d1 = X[i - 1][j + 1]; e1 = X[i - 1][j + 2];
@@ -101,8 +85,8 @@ void dilatation_3(uint8 ** X, uint8 ** Y){
     uint8 c0, c1, c2;
     uint8 s;
 
-    for(int i = mx0 ; i < mx1 ; i++){
-        for(int j = my0 ; j < my1 ; j++){
+    for(int i = mi0 ; i < mi1 ; i++){
+        for(int j = mj0 ; j < mj1 ; j++){
             
             //Detection d'un zero sur le kernel autour du IJ
             //Si il y a un zero, dans le kernel alors le Yij prends 0, sinon il prends 1
@@ -126,8 +110,8 @@ void dilatation_5(uint8 ** X, uint8 ** Y){
     uint8 e0, e1, e2, e3, e4;
     uint8 s;
 
-    for(int i = mx0 ; i < mx1 ; i++){
-        for(int j = my0 ; j < my1 ; j++){
+    for(int i = mi0 ; i < mi1 ; i++){
+        for(int j = mj0 ; j < mj1 ; j++){
 
             a0 = X[i - 2][j - 2] ; b0 = X[i - 2][j - 1] ; c0 = X[i - 2][j ] ; d0 = X[i - 2][j + 1]; e0 = X[i - 2][j + 2];
             a1 = X[i - 1][j - 2]; b1 = X[i - 1][j - 1]; c1 = X[i - 1][j ]; d1 = X[i - 1][j + 1]; e1 = X[i - 1][j + 2];
@@ -146,13 +130,8 @@ void dilatation_5(uint8 ** X, uint8 ** Y){
 
 void morpho_3(uint8 ** X, uint8 ** Y){
 
-    b = 1;
-
-    mx0b = mx0-b; mx1b = mx1+b;
-	my0b = my0-b; my1b = my1+b;
-
-    uint8 ** tmp1 = ui8matrix(mx0b, mx1b, my0b, my1b);
-    uint8 ** tmp2 = ui8matrix(mx0b, mx1b, my0b, my1b);
+    uint8 ** tmp1 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+    uint8 ** tmp2 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
 
     erosion_3(X, tmp1);
     dilatation_3(tmp1, tmp2);
@@ -162,27 +141,12 @@ void morpho_3(uint8 ** X, uint8 ** Y){
 
 void morpho_5(uint8 ** X, uint8 ** Y){
     
-    b = 2;
 
-    mx0b = mx0-b; mx1b = mx1+b;
-	my0b = my0-b; my1b = my1+b;
-
-    uint8 ** tmp1 = ui8matrix(mx0b, mx1b, my0b, my1b);
-    uint8 ** tmp2 = ui8matrix(mx0b, mx1b, my0b, my1b);
+    uint8 ** tmp1 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+    uint8 ** tmp2 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
 
     erosion_5(X, tmp1);
     dilatation_5(tmp1, tmp2);
     erosion_5(tmp2, tmp1);
     dilatation_5(tmp1, Y);
-}
-
-
-void main_morpho(int argc, char *argv[])
-{
-
-
-
-    //test_morphos(X, TEST_X_SIZE);
-
-
 }

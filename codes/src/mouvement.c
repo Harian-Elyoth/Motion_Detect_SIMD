@@ -18,57 +18,25 @@
 #include "mymacro.h"
 #include "simd_macro.h"
 
-#include "SD.h"
-
-// MACRO MIN MAX
-#define MIN(x, y) (((x) < (y)) ? (x) : (y))
-#define MAX(x, y) (((x) > (y)) ? (x) : (y))
-
-// NB IMAGES
-#define NB_IMG 200
-
-// facteur ecart type
-#define N 3
-
-// valeurs ecart type min et max (fix)
-#define VMIN 1
-#define VMAX 254
-
-// img size
-int WIDTH  = 320; // correspond au nb de colonne  => indice boucle j
-int HEIGHT = 240; // correspond au nb de ligne   => indice boucle i
-
-// BORD
-int b;
-
-int mi0, mi1, mj0, mj1; 	// indices scalaire
-int mi0b, mi1b, mj0b, mj1b; // indices scalaires avec bord
-
-// images
-uint8** image0;
-uint8** image1;
-
-// moyennes
-uint8** mean0;
-uint8** mean1;		
-
-// ecart-types
-uint8** std0;
-uint8** std1;			
-
-// image de différence
-uint8 ** img_diff;	
-
-// image binaire (sortie)
-uint8 ** img_bin;	
+#include "mouvement.h"
 
 
-void allocate_matrix(){
-	// 1 for 3x3 
-	b = 1; 
-
-	// 2 for 5x5
-	//int b = 2;
+void allocate_matrix(int kernel_size){
+	
+	if (kernel_size == 3)
+	{
+		// 1 for 3x3 
+		b = 1; 
+	}
+	else if(kernel_size == 5){
+		// 2 for 5x5
+		b = 2;
+	}
+	else
+	{
+		DEBUG(printf("ERROR on Kernel Size !\n"));
+		exit(1);
+	}
 
 	// indices matrices
 	mi0 = 0; mi1 = HEIGHT-1;
@@ -96,6 +64,47 @@ void allocate_matrix(){
 
 	img_diff = ui8matrix(mi0b, mi1b, mj0b, mj1b);
 	img_bin = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+
+	// image filtrée
+	img_filtered = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+}
+
+void duplicate_border(){
+
+	for (int i = mi0b; i <= mi1b; ++i)
+	{
+		for (int j = mj0b; j <= mj1b; ++j)
+		{
+			for (int k = 0; k <= b; ++k)
+			{
+
+				// economise des tours de boucles => plus performant !
+
+				if(i > mi0 && i <= mi1){
+					if (j == mj0)
+					{
+						j = mj1;
+					}
+				}
+
+				// Bord Gauche
+				image0[i][mj0 - k] = image0[i][mj0];
+				image1[i][mj0 - k] = image1[i][mj0];
+
+				// Bord Droit
+				image0[i][mj1 + k] = image0[i][mj1];
+				image1[i][mj1 + k] = image1[i][mj1];
+
+				// Bord Haut
+				image0[mi0 - k][j] = image0[mi0][j];
+				image1[mi0 - k][j] = image1[mi0][j];
+
+				// Bord Bas
+				image0[mi1 + k][j] = image0[mi1][j];
+				image1[mi1 + k][j] = image1[mi1][j];
+			}
+		}
+	}
 }
 
 void free_matrix(){
@@ -110,6 +119,8 @@ void free_matrix(){
 
 	free_ui8matrix(img_diff, mi0b, mi1b, mj0b, mj1b);
 	free_ui8matrix(img_bin, mi0b, mi1b, mj0b, mj1b);
+
+	free_ui8matrix(img_filtered, mi0b, mi1b, mj0b, mj1b);
 }
 
 void load_imgs(){
@@ -281,122 +292,6 @@ void gen_pgm_img(){
 	}
 }
 
-void test_SD(int is_test){
-
-	if(is_test == 1)	{
-		WIDTH=6; HEIGHT=8;
-	}
-	else{
-		WIDTH=320; HEIGHT=240;
-	}
-
-	// chronometrie
-    int iter, niter = 4;
-    int run, nrun = 5;
-    double t0, t1, dt, tmin, t;
-
-	char *format = "%d ";
-    double cycles;
-
-	// alloue les matrices images, moyennes, ecart-types, diff, binaire
-	allocate_matrix();
-
-	if (is_test == 1){
-		// charge deux images pgm test taille 6x8 
-		gen_pgm_img();
-	}
-	else{
-		// charge les deux premières images du set
-		load_imgs();
-	}
-
-	// affiche les images initiales
-	DEBUG(display_ui8matrix(image0, mi0b, mi1b, mj0b, mj1b, format, "1ere image : ")); DEBUG(puts(""));
-	DEBUG(display_ui8matrix(image1, mi0b, mi1b, mj0b, mj1b, format, "2eme image : ")); DEBUG(puts(""));
-
-	CHRONO(SigmaDelta(),cycles);
-
-	BENCH(printf("cycles = %0.6f", cycles)); BENCH(puts(""));
-
-	BENCH(printf("cycles/X*Y = %0.6f", cycles/(WIDTH*HEIGHT))); BENCH(puts(""));
-
-	// affiche l'image binaire resultante
-	DEBUG(display_ui8matrix(img_bin, mi0b, mi1b, mj0b, mj1b, format, "image binaire : ")); DEBUG(puts(""));
-
-	bin_to_pgm("SD_out.pgm");
-
-	// free all matrix
-	void free_matrix();
-}
-
-void test_SD_dataset(){
-
-	// dimensions imgs set
-	WIDTH = 320;
-	HEIGHT = 240;
-
-	// chronometrie
-    int iter, niter = 4;
-    int run, nrun = 5;
-    double t0, t1, dt, tmin, t;
-    double cycles;
-
-    char *format = "%d ";
-
-    // alloue les matrices images, moyennes, ecart-types, diff, binaire
-	allocate_matrix();
-
-	int count = 3000;
-
-	for (int i = 1; i < NB_IMG ; ++i)
-	{
-
-		char filename0[25] = "";
-
-		snprintf(filename0, 25, "../car3/car_%d.pgm", count);
-
-		count += 1;
-
-		char filename1[25] = "";
-
-		snprintf(filename1, 25, "../car3/car_%d.pgm", count);
-
-		// DEBUG(printf("file 0 : %s\n", filename0));
-		// DEBUG(printf("file 1 : %s\n", filename1));
-
-		// CHARGER LES IMAGES PUIS FAIRE TRAITEMENTS
-
-		MLoadPGM_ui8matrix(filename0, mi0b, mi1b, mj0b, mj1b, image0);
-		MLoadPGM_ui8matrix(filename1, mi0b, mi1b, mj0b, mj1b, image1);
-
-		if (i == 1){
-
-			// initiate mean0 et std0
-			for (int i = mi0b; i < mi1b; ++i)
-			{
-				for (int j = mj0b; j < mj1b; ++j)
-				{
-					mean0[i][j] = image0[i][j];
-					std0[i][j]  = VMIN;
-				}
-			}
-		}
-
-		CHRONO(SigmaDelta(),cycles);
-
-		BENCH(printf("it : %d, cycles/X*Y = %0.6f", i, cycles/(WIDTH*HEIGHT))); BENCH(puts(""));
-
-		// built pgm filename out
-		char filename_out[25] = "";
-		snprintf(filename_out, 25, "SD_out_%d.pgm", i);
-
-		bin_to_pgm(filename_out);
-	}
-
-	// free all matrix
-	void free_matrix();
-}
-
 void bin_to_pgm(char* filename){
 
 	// allocate pgm matrix
@@ -424,10 +319,30 @@ void bin_to_pgm(char* filename){
 	SavePGM_ui8matrix(pgm_out, mi0b, mi1b, mj0b, mj1b, Fname);
 }
 
+void filtered_to_pgm(char* filename){
 
-void main_SD(int argc, char *argv[]){
-	
-	DEBUG(test_SD_dataset());
+	// allocate pgm matrix
+	uint8** pgm_out = ui8matrix(mi0b, mi1b, mj0b, mj1b);
 
-	BENCH(test_SD_dataset());	
+	for (int i = mi0b; i < mi1b; ++i)
+	{
+		for (int j = mj0b; j < mj1b; ++j)
+		{
+			if (img_filtered[i][j] == 0){
+				pgm_out[i][j] = 255;
+			}
+			else{
+				pgm_out[i][j] = 0;
+			}
+		}
+	}
+
+	char Fname[25] = "";
+	const char *path = "pgm_imgs/";
+	strcat(Fname, path);
+	strcat(Fname, filename);
+
+	// save result on pgm file
+	SavePGM_ui8matrix(pgm_out, mi0b, mi1b, mj0b, mj1b, Fname);
 }
+
