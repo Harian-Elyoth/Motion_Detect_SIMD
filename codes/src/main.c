@@ -19,6 +19,7 @@
 #include "mouvement_SIMD.h"
 #include "test_mouvement.h"
 #include "test_mouvement_morpho.h"
+#include "test_morpho.h"
 
 void info(void)
 {
@@ -36,8 +37,8 @@ int main(int argc, char *argv[])
     info();
     
     // main_test_mouvement_morpho(argc, argv);
-
-    main_mouvement_simd(argc, argv);
+    main_test_morpho(argc, argv);
+    //main_mouvement_simd(argc, argv);
 
     return 0;   
 }
