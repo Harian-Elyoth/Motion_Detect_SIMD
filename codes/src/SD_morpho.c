@@ -94,8 +94,8 @@ void allocate_matrix(int kernel_size){
 	}
 	
 	// indices matrices
-	mi0 = 0; mi1 = HEIGHT - 1;
-	mj0 = 0; mj1 = WIDTH  - 1;
+	mi0 = 0; mi1 = HEIGHT-1;
+	mj0 = 0; mj1 = WIDTH-1;
 	
 	// indices matrices avec bord
 	mi0b = mi0-b; mi1b = mi1+b;
@@ -143,9 +143,9 @@ void free_matrix(){
 void step_1(){
 	// DEBUG(printf("step 1 : Mt estimation \n"));
 
-	for (int i = mi0b; i < mi1b; ++i)
+	for (int i = mi0b; i <= mi1b; ++i)
 	{
-		for (int j = mj0b; j < mj1b; ++j)
+		for (int j = mj0b; j <= mj1b; ++j)
 		{
 			if (mean0[i][j] < image1[i][j]){
 				mean1[i][j] = mean0[i][j] + 1;
@@ -163,9 +163,9 @@ void step_1(){
 void step_2(){
 	// DEBUG(printf("step 2 : Ot computation\n"));
 
-	for (int i = mi0b; i < mi1b; ++i){
+	for (int i = mi0b; i <= mi1b; ++i){
 
-		for (int j = mj0b; j < mj1b; ++j){
+		for (int j = mj0b; j <= mj1b; ++j){
 			img_diff[i][j] = abs(mean1[i][j] - image1[i][j]);
 		}
 	}
@@ -174,9 +174,9 @@ void step_2(){
 void step_3(){
 	// DEBUG(printf("step 3 : Vt update and clamping\n"));
 
-	for (int i = mi0b; i < mi1b; ++i)
+	for (int i = mi0b; i <= mi1b; ++i)
 	{
-		for (int j = mj0b; j < mj1b; ++j)
+		for (int j = mj0b; j <= mj1b; ++j)
 		{
 			if (std0[i][j] < N * img_diff[i][j]){
 				std1[i][j] = std0[i][j] + 1;
@@ -199,9 +199,9 @@ void step_3(){
 void step_4(){
 	// DEBUG(printf("step 4 : Et estimation\n"));
 
-	for (int i = mi0b; i < mi1b; ++i)
+	for (int i = mi0b; i <= mi1b; ++i)
 	{
-		for (int j = mj0b; j < mj1b; ++j)
+		for (int j = mj0b; j <= mj1b; ++j)
 		{
 			if (img_diff[i][j] < std1[i][j]){
 				img_bin[i][j] = 0;
@@ -229,8 +229,8 @@ void erosion_3(uint8 ** X, uint8 ** Y){
     uint8 c0, c1, c2;
     uint8 s;
 
-    for(int i = mi0 ; i < mi1 ; i++){
-        for(int j = mj0 ; j < mj1 ; j++){
+    for(int i = mi0 ; i <= mi1 ; i++){
+        for(int j = mj0 ; j <= mj1 ; j++){
             
             // Detection d'un zero sur le kernel autour du IJ
             // Si il y a un zero, dans le kernel alors le Yij prends 0, sinon il prends 1
@@ -256,8 +256,8 @@ void erosion_5(uint8 ** X, uint8 ** Y){
     uint8 e0, e1, e2, e3, e4;
     uint8 s;
 
-    for(int i = mi0 ; i < mi1 ; i++){
-        for(int j = mj0 ; j < mj1 ; j++){
+    for(int i = mi0 ; i <= mi1 ; i++){
+        for(int j = mj0 ; j <= mj1 ; j++){
 
         	//Detection d'un zero sur le kernel autour du IJ
             //Si il y a un zero, dans le kernel alors le Yij prends 0, sinon il prends 1
@@ -284,8 +284,8 @@ void dilatation_3(uint8 ** X, uint8 ** Y){
     uint8 c0, c1, c2;
     uint8 s;
 
-    for(int i = mi0 ; i < mi1 ; i++){
-        for(int j = mj0 ; j < mj1 ; j++){
+    for(int i = mi0 ; i <= mi1 ; i++){
+        for(int j = mj0 ; j <= mj1 ; j++){
             
             //Detection d'un zero sur le kernel autour du IJ
             //Si il y a un zero, dans le kernel alors le Yij prends 0, sinon il prends 1
@@ -311,8 +311,8 @@ void dilatation_5(uint8 ** X, uint8 ** Y){
     uint8 e0, e1, e2, e3, e4;
     uint8 s;
 
-    for(int i = mi0 ; i < mi1 ; i++){
-        for(int j = mj0 ; j < mj1 ; j++){
+    for(int i = mi0 ; i <= mi1 ; i++){
+        for(int j = mj0 ; j <= mj1 ; j++){
 
         	//Detection d'un zero sur le kernel autour du IJ
             //Si il y a un zero, dans le kernel alors le Yij prends 0, sinon il prends 1
@@ -356,9 +356,9 @@ void bin_to_pgm(char* filename){
 	// allocate pgm matrix
 	uint8** pgm_out = ui8matrix(mi0b, mi1b, mj0b, mj1b);
 
-	for (int i = mi0b; i < mi1b; ++i)
+	for (int i = mi0b; i <= mi1b; ++i)
 	{
-		for (int j = mj0b; j < mj1b; ++j)
+		for (int j = mj0b; j <= mj1b; ++j)
 		{
 			if (img_filtered[i][j] == 0){
 				pgm_out[i][j] = 255;
@@ -387,7 +387,7 @@ void test_SD_morpho(){
     double cycles;
 
     char *format = "%d ";
-    int kernel_size = 5;
+    int kernel_size = 3;
 
     // alloue les matrices images, moyennes, ecart-types, diff, binaire
 	allocate_matrix(kernel_size);
@@ -419,9 +419,9 @@ void test_SD_morpho(){
 		if (i == 1){
 
 			// initiate mean0 et std0
-			for (int i = mi0b; i < mi1b; ++i)
+			for (int i = mi0b; i <= mi1b; ++i)
 			{
-				for (int j = mj0b; j < mj1b; ++j)
+				for (int j = mj0b; j <= mj1b; ++j)
 				{
 					mean0[i][j] = image0[i][j];
 					std0[i][j]  = VMIN;

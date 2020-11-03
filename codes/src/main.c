@@ -36,6 +36,7 @@ int main(int argc, char *argv[])
     // main_1D(argc, argv);
     // main_2D(argc, argv);
 
+    // main_SD_morpho(argc, argv);
     main_SD_simd(argc, argv);
 
     return 0;   
