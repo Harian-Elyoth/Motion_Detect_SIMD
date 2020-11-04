@@ -129,9 +129,10 @@ void dilatation_5(uint8 ** X, uint8 ** Y, int mi0, int mj0, int mi1, int mj1){
 
 void morpho_3(uint8 ** X, uint8 ** Y, int mi0, int mj0, int mi1, int mj1){
 
-    //A REVOIR
-    mi0b = mi0 - 1; mi1b = mi1 + 1;
-	mj0b = mj0 - 1; mj1b = mj1 + 1;
+    int mi0b = mi0 - 1;
+    int mi1b = mi1 + 1;
+    int mj0b = mj0 - 1;
+    int mj1b = mj1 + 1;
 
     uint8 ** tmp1 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
     uint8 ** tmp2 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
@@ -144,9 +145,10 @@ void morpho_3(uint8 ** X, uint8 ** Y, int mi0, int mj0, int mi1, int mj1){
 
 void morpho_5(uint8 ** X, uint8 ** Y, int mi0, int mj0, int mi1, int mj1){
     
-    //A REVOIR
-    mi0b = mi0 - 2; mi1b = mi1 + 2;
-	mj0b = mj0 - 2; mj1b = mj1 + 2;
+    int mi0b = mi0 - 2;
+    int mi1b = mi1 + 2;
+    int mj0b = mj0 - 2;
+    int mj1b = mj1 + 2;
 
     uint8 ** tmp1 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
     uint8 ** tmp2 = ui8matrix(mi0b, mi1b, mj0b, mj1b);

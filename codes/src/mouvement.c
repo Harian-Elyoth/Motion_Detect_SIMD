@@ -187,30 +187,3 @@ void bin_to_pgm(int mi0b, int mi1b, int mj0b, int mj1b, uint8** img_bin, char* f
 	SavePGM_ui8matrix(pgm_out, mi0b, mi1b, mj0b, mj1b, Fname);
 }
 
-void filtered_to_pgm(int mi0b, int mi1b, int mj0b, int mj1b, uint8** img_filtered, char* filename){
-
-	// allocate pgm matrix
-	uint8** pgm_out = ui8matrix(mi0b, mi1b, mj0b, mj1b);
-
-	for (int i = mi0b; i <= mi1b; ++i)
-	{
-		for (int j = mj0b; j <= mj1b; ++j)
-		{
-			if (img_filtered[i][j] == 0){
-				pgm_out[i][j] = 255;
-			}
-			else{
-				pgm_out[i][j] = 0;
-			}
-		}
-	}
-
-	char Fname[25] = "";
-	const char *path = "pgm_imgs/";
-	strcat(Fname, path);
-	strcat(Fname, filename);
-
-	// save result on pgm file
-	SavePGM_ui8matrix(pgm_out, mi0b, mi1b, mj0b, mj1b, Fname);
-}
-

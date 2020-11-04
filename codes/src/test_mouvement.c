@@ -143,23 +143,6 @@ void test_SD_dataset(){
 	int mi0, mi1, mj0, mj1; 	// indices scalaire
 	int mi0b, mi1b, mj0b, mj1b; // indices scalaires avec bord
 
-	// images
-	uint8** image;
-
-	// moyennes
-	uint8** mean0;
-	uint8** mean1;		
-
-	// ecart-types
-	uint8** std0;
-	uint8** std1;			
-
-	// image de difference
-	uint8 ** img_diff;	
-
-	// image binaire (sortie de Sigma Delta)
-	uint8 ** img_bin;	
-
 	// chronometrie
     int iter, niter = 4;
     int run, nrun = 5;
@@ -188,16 +171,16 @@ void test_SD_dataset(){
     // -- allocation -- //
     // ---------------- //
 
-	image = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** image = ui8matrix(mi0b, mi1b, mj0b, mj1b);
 
-	mean0 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
-	mean1 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** mean0 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** mean1 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
 
-	std0 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
-	std1 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** std0 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** std1 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
 
-	img_diff = ui8matrix(mi0b, mi1b, mj0b, mj1b);
-	img_bin = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** img_diff = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** img_bin = ui8matrix(mi0b, mi1b, mj0b, mj1b);
 
 	// -------------- //
     // -- prologue -- //
@@ -243,19 +226,19 @@ void test_SD_dataset(){
 
 		CHRONO(SigmaDelta_step1(mi0b, mi1b, mj0b, mj1b, mean0, mean1, image),cycles);
 
-		BENCH(printf("step 1 : cycles = %0.6f", cycles)); BENCH(puts("")); BENCH(printf("step 1 : cycles/X*Y = %0.6f", cycles/(WIDTH*HEIGHT))); BENCH(puts(""));
+		BENCH(printf("step 1 : cycles/X*Y = %0.6f", cycles/(WIDTH*HEIGHT))); BENCH(puts(""));
 
 		CHRONO(SigmaDelta_step2(mi0b, mi1b, mj0b, mj1b, image, mean1, img_diff),cycles);
 
-		BENCH(printf("step 2 : cycles = %0.6f", cycles)); BENCH(puts("")); BENCH(printf("step 2 : cycles/X*Y = %0.6f", cycles/(WIDTH*HEIGHT))); BENCH(puts(""));
+		BENCH(printf("step 2 : cycles/X*Y = %0.6f", cycles/(WIDTH*HEIGHT))); BENCH(puts(""));
 
 		CHRONO(SigmaDelta_step3(mi0b, mi1b, mj0b, mj1b, std0, std1, img_diff),cycles);
 
-		BENCH(printf("step 3 : cycles = %0.6f", cycles)); BENCH(puts("")); BENCH(printf("step 3 : cycles/X*Y = %0.6f", cycles/(WIDTH*HEIGHT))); BENCH(puts(""));
+		BENCH(printf("step 3 : cycles/X*Y = %0.6f", cycles/(WIDTH*HEIGHT))); BENCH(puts(""));
 
 		CHRONO(SigmaDelta_step4(mi0b, mi1b, mj0b, mj1b, std1, img_diff, img_bin),cycles);
 
-		BENCH(printf("step 4 : cycles = %0.6f", cycles)); BENCH(puts("")); BENCH(printf("step 4 : cycles/X*Y = %0.6f", cycles/(WIDTH*HEIGHT))); BENCH(puts(""));
+		BENCH(printf("step 4 : cycles/X*Y = %0.6f", cycles/(WIDTH*HEIGHT))); BENCH(puts(""));
 
 		// built pgm filename out
 		char filename_out[25] = "";

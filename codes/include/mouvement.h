@@ -63,8 +63,6 @@ void gen_pgm_img();
 
 void bin_to_pgm(int mi0b, int mi1b, int mj0b, int mj1b, uint8** img_bin, char* filename);
 
-void filtered_to_pgm(int mi0b, int mi1b, int mj0b, int mj1b, uint8** img_filtered, char* filename);
-
 
 #ifdef __cplusplus
 }
