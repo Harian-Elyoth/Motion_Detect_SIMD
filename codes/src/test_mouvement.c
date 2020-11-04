@@ -51,17 +51,16 @@ void test_SD_car(bool is_visual){
     // -- allocation -- //
     // ---------------- //
 
-	uint8** image0 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
-	uint8** image1 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** image 		= ui8matrix(mi0b, mi1b, mj0b, mj1b);
 
-	uint8** mean0 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
-	uint8** mean1 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** mean0 		= ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** mean1 		= ui8matrix(mi0b, mi1b, mj0b, mj1b);
 
-	uint8** std0 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
-	uint8** std1 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** std0 		= ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** std1 		= ui8matrix(mi0b, mi1b, mj0b, mj1b);
 
-	uint8** img_diff = ui8matrix(mi0b, mi1b, mj0b, mj1b);
-	uint8** img_bin = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** img_diff 	= ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** img_bin 	= ui8matrix(mi0b, mi1b, mj0b, mj1b);
 
 	// -------------- //
     // -- prologue -- //
@@ -69,32 +68,28 @@ void test_SD_car(bool is_visual){
 
     if (is_visual)
     {
-    	gen_pgm_img(mi0, mi1, mj0, mj1, b, mean0, std0, image0);
+    	gen_pgm_img(mi0, mi1, mj0, mj1, b, mean0, std0, image);
     }
     else
     {
-		MLoadPGM_ui8matrix("../car3/car_3037.pgm", mi0b, mi1b, mj0b, mj1b, image0);
+		MLoadPGM_ui8matrix("../car3/car_3037.pgm", mi0b, mi1b, mj0b, mj1b, image);
 
-		duplicate_border(mi0, mi1, mj0, mj1, b, image0);
+		duplicate_border(mi0, mi1, mj0, mj1, b, image);
 
 		// initiate mean0 et std0 for first iteration
 		for (int i = mi0b; i <= mi1b; ++i)
 		{
 			for (int j = mj0b; j <= mj1b; ++j)
 			{
-				mean0[i][j] = image0[i][j];
+				mean0[i][j] = image[i][j];
 				std0[i][j]  = VMIN;
 			}
 		}
 
-		MLoadPGM_ui8matrix("../car3/car_3038.pgm", mi0b, mi1b, mj0b, mj1b, image1);
+		MLoadPGM_ui8matrix("../car3/car_3038.pgm", mi0b, mi1b, mj0b, mj1b, image);
 
-		duplicate_border(mi0, mi1, mj0, mj1, b, image1);
+		duplicate_border(mi0, mi1, mj0, mj1, b, image);
     }
-
-    // BENCH(display_ui8matrix(image, mi0b, mi1b, mj0b, mj1b, "%d ", "\nimage :\n"));
-	// BENCH(display_ui8matrix(mean0, mi0b, mi1b, mj0b, mj1b, "%d ", "\nmean0 :\n"));
-    // BENCH(display_ui8matrix(std0,  mi0b, mi1b, mj0b, mj1b, "%d ", "\nstd0 :\n"));
 
 	// ----------------- //
     // -- traitements -- //
@@ -102,22 +97,22 @@ void test_SD_car(bool is_visual){
 
     BENCH(printf("Sigma Delta :\n\n");)
 
-	CHRONO(SigmaDelta_step1(mi0b, mi1b, mj0b, mj1b, mean0, mean1, image1), cycles);
+	CHRONO(SigmaDelta_step1(mi0b, mi1b, mj0b, mj1b, mean0, mean1, image), cycles);
 
 	BENCH(display_ui8matrix(mean0, mi0b, mi1b, mj0b, mj1b, "%d ", "\nmean0 :\n"));
 	BENCH(display_ui8matrix(mean1, mi0b, mi1b, mj0b, mj1b, "%d ", "\nmean1 :\n"));
 
 	BENCH(printf("step 1 :\ncycles = %0.6f", cycles)); BENCH(puts("")); BENCH(printf("cycles/X*Y = %0.6f", cycles/(WIDTH*HEIGHT))); BENCH(puts("")); BENCH(puts(""));
 
-	CHRONO(SigmaDelta_step2(mi0b, mi1b, mj0b, mj1b, image1, mean1, img_diff), cycles);
+	CHRONO(SigmaDelta_step2(mi0b, mi1b, mj0b, mj1b, image, mean1, img_diff), cycles);
 
 	BENCH(printf("step 2 :\ncycles = %0.6f", cycles)); BENCH(puts("")); BENCH(printf("cycles/X*Y = %0.6f", cycles/(WIDTH*HEIGHT))); BENCH(puts("")); BENCH(puts(""));
 
-	CHRONO(SigmaDelta_step2(mi0b, mi1b, mj0b, mj1b, std0, std1, img_diff), cycles);
+	CHRONO(SigmaDelta_step3(mi0b, mi1b, mj0b, mj1b, std0, std1, img_diff), cycles);
 
 	BENCH(printf("step 3 :\ncycles = %0.6f", cycles)); BENCH(puts("")); BENCH(printf("cycles/X*Y = %0.6f", cycles/(WIDTH*HEIGHT))); BENCH(puts("")); BENCH(puts(""));
 
-	CHRONO(SigmaDelta_step2(mi0b, mi1b, mj0b, mj1b, std1, img_bin, img_diff), cycles);
+	CHRONO(SigmaDelta_step4(mi0b, mi1b, mj0b, mj1b, std1, img_diff, img_bin), cycles);
 
 	BENCH(printf("step 4 :\ncycles = %0.6f", cycles)); BENCH(puts("")); BENCH(printf("cycles/X*Y = %0.6f", cycles/(WIDTH*HEIGHT))); BENCH(puts("")); BENCH(puts(""));
 
@@ -128,8 +123,7 @@ void test_SD_car(bool is_visual){
     // -- free -- //
     // ---------- //
 
-	free_ui8matrix(image0, mi0b, mi1b, mj0b, mj1b);
-	free_ui8matrix(image1, mi0b, mi1b, mj0b, mj1b);
+	free_ui8matrix(image, mi0b, mi1b, mj0b, mj1b);
 
 	free_ui8matrix(mean0, mi0b, mi1b, mj0b, mj1b);
 	free_ui8matrix(mean1, mi0b, mi1b, mj0b, mj1b);
@@ -255,11 +249,11 @@ void test_SD_dataset(){
 
 		BENCH(printf("step 2 : cycles = %0.6f", cycles)); BENCH(puts("")); BENCH(printf("step 2 : cycles/X*Y = %0.6f", cycles/(WIDTH*HEIGHT))); BENCH(puts(""));
 
-		CHRONO(SigmaDelta_step2(mi0b, mi1b, mj0b, mj1b, std0, std1, img_diff),cycles);
+		CHRONO(SigmaDelta_step3(mi0b, mi1b, mj0b, mj1b, std0, std1, img_diff),cycles);
 
 		BENCH(printf("step 3 : cycles = %0.6f", cycles)); BENCH(puts("")); BENCH(printf("step 3 : cycles/X*Y = %0.6f", cycles/(WIDTH*HEIGHT))); BENCH(puts(""));
 
-		CHRONO(SigmaDelta_step2(mi0b, mi1b, mj0b, mj1b, std1, img_bin, img_diff),cycles);
+		CHRONO(SigmaDelta_step4(mi0b, mi1b, mj0b, mj1b, std1, img_diff, img_bin),cycles);
 
 		BENCH(printf("step 4 : cycles = %0.6f", cycles)); BENCH(puts("")); BENCH(printf("step 4 : cycles/X*Y = %0.6f", cycles/(WIDTH*HEIGHT))); BENCH(puts(""));
 
@@ -290,7 +284,7 @@ void test_SD_dataset(){
 
 void main_test_mouvement(int argc, char *argv[])
 {
-	BENCH(test_SD_car(false));
+	// BENCH(test_SD_car(false));
 
-	// BENCH(test_SD_dataset());	
+	BENCH(test_SD_dataset());	
 }
