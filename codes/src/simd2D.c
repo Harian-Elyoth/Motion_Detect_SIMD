@@ -22,7 +22,6 @@
 
 // --------------------------------------------------------
 void avg3_reg_vf32matrix(vfloat32** X, int n_card, int n, vfloat32 **Y)
-// --------------------------------------------------------
 {
     int i, j;
     vfloat32 a0, b0, c0;
@@ -107,7 +106,6 @@ void avg3_reg_vf32matrix(vfloat32** X, int n_card, int n, vfloat32 **Y)
 }
 // --------------------------------------------------------
 void avg3_rot_vf32matrix(vfloat32** X, int n, vfloat32 **Y)
-// --------------------------------------------------------
 {
     int i, j;
     vfloat32 a0, b0, c0;
@@ -137,7 +135,6 @@ void avg3_red_vf32matrix(vfloat32** X, int n, vfloat32 **Y)
 }
 // --------------------------------------------------------
 void avg5_reg_vf32matrix(vfloat32** X, int n_card, int n, vfloat32 **Y)
-// --------------------------------------------------------
 {
     int i, j;
     vfloat32 a0, b0, c0, d0, e0;
@@ -290,13 +287,10 @@ void avg5_reg_vf32matrix(vfloat32** X, int n_card, int n, vfloat32 **Y)
             // DEBUG(puts(""));
         }
     }
-
-    
     // CODE A COMPLETER
 }
 // --------------------------------------------------------
 void avg5_rot_vf32matrix(vfloat32** X, int n, vfloat32 **Y)
-// --------------------------------------------------------
 {
     int i, j;
     vfloat32 a0, b0, c0, d0, e0;

@@ -2,26 +2,15 @@
 /* ---  Test Algorithme Sigma Delta pour le traitement d'image --- */
 /* --------------------------------------------------------------- */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <string.h>
-
-#include "nrdef.h"
-#include "nrutil.h"
-
-#include "vnrdef.h"
-#include "vnrutil.h"
-
-#include "mutil.h"
-
-#include "mymacro.h"
-#include "simd_macro.h"
-
-#include "mouvement.h"
 #include "test_mouvement.h"
 
-void test_SD_car(int is_test){
+void test_SD_car(bool is_visual){
+
+	// BORD
+	int b;
+
+	int mi0, mi1, mj0, mj1; 	// indices scalaire
+	int mi0b, mi1b, mj0b, mj1b; // indices scalaires avec bord
 
 	// chronometrie
     int iter, niter = 4;
@@ -32,38 +21,150 @@ void test_SD_car(int is_test){
     double cycles;
     int kernel_size = 3;
 
-	// alloue les matrices images, moyennes, ecart-types, diff, binaire
-	allocate_matrix(kernel_size);
+    puts("===============================");
+    puts("=== test mouvement unitaire ===");
+    puts("===============================");
 
-	// charge un couple d'images du set car3 dans image0 et image1
-	load_imgs();
+    // ------------------------- //
+    // -- calculs des indices -- //
+    // ------------------------- //
 
-	// affiche les images initiales avec bord vide
-	DEBUG(display_ui8matrix(image0, mi0b, mi1b, mj0b, mj1b, format, "1ere image (bord a 0) : ")); DEBUG(puts(""));
-	DEBUG(display_ui8matrix(image1, mi0b, mi1b, mj0b, mj1b, format, "2eme image (bord a 0) : ")); DEBUG(puts(""));
+    // 1 for 3x3 / 2 for 5x5
+    b = 1; 
 
-	duplicate_border();
+    if (is_visual) {
+    	// indices matrices
+		mi0 = 0; mi1 = HEIGHT_TEST_UNIT - 1;
+		mj0 = 0; mj1 = WIDTH_TEST_UNIT  - 1;
+    }
+    else {
+		// indices matrices
+		mi0 = 0; mi1 = HEIGHT - 1;
+		mj0 = 0; mj1 = WIDTH  - 1;
+    }
+	
+	// indices matrices avec bord
+	mi0b = mi0-b; mi1b = mi1+b;
+	mj0b = mj0-b; mj1b = mj1+b;
 
-	// affiche les images initiales avec bord dupliques
-	DEBUG(display_ui8matrix(image0, mi0b, mi1b, mj0b, mj1b, format, "1ere image : ")); DEBUG(puts(""));
-	DEBUG(display_ui8matrix(image1, mi0b, mi1b, mj0b, mj1b, format, "2eme image : ")); DEBUG(puts(""));
+	// ---------------- //
+    // -- allocation -- //
+    // ---------------- //
 
-	CHRONO(SigmaDelta(),cycles);
+	uint8** image0 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** image1 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
 
-	BENCH(printf("cycles = %0.6f", cycles)); BENCH(puts(""));
+	uint8** mean0 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** mean1 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
 
-	BENCH(printf("cycles/X*Y = %0.6f", cycles/(WIDTH*HEIGHT))); BENCH(puts(""));
+	uint8** std0 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** std1 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
 
-	// affiche l'image binaire resultante
-	DEBUG(display_ui8matrix(img_bin, mi0b, mi1b, mj0b, mj1b, format, "image binaire : ")); DEBUG(puts(""));
+	uint8** img_diff = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** img_bin = ui8matrix(mi0b, mi1b, mj0b, mj1b);
 
-	bin_to_pgm("SD_out.pgm");
+	// -------------- //
+    // -- prologue -- //
+    // -------------- //
 
-	// free all matrix
-	void free_matrix();
+    if (is_visual)
+    {
+    	gen_pgm_img(mi0, mi1, mj0, mj1, b, mean0, std0, image0);
+    }
+    else
+    {
+		MLoadPGM_ui8matrix("../car3/car_3037.pgm", mi0b, mi1b, mj0b, mj1b, image0);
+
+		duplicate_border(mi0, mi1, mj0, mj1, b, image0);
+
+		// initiate mean0 et std0 for first iteration
+		for (int i = mi0b; i <= mi1b; ++i)
+		{
+			for (int j = mj0b; j <= mj1b; ++j)
+			{
+				mean0[i][j] = image0[i][j];
+				std0[i][j]  = VMIN;
+			}
+		}
+
+		MLoadPGM_ui8matrix("../car3/car_3038.pgm", mi0b, mi1b, mj0b, mj1b, image1);
+
+		duplicate_border(mi0, mi1, mj0, mj1, b, image1);
+    }
+
+    // BENCH(display_ui8matrix(image, mi0b, mi1b, mj0b, mj1b, "%d ", "\nimage :\n"));
+	// BENCH(display_ui8matrix(mean0, mi0b, mi1b, mj0b, mj1b, "%d ", "\nmean0 :\n"));
+    // BENCH(display_ui8matrix(std0,  mi0b, mi1b, mj0b, mj1b, "%d ", "\nstd0 :\n"));
+
+	// ----------------- //
+    // -- traitements -- //
+    // ----------------- //
+
+    BENCH(printf("Sigma Delta :\n\n");)
+
+	CHRONO(SigmaDelta_step1(mi0b, mi1b, mj0b, mj1b, mean0, mean1, image1), cycles);
+
+	BENCH(display_ui8matrix(mean0, mi0b, mi1b, mj0b, mj1b, "%d ", "\nmean0 :\n"));
+	BENCH(display_ui8matrix(mean1, mi0b, mi1b, mj0b, mj1b, "%d ", "\nmean1 :\n"));
+
+	BENCH(printf("step 1 :\ncycles = %0.6f", cycles)); BENCH(puts("")); BENCH(printf("cycles/X*Y = %0.6f", cycles/(WIDTH*HEIGHT))); BENCH(puts("")); BENCH(puts(""));
+
+	CHRONO(SigmaDelta_step2(mi0b, mi1b, mj0b, mj1b, image1, mean1, img_diff), cycles);
+
+	BENCH(printf("step 2 :\ncycles = %0.6f", cycles)); BENCH(puts("")); BENCH(printf("cycles/X*Y = %0.6f", cycles/(WIDTH*HEIGHT))); BENCH(puts("")); BENCH(puts(""));
+
+	CHRONO(SigmaDelta_step2(mi0b, mi1b, mj0b, mj1b, std0, std1, img_diff), cycles);
+
+	BENCH(printf("step 3 :\ncycles = %0.6f", cycles)); BENCH(puts("")); BENCH(printf("cycles/X*Y = %0.6f", cycles/(WIDTH*HEIGHT))); BENCH(puts("")); BENCH(puts(""));
+
+	CHRONO(SigmaDelta_step2(mi0b, mi1b, mj0b, mj1b, std1, img_bin, img_diff), cycles);
+
+	BENCH(printf("step 4 :\ncycles = %0.6f", cycles)); BENCH(puts("")); BENCH(printf("cycles/X*Y = %0.6f", cycles/(WIDTH*HEIGHT))); BENCH(puts("")); BENCH(puts(""));
+
+	// convert binary img to pgm img
+	bin_to_pgm(mi0b, mi1b, mj0b, mj1b, img_bin,"SD_out.pgm");
+
+	// ---------- //
+    // -- free -- //
+    // ---------- //
+
+	free_ui8matrix(image0, mi0b, mi1b, mj0b, mj1b);
+	free_ui8matrix(image1, mi0b, mi1b, mj0b, mj1b);
+
+	free_ui8matrix(mean0, mi0b, mi1b, mj0b, mj1b);
+	free_ui8matrix(mean1, mi0b, mi1b, mj0b, mj1b);
+
+	free_ui8matrix(std0, mi0b, mi1b, mj0b, mj1b);
+	free_ui8matrix(std1, mi0b, mi1b, mj0b, mj1b);
+
+	free_ui8matrix(img_diff, mi0b, mi1b, mj0b, mj1b);
+	free_ui8matrix(img_bin, mi0b, mi1b, mj0b, mj1b);
 }
 
 void test_SD_dataset(){
+
+	// BORD
+	int b;
+
+	int mi0, mi1, mj0, mj1; 	// indices scalaire
+	int mi0b, mi1b, mj0b, mj1b; // indices scalaires avec bord
+
+	// images
+	uint8** image;
+
+	// moyennes
+	uint8** mean0;
+	uint8** mean1;		
+
+	// ecart-types
+	uint8** std0;
+	uint8** std1;			
+
+	// image de difference
+	uint8 ** img_diff;	
+
+	// image binaire (sortie de Sigma Delta)
+	uint8 ** img_bin;	
 
 	// chronometrie
     int iter, niter = 4;
@@ -74,66 +175,122 @@ void test_SD_dataset(){
 
     char *format = "%d ";
 
-    // alloue les matrices images, moyennes, ecart-types, diff, binaire
-	allocate_matrix(kernel_size);
+    // ------------------------- //
+    // -- calculs des indices -- //
+    // ------------------------- //
+
+    // 1 for 3x3 / 2 for 5x5
+    b = 1; 
+
+    // indices matrices
+	mi0 = 0; mi1 = HEIGHT-1;
+	mj0 = 0; mj1 = WIDTH-1;
+	
+	// indices matrices avec bord
+	mi0b = mi0-b; mi1b = mi1+b;
+	mj0b = mj0-b; mj1b = mj1+b;
+
+	// ---------------- //
+    // -- allocation -- //
+    // ---------------- //
+
+	image = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+
+	mean0 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	mean1 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+
+	std0 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	std1 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+
+	img_diff = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	img_bin = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+
+	// -------------- //
+    // -- prologue -- //
+    // -------------- //
+
+	MLoadPGM_ui8matrix("../car3/car_3000.pgm", mi0b, mi1b, mj0b, mj1b, image);
+
+	duplicate_border(mi0, mi1, mj0, mj1, b, image);
+
+	// initiate mean0 et std0 for first iteration
+	for (int i = mi0b; i <= mi1b; ++i)
+	{
+		for (int j = mj0b; j <= mj1b; ++j)
+		{
+			mean0[i][j] = image[i][j];
+			std0[i][j]  = VMIN;
+		}
+	}
 
 	int count = 3000;
 
 	for (int i = 1; i < NB_IMG ; ++i)
 	{
+		count++;
 
-		char filename0[25] = "";
+		char filename[25] = "";
 
-		snprintf(filename0, 25, "../car3/car_%d.pgm", count);
+		snprintf(filename, 25, "../car3/car_%d.pgm", count);
 
-		count += 1;
+		// --------------------------- //
+    	// -- chargement de l'image -- //
+    	// --------------------------- //
 
-		char filename1[25] = "";
+		MLoadPGM_ui8matrix(filename, mi0b, mi1b, mj0b, mj1b, image);
 
-		snprintf(filename1, 25, "../car3/car_%d.pgm", count);
+		duplicate_border(mi0, mi1, mj0, mj1, b, image);
 
-		// DEBUG(printf("file 0 : %s\n", filename0));
-		// DEBUG(printf("file 1 : %s\n", filename1));
+		// ----------------- //
+	    // -- traitements -- //
+	    // ----------------- //
 
-		// CHARGER LES IMAGES PUIS FAIRE TRAITEMENTS
+	    BENCH(printf("\nSigma Delta :\n\n");)
 
-		MLoadPGM_ui8matrix(filename0, mi0b, mi1b, mj0b, mj1b, image0);
-		MLoadPGM_ui8matrix(filename1, mi0b, mi1b, mj0b, mj1b, image1);
+		CHRONO(SigmaDelta_step1(mi0b, mi1b, mj0b, mj1b, mean0, mean1, image),cycles);
 
-		if (i == 1){
+		BENCH(printf("step 1 : cycles = %0.6f", cycles)); BENCH(puts("")); BENCH(printf("step 1 : cycles/X*Y = %0.6f", cycles/(WIDTH*HEIGHT))); BENCH(puts(""));
 
-			// initiate mean0 et std0
-			for (int i = mi0b; i < mi1b; ++i)
-			{
-				for (int j = mj0b; j < mj1b; ++j)
-				{
-					mean0[i][j] = image0[i][j];
-					std0[i][j]  = VMIN;
-				}
-			}
-		}
+		CHRONO(SigmaDelta_step2(mi0b, mi1b, mj0b, mj1b, image, mean1, img_diff),cycles);
 
-		duplicate_border();
+		BENCH(printf("step 2 : cycles = %0.6f", cycles)); BENCH(puts("")); BENCH(printf("step 2 : cycles/X*Y = %0.6f", cycles/(WIDTH*HEIGHT))); BENCH(puts(""));
 
-		CHRONO(SigmaDelta(),cycles);
+		CHRONO(SigmaDelta_step2(mi0b, mi1b, mj0b, mj1b, std0, std1, img_diff),cycles);
 
-		BENCH(printf("it : %d, cycles/X*Y = %0.6f", i, cycles/(WIDTH*HEIGHT))); BENCH(puts(""));
+		BENCH(printf("step 3 : cycles = %0.6f", cycles)); BENCH(puts("")); BENCH(printf("step 3 : cycles/X*Y = %0.6f", cycles/(WIDTH*HEIGHT))); BENCH(puts(""));
+
+		CHRONO(SigmaDelta_step2(mi0b, mi1b, mj0b, mj1b, std1, img_bin, img_diff),cycles);
+
+		BENCH(printf("step 4 : cycles = %0.6f", cycles)); BENCH(puts("")); BENCH(printf("step 4 : cycles/X*Y = %0.6f", cycles/(WIDTH*HEIGHT))); BENCH(puts(""));
 
 		// built pgm filename out
 		char filename_out[25] = "";
 		snprintf(filename_out, 25, "SD_out_%d.pgm", i);
 
-		bin_to_pgm(filename_out);
+		// convert binary img to pgm img
+		bin_to_pgm(mi0b, mi1b, mj0b, mj1b, img_bin, filename_out);
 	}
 
-	// free all matrix
-	void free_matrix();
+	// ---------- //
+    // -- free -- //
+    // ---------- //
+
+	free_ui8matrix(image, mi0b, mi1b, mj0b, mj1b);
+
+	free_ui8matrix(mean0, mi0b, mi1b, mj0b, mj1b);
+	free_ui8matrix(mean1, mi0b, mi1b, mj0b, mj1b);
+
+	free_ui8matrix(std0, mi0b, mi1b, mj0b, mj1b);
+	free_ui8matrix(std1, mi0b, mi1b, mj0b, mj1b);
+
+	free_ui8matrix(img_diff, mi0b, mi1b, mj0b, mj1b);
+	free_ui8matrix(img_bin, mi0b, mi1b, mj0b, mj1b);
 }
 
 
 void main_test_mouvement(int argc, char *argv[])
 {
-	DEBUG(test_SD_dataset());
+	BENCH(test_SD_car(false));
 
-	BENCH(test_SD_dataset());	
+	// BENCH(test_SD_dataset());	
 }
