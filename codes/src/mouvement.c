@@ -160,7 +160,7 @@ void gen_pgm_img(int mi0, int mi1, int mj0, int mj1, int b, uint8** mean0, uint8
 	duplicate_border(mi0, mi1, mj0, mj1, b, image);
 }
 
-void bin_to_pgm(int mi0b, int mi1b, int mj0b, int mj1b, uint8** img_bin, char* filename){
+void bin_to_pgm(int mi0b, int mi1b, int mj0b, int mj1b, uint8** img, char* filename){
 
 	// allocate pgm matrix
 	uint8** pgm_out = ui8matrix(mi0b, mi1b, mj0b, mj1b);
@@ -169,7 +169,7 @@ void bin_to_pgm(int mi0b, int mi1b, int mj0b, int mj1b, uint8** img_bin, char* f
 	{
 		for (int j = mj0b; j <= mj1b; ++j)
 		{
-			if (img_bin[i][j] == 0){
+			if (img[i][j] == 0){
 				pgm_out[i][j] = 255;
 			}
 			else{

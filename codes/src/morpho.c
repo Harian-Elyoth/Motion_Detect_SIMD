@@ -20,7 +20,6 @@
 #include "mymacro.h"
 #include "simd_macro.h"
 
-#include "mouvement.h"
 #include "morpho.h"
 
 
@@ -139,8 +138,8 @@ void morpho_3(uint8 ** X, uint8 ** Y, int mi0, int mj0, int mi1, int mj1){
 
     erosion_3(X, tmp1, mi0, mj0, mi1, mj1);
     dilatation_3(tmp1, tmp2, mi0, mj0, mi1, mj1);
-    erosion_3(tmp2, tmp1, mi0, mj0, mi1, mj1);
-    dilatation_3(tmp1, Y, mi0, mj0, mi1, mj1);
+    dilatation_3(tmp2, tmp1, mi0, mj0, mi1, mj1);
+    erosion_3(tmp1, Y, mi0, mj0, mi1, mj1);
 }
 
 void morpho_5(uint8 ** X, uint8 ** Y, int mi0, int mj0, int mi1, int mj1){
@@ -155,6 +154,6 @@ void morpho_5(uint8 ** X, uint8 ** Y, int mi0, int mj0, int mi1, int mj1){
 
     erosion_5(X, tmp1, mi0, mj0, mi1, mj1);
     dilatation_5(tmp1, tmp2, mi0, mj0, mi1, mj1);
-    erosion_5(tmp2, tmp1, mi0, mj0, mi1, mj1);
-    dilatation_5(tmp1, Y, mi0, mj0, mi1, mj1);
+    dilatation_5(tmp2, tmp1, mi0, mj0, mi1, mj1);
+    erosion_5(tmp1, Y, mi0, mj0, mi1, mj1);
 }

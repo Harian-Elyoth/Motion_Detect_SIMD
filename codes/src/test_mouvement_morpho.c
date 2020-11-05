@@ -4,24 +4,6 @@
 ===============================================================
 */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <string.h>
-
-#include "nrdef.h"
-#include "nrutil.h"
-
-#include "vnrdef.h"
-#include "vnrutil.h"
-
-#include "mutil.h"
-
-#include "mymacro.h"
-#include "simd_macro.h"
-
-#include "mouvement.h"
-#include "morpho.h"
 #include "test_mouvement_morpho.h"
 
 
@@ -50,8 +32,8 @@ void test_mouvement_morpho(){
     b = 1; 
 
     // indices matrices
-	mi0 = 0; mi1 = HEIGHT-1;
-	mj0 = 0; mj1 = WIDTH-1;
+	mi0 = 0; mi1 = HEIGHT - 1;
+	mj0 = 0; mj1 = WIDTH  - 1;
 	
 	// indices matrices avec bord
 	mi0b = mi0-b; mi1b = mi1+b;
