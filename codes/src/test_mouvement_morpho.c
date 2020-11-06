@@ -112,7 +112,7 @@ void test_mouvement_morpho(){
 
 		BENCH(printf("\n\nMorphologie Mathematiques :\n\n"));
 
-		CHRONO(morpho_3(img_bin, img_filtered, mi0, mi1, mj0, mj1),cycles); 
+		CHRONO(morpho_3(img_bin, img_filtered, mi0, mj0, mi1, mj1),cycles); 
 		BENCH(printf("morpho_3 : cpp (cycles/X*Y) = %0.6f", cycles/(WIDTH * HEIGHT))); BENCH(puts(""));
 
 		// built pgm filename out
