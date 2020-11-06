@@ -12,7 +12,7 @@
 
 // Kernel 3x3
 // indice scalaire sans bord
-void erosion_3(uint8 ** X, uint8 ** Y, int mi0, int mj0, int mi1, int mj1){
+void erosion_3(uint8 ** X, uint8 ** Y, int mi0, int mi1, int mj0, int mj1){
 
     uint8 a0, a1, a2;
     uint8 b0, b1, b2;
@@ -34,7 +34,7 @@ void erosion_3(uint8 ** X, uint8 ** Y, int mi0, int mj0, int mi1, int mj1){
 
 // Kernel 5x5
 // indice scalaire sans bord
-void erosion_5(uint8 ** X, uint8 ** Y, int mi0, int mj0, int mi1, int mj1){
+void erosion_5(uint8 ** X, uint8 ** Y, int mi0, int mi1, int mj0, int mj1){
 
     uint8 a0, a1, a2, a3, a4;
     uint8 b0, b1, b2, b3, b4;
@@ -63,7 +63,7 @@ void erosion_5(uint8 ** X, uint8 ** Y, int mi0, int mj0, int mi1, int mj1){
 
 // Kernel 3x3
 // indice scalaire sans bord
-void dilatation_3(uint8 ** X, uint8 ** Y, int mi0, int mj0, int mi1, int mj1){
+void dilatation_3(uint8 ** X, uint8 ** Y, int mi0, int mi1, int mj0, int mj1){
 
     uint8 a0, a1, a2;
     uint8 b0, b1, b2;
@@ -86,7 +86,7 @@ void dilatation_3(uint8 ** X, uint8 ** Y, int mi0, int mj0, int mi1, int mj1){
 
 // Kernel 5x5
 // indice scalaire sans bord
-void dilatation_5(uint8 ** X, uint8 ** Y, int mi0, int mj0, int mi1, int mj1){
+void dilatation_5(uint8 ** X, uint8 ** Y, int mi0, int mi1, int mj0, int mj1){
 
     uint8 a0, a1, a2, a3, a4;
     uint8 b0, b1, b2, b3, b4;
@@ -113,7 +113,7 @@ void dilatation_5(uint8 ** X, uint8 ** Y, int mi0, int mj0, int mi1, int mj1){
     }
 }
 
-void morpho_3(uint8 ** X, uint8 ** Y, int mi0, int mj0, int mi1, int mj1){
+void morpho_3(uint8 ** X, uint8 ** Y, int mi0, int mi1, int mj0, int mj1){
 
     int mi0b = mi0 - 1;
     int  mi1b = mi1 + 1;
@@ -123,13 +123,13 @@ void morpho_3(uint8 ** X, uint8 ** Y, int mi0, int mj0, int mi1, int mj1){
     uint8 ** tmp1 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
     uint8 ** tmp2 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
 
-    erosion_3(X, tmp1, mi0, mj0, mi1, mj1);
-    dilatation_3(tmp1, tmp2, mi0, mj0, mi1, mj1);
-    erosion_3(tmp2, tmp1, mi0, mj0, mi1, mj1);
-    dilatation_3(tmp1, Y, mi0, mj0, mi1, mj1);
+    erosion_3(X, tmp1, mi0, mi1, mj0, mj1);
+    dilatation_3(tmp1, tmp2, mi0, mi1, mj0, mj1);
+    erosion_3(tmp2, tmp1, mi0, mj1, mj0, mj1);
+    dilatation_3(tmp1, Y, mi0, mi1, mj0, mj1);
 }
 
-void morpho_5(uint8 ** X, uint8 ** Y, int mi0, int mj0, int mi1, int mj1){
+void morpho_5(uint8 ** X, uint8 ** Y, int mi0, int mi1, int mj0, int mj1){
     
     int mi0b = mi0 - 2;
     int mi1b = mi1 + 2;
@@ -139,8 +139,8 @@ void morpho_5(uint8 ** X, uint8 ** Y, int mi0, int mj0, int mi1, int mj1){
     uint8 ** tmp1 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
     uint8 ** tmp2 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
 
-    erosion_5(X, tmp1, mi0, mj0, mi1, mj1);
-    dilatation_5(tmp1, tmp2, mi0, mj0, mi1, mj1);
-    erosion_5(tmp2, tmp1, mi0, mj0, mi1, mj1);
-    dilatation_5(tmp1, Y, mi0, mj0, mi1, mj1);
+    erosion_5(X, tmp1, mi0, mi1, mj0, mj1);
+    dilatation_5(tmp1, tmp2, mi0, mi1, mj0, mj1);
+    erosion_5(tmp2, tmp1, mi0, mi1, mj0, mj1);
+    dilatation_5(tmp1, Y, mi0, mi1, mj0, mj1);
 }

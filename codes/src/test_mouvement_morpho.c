@@ -78,7 +78,7 @@ void test_mouvement_morpho(){
 		BENCH(printf("SIGMA DELTA : "));
 		BENCH(printf("it = %d, cycles/X*Y = %0.6f", i, cycles/(WIDTH * HEIGHT))); BENCH(puts(""));
 
-		CHRONO(morpho_3(img_bin, img_filtered),cycles);
+		CHRONO(morpho_3(img_bin, img_filtered, mi0, mj0, mi1, mj1),cycles);
 
 		BENCH(printf("MORPHOLOGIE : "));
 		BENCH(printf("it = %d, cycles/X*Y = %0.6f", i, cycles/(WIDTH * HEIGHT))); BENCH(puts(""));
