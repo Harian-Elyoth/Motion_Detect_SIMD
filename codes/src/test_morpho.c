@@ -6,9 +6,7 @@
 
 // ================= INCLUDES ========================
 
-
 #include "test_morpho.h"
-
 
 // ================= PROGRAM =========================
 
@@ -23,18 +21,17 @@ void test_erosion_3(){
     double cycles;
 
     DEBUG(display_ui8matrix(img_bin_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image binaire : ")); DEBUG(puts(""));
+    
     //On recupère img_bin de mouvement et on applique une erosion_3 dessus
-    CHRONO(erosion_3(img_bin_test, img_filtered_test ,mi0_test, mj0_test, mi1_test, mj1_test), cycles);
+    CHRONO(erosion_3(img_bin_test, img_filtered_test , mi0_test, mi1_test, mj0_test, mj1_test), cycles);
 
     BENCH(printf("cycles = %0.6f", cycles)); BENCH(puts(""));
 
-	BENCH(printf("cycles/X*Y = %0.6f", cycles/(WIDTH*HEIGHT))); BENCH(puts(""));
+	BENCH(printf("cycles/X*Y = %0.6f", cycles/(WIDTH_TEST * HEIGHT_TEST))); BENCH(puts(""));
 
     DEBUG(display_ui8matrix(img_filtered_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image érodée : ")); DEBUG(puts(""));
 
     void free_matrix();
-
-
 }
 
 void test_dilatation_3(){
@@ -48,17 +45,15 @@ void test_dilatation_3(){
 
     DEBUG(display_ui8matrix(img_bin_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image binaire : ")); DEBUG(puts(""));
     //On recupère img_bin de mouvement et on applique une erosion_3 dessus
-    CHRONO(dilatation_3(img_bin_test, img_filtered_test ,mi0_test, mj0_test, mi1_test, mj1_test), cycles);
+    CHRONO(dilatation_3(img_bin_test, img_filtered_test , mi0_test, mi1_test, mj0_test, mj1_test), cycles);
 
     BENCH(printf("cycles = %0.6f", cycles)); BENCH(puts(""));
 
-	BENCH(printf("cycles/X*Y = %0.6f", cycles/(WIDTH*HEIGHT))); BENCH(puts(""));
+	BENCH(printf("cycles/X*Y = %0.6f", cycles/(WIDTH_TEST * HEIGHT_TEST))); BENCH(puts(""));
 
     DEBUG(display_ui8matrix(img_filtered_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image érodée : ")); DEBUG(puts(""));
 
     void free_matrix();
-
-
 }
 
 void test_erosion_5(){
@@ -72,17 +67,15 @@ void test_erosion_5(){
 
     DEBUG(display_ui8matrix(img_bin_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image binaire : ")); DEBUG(puts(""));
     //On recupère img_bin de mouvement et on applique une erosion_3 dessus
-    CHRONO(erosion_5(img_bin_test, img_filtered_test ,mi0_test, mj0_test, mi1_test, mj1_test), cycles);
+    CHRONO(erosion_5(img_bin_test, img_filtered_test , mi0_test, mi1_test, mj0_test, mj1_test), cycles);
 
     BENCH(printf("cycles = %0.6f", cycles)); BENCH(puts(""));
 
-	BENCH(printf("cycles/X*Y = %0.6f", cycles/(WIDTH*HEIGHT))); BENCH(puts(""));
+	BENCH(printf("cycles/X*Y = %0.6f", cycles/(WIDTH_TEST * HEIGHT_TEST))); BENCH(puts(""));
 
     DEBUG(display_ui8matrix(img_filtered_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image érodée : ")); DEBUG(puts(""));
 
     void free_matrix();
-
-
 }
 
 void test_dilatation_5(){
@@ -96,17 +89,15 @@ void test_dilatation_5(){
 
     DEBUG(display_ui8matrix(img_bin_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image binaire : ")); DEBUG(puts(""));
     //On recupère img_bin de mouvement et on applique une erosion_3 dessus
-    CHRONO(dilatation_5(img_bin_test, img_filtered_test ,mi0_test, mj0_test, mi1_test, mj1_test), cycles);
+    CHRONO(dilatation_5(img_bin_test, img_filtered_test , mi0_test, mi1_test, mj0_test, mj1_test), cycles);
 
     BENCH(printf("cycles = %0.6f", cycles)); BENCH(puts(""));
 
-	BENCH(printf("cycles/X*Y = %0.6f", cycles/(WIDTH*HEIGHT))); BENCH(puts(""));
+	BENCH(printf("cycles/X*Y = %0.6f", cycles/(WIDTH_TEST * HEIGHT_TEST))); BENCH(puts(""));
 
     DEBUG(display_ui8matrix(img_filtered_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image érodée : ")); DEBUG(puts(""));
 
     void free_matrix();
-
-
 }
 
 void test_morpho_3(){
@@ -120,11 +111,11 @@ void test_morpho_3(){
 
     DEBUG(display_ui8matrix(img_bin_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image binaire : ")); DEBUG(puts(""));
     //On recupère img_bin de mouvement et on applique une erosion_3 dessus
-    CHRONO(morpho_3(img_bin_test, img_filtered_test ,mi0_test, mj0_test, mi1_test, mj1_test), cycles);
+    CHRONO(morpho_3(img_bin_test, img_filtered_test , mi0_test, mi1_test, mj0_test, mj1_test), cycles);
 
     BENCH(printf("cycles = %0.6f", cycles)); BENCH(puts(""));
 
-	BENCH(printf("cycles/X*Y = %0.6f", cycles/(WIDTH*HEIGHT))); BENCH(puts(""));
+	BENCH(printf("cycles/X*Y = %0.6f", cycles/(WIDTH_TEST * HEIGHT_TEST))); BENCH(puts(""));
 
     DEBUG(display_ui8matrix(img_filtered_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image érodée : ")); DEBUG(puts(""));
 
@@ -141,12 +132,13 @@ void test_morpho_5(){
     double cycles;
 
     DEBUG(display_ui8matrix(img_bin_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image binaire : ")); DEBUG(puts(""));
+
     //On recupère img_bin de mouvement et on applique une erosion_3 dessus
-    CHRONO(morpho_5(img_bin_test, img_filtered_test ,mi0_test, mj0_test, mi1_test, mj1_test), cycles);
+    CHRONO(morpho_5(img_bin_test, img_filtered_test , mi0_test, mi1_test, mj0_test, mj1_test), cycles);
 
     BENCH(printf("cycles = %0.6f", cycles)); BENCH(puts(""));
 
-	BENCH(printf("cycles/X*Y = %0.6f", cycles/(WIDTH*HEIGHT))); BENCH(puts(""));
+	BENCH(printf("cycles/X*Y = %0.6f", cycles/(WIDTH_TEST * HEIGHT_TEST))); BENCH(puts(""));
 
     DEBUG(display_ui8matrix(img_filtered_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image érodée : ")); DEBUG(puts(""));
 
@@ -197,7 +189,6 @@ void gen_img_bin_test(int type, int kernel_size){
             }
         }
     }
-	
 }
 
 void main_test_morpho(int argc, char *argv[])
