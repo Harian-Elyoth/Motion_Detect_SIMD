@@ -52,7 +52,7 @@ void gen_pgm_img_simd(){
    	{
    		for (int j = 0; j < w; ++j)
    		{
-   			image_t[i][j]  = i + j;
+   			image_t[i][j]  = i + j + 1;
    		}
    	}
 
@@ -63,13 +63,14 @@ void gen_pgm_img_simd(){
 void SigmaDelta_step1_simd(int vmi0b, int vmi1b, int vmj0b, int vmj1b, vuint8** mean0, vuint8** mean1, vuint8** image){
 
 	vuint8 x, y, cmp;
+	vuint8 x_sh;	
 
 	for (int i = vmi0b; i <= vmi1b; ++i)
 	{
 		for (int j = vmj0b; j < vmj1b; ++j)
 		{
-			x = VEC_LOAD_2D_EPI(i, j + 0, image)
-			y = VEC_LOAD_2D_EPI(i, j + 1, image)
+			x = VEC_LOAD_2D_EPI(i, j + 0, image);
+			y = VEC_LOAD_2D_EPI(i, j + 1, image);
 
 			DEBUG(display_vuint8(x, " %d ", " x : ")); DEBUG(puts(""));
 			DEBUG(display_vuint8(y, " %d ", " y :  ")); DEBUG(puts(""));
@@ -79,6 +80,13 @@ void SigmaDelta_step1_simd(int vmi0b, int vmi1b, int vmj0b, int vmj1b, vuint8** 
 
 			DEBUG(display_vuint8(cmp, " %d ", " cmp : ")); DEBUG(puts(""));
 			DEBUG(puts(""));
+
+			x_sh = _mm_shuffle_epi8(y, init_vuint8_all(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0)); 
+
+			DEBUG(display_vuint8(x_sh, " %d ", " x_sh : ")); DEBUG(puts(""));
+			DEBUG(puts(""));
+
+			break;
 		}
 	}
 

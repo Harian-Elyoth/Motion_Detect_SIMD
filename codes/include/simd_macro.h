@@ -41,6 +41,18 @@
 
 #define VEC_LOAD_2D_EPI(i, j, X) _mm_load_si128((vuint8 *) &X[i][j])
 
+#define ROT_RIGHT_EPI(x) _mm_shuffle_epi8(x, init_vuint8_all(15, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14)); // abcdefghijklmnop -> pabcdefghijklmno
+
+#define ROT_LEFT_EPI(x)  _mm_shuffle_epi8(x, init_vuint8_all(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0)); // abcdefghijklmnop -> bcdefghijklmnopa
+
+#define SWITCH_1_EPI(x)  _mm_shuffle_epi8(x, init_vuint8_all(1, 0, 3, 2, 5, 4, 7, 6, 9, 8, 11, 10, 13, 12, 15, 14)); // abcdefghijklmnop -> badcfehgjilknmpo
+
+#define SWITCH_2_EPI(x)  _mm_shuffle_epi8(x, init_vuint8_all(2, 3, 0, 1, 6, 7, 4, 5, 10, 11, 8, 9, 14, 15, 12, 13)); // abcdefghijklmnop -> cdabghefklijopmn
+
+#define SWITCH_4_EPI(x)  _mm_shuffle_epi8(x, init_vuint8_all(4, 5, 6, 7, 0, 1, 2, 3, 12, 13, 14, 15, 8, 9, 10, 11)); // abcdefghijklmnop -> efghabcdmnopijkl
+
+#define SWITCH_8_EPI(x)  _mm_shuffle_epi8(x, init_vuint8_all(8, 9, 10, 11, 12, 13, 14, 15, 0, 1, 2, 3, 4, 5, 6, 7)); // abcdefghijklmnop -> ijklmnopabcdefgh
+
 #define VEC_CMPEQ_EPI(x, y) _mm_cmpeq_epi8(x, y) // if x = y => 255 else 0
 #define VEC_CMPGT_EPI(x, y) _mm_cmpgt_epi8(x, y) // if x > y => 255 else 0
 #define VEC_CMPLT_EPI(x, y) _mm_cmplt_epi8(x, y) // if x < y => 255 else 0

@@ -106,20 +106,24 @@ duplicate_border(mi0, mi1, mj0, mj1, b, img_temp);
 DEBUG(printf("After duplicate_vborde : \n")); DEBUG(puts(""));
 DEBUG(display_ui8matrix(img_temp, mi0b, mi1b, mj0b, mj1b, "%d ", "img_temp : ")); DEBUG(puts(""));
 
-// PROBLEME ICI POUR LES INDICE DE BOUCLE
-// PAS DE BORD DROITE ET GAUCHE 
-
 for (int i = vmi0b; i <= vmi1b; ++i)
 {
-	for (int j = vmj0; j <= vmj1; ++j)
+	for (int j = vmj0b; j <= vmj1b; ++j)
 	{
-		image[i][j] = init_vuint8_all(	img_temp[i][(j * card) + 0 ], img_temp[i][(j * card) + 1 ], img_temp[i][(j * card) + 2 ], img_temp[i][(j * card) + 3 ], 
-										img_temp[i][(j * card) + 4 ], img_temp[i][(j * card) + 5 ], img_temp[i][(j * card) + 6 ], img_temp[i][(j * card) + 7 ], 
-										img_temp[i][(j * card) + 8 ], img_temp[i][(j * card) + 9 ], img_temp[i][(j * card) + 10], img_temp[i][(j * card) + 11], 
-										img_temp[i][(j * card) + 12], img_temp[i][(j * card) + 13], img_temp[i][(j * card) + 14], img_temp[i][(j * card) + 15]);
-
-		DEBUG(printf("i =  %d, j = %d \n", i, j));
-		DEBUG(display_vuint8(image[i][j], format, "image[i][j] : "));DEBUG(puts(""));
+		if (j == vmj0b)
+		{
+			image[i][j] = init_vuint8(img_temp[i][j]);
+		}
+		else if (j == vmj1b)
+		{
+			image[i][j] = init_vuint8(img_temp[i][j*card]);
+		}
+		else{
+			image[i][j] = init_vuint8_all(	img_temp[i][(j * card) + 0 ], img_temp[i][(j * card) + 1 ], img_temp[i][(j * card) + 2 ], img_temp[i][(j * card) + 3 ], 
+											img_temp[i][(j * card) + 4 ], img_temp[i][(j * card) + 5 ], img_temp[i][(j * card) + 6 ], img_temp[i][(j * card) + 7 ], 
+											img_temp[i][(j * card) + 8 ], img_temp[i][(j * card) + 9 ], img_temp[i][(j * card) + 10], img_temp[i][(j * card) + 11], 
+											img_temp[i][(j * card) + 12], img_temp[i][(j * card) + 13], img_temp[i][(j * card) + 14], img_temp[i][(j * card) + 15]);
+		}
 	} 
 }
 
