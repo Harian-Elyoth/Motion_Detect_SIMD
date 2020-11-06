@@ -18,8 +18,8 @@
 
 #include "mouvement_SIMD.h"
 #include "test_mouvement.h"
-#include "test_mouvement_morpho.h"
 #include "test_morpho.h"
+#include "test_mouvement_morpho.h"
 
 void info(void)
 {
