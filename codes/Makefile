@@ -6,7 +6,7 @@
 # with a little help of Stephane Piskorski and Joel Falcou
 
 # -- Lile list ----------
-FILE = main.c simd1D.c simd2D.c nrutil.c vnrutil.c mutil.c mouvement.c morpho.c test_mouvement.c test_mouvement_morpho.c
+FILE = main.c simd1D.c simd2D.c nrutil.c vnrutil.c mutil.c mouvement.c morpho.c test_mouvement.c test_mouvement_morpho.c test_morpho.c
 
 # -- Paths ----------
 SRC_PATH = src
