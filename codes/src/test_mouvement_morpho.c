@@ -73,12 +73,18 @@ void test_mouvement_morpho(){
 			}
 		}
 
+		duplicate_border();
+
 		CHRONO(SigmaDelta(),cycles);
 
 		BENCH(printf("SIGMA DELTA : "));
 		BENCH(printf("it = %d, cycles/X*Y = %0.6f", i, cycles/(WIDTH * HEIGHT))); BENCH(puts(""));
 
-		CHRONO(morpho_3(img_bin, img_filtered),cycles);
+		// DEBUG(display_ui8matrix(img_bin, mi0b, mi1b, mj0b, mj1b, format, "img_bin : ")); DEBUG(puts(""));
+
+		CHRONO(morpho_3(img_bin, img_filtered, mi0, mj0, mi1, mj1),cycles);
+
+		// DEBUG(display_ui8matrix(img_filtered, mi0b, mi1b, mj0b, mj1b, format, "img_filtered : ")); DEBUG(puts(""));
 
 		BENCH(printf("MORPHOLOGIE : "));
 		BENCH(printf("it = %d, cycles/X*Y = %0.6f", i, cycles/(WIDTH * HEIGHT))); BENCH(puts(""));

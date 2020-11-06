@@ -208,7 +208,7 @@ void main_test_morpho(int argc, char *argv[])
     //test_erosion_5();
     //test_dilatation_3();
     //test_dilatation_5();
-    //test_morpho_3();
-    test_morpho_5();
+    test_morpho_3();
+    // test_morpho_5();
     
 }

@@ -145,9 +145,9 @@ void load_imgs(){
 void step_1(){
 	// DEBUG(printf("step 1 : Mt estimation \n"));
 
-	for (int i = mi0b; i < mi1b; ++i)
+	for (int i = mi0b; i <= mi1b; ++i)
 	{
-		for (int j = mj0b; j < mj1b; ++j)
+		for (int j = mj0b; j <= mj1b; ++j)
 		{
 			if (mean0[i][j] < image1[i][j]){
 				mean1[i][j] = mean0[i][j] + 1;
@@ -165,9 +165,9 @@ void step_1(){
 void step_2(){
 	// DEBUG(printf("step 2 : Ot computation\n"));
 
-	for (int i = mi0b; i < mi1b; ++i){
+	for (int i = mi0b; i <= mi1b; ++i){
 
-		for (int j = mj0b; j < mj1b; ++j){
+		for (int j = mj0b; j <= mj1b; ++j){
 			img_diff[i][j] = abs(mean1[i][j] - image1[i][j]);
 		}
 	}
@@ -176,9 +176,9 @@ void step_2(){
 void step_3(){
 	// DEBUG(printf("step 3 : Vt update and clamping\n"));
 
-	for (int i = mi0b; i < mi1b; ++i)
+	for (int i = mi0b; i <= mi1b; ++i)
 	{
-		for (int j = mj0b; j < mj1b; ++j)
+		for (int j = mj0b; j <= mj1b; ++j)
 		{
 			if (std0[i][j] < N * img_diff[i][j]){
 				std1[i][j] = std0[i][j] + 1;
@@ -201,9 +201,9 @@ void step_3(){
 void step_4(){
 	// DEBUG(printf("step 4 : Et estimation\n"));
 
-	for (int i = mi0b; i < mi1b; ++i)
+	for (int i = mi0b; i <= mi1b; ++i)
 	{
-		for (int j = mj0b; j < mj1b; ++j)
+		for (int j = mj0b; j <= mj1b; ++j)
 		{
 			if (img_diff[i][j] < std1[i][j]){
 				img_bin[i][j] = 0;

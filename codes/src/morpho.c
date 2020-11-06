@@ -33,8 +33,8 @@ void erosion_3(uint8 ** X, uint8 ** Y, int mi0, int mj0, int mi1, int mj1){
     uint8 c0, c1, c2;
     uint8 s;
 
-    for(int i = mi0 ; i < mi1 ; i++){
-        for(int j = mj0 ; j < mj1 ; j++){
+    for(int i = mi0 ; i <= mi1 ; i++){
+        for(int j = mj0 ; j <= mj1 ; j++){
             //Detection d'un zero sur le kernel autour du IJ
             //Si il y a un zero, dans le kernel alors le Yij prends 0, sinon il prends 1
             a0 = X[i - 1][j - 1]; b0 = X[i - 1][j ]; c0 = X[i - 1][j + 1];
@@ -57,8 +57,8 @@ void erosion_5(uint8 ** X, uint8 ** Y, int mi0, int mj0, int mi1, int mj1){
     uint8 e0, e1, e2, e3, e4;
     uint8 s;
 
-    for(int i = mi0 ; i < mi1 ; i++){
-        for(int j = mj0 ; j < mj1 ; j++){
+    for(int i = mi0 ; i <= mi1 ; i++){
+        for(int j = mj0 ; j <= mj1 ; j++){
 
             a0 = X[i - 2][j - 2] ; b0 = X[i - 2][j - 1] ; c0 = X[i - 2][j ] ; d0 = X[i - 2][j + 1]; e0 = X[i - 2][j + 2];
             a1 = X[i - 1][j - 2]; b1 = X[i - 1][j - 1]; c1 = X[i - 1][j ]; d1 = X[i - 1][j + 1]; e1 = X[i - 1][j + 2];
@@ -84,8 +84,8 @@ void dilatation_3(uint8 ** X, uint8 ** Y, int mi0, int mj0, int mi1, int mj1){
     uint8 c0, c1, c2;
     uint8 s;
 
-    for(int i = mi0 ; i < mi1 ; i++){
-        for(int j = mj0 ; j < mj1 ; j++){
+    for(int i = mi0 ; i <= mi1 ; i++){
+        for(int j = mj0 ; j <= mj1 ; j++){
             
             //Detection d'un zero sur le kernel autour du IJ
             //Si il y a un zero, dans le kernel alors le Yij prends 0, sinon il prends 1
@@ -109,8 +109,8 @@ void dilatation_5(uint8 ** X, uint8 ** Y, int mi0, int mj0, int mi1, int mj1){
     uint8 e0, e1, e2, e3, e4;
     uint8 s;
 
-    for(int i = mi0 ; i < mi1 ; i++){
-        for(int j = mj0 ; j < mj1 ; j++){
+    for(int i = mi0 ; i <= mi1 ; i++){
+        for(int j = mj0 ; j <= mj1 ; j++){
 
             a0 = X[i - 2][j - 2] ; b0 = X[i - 2][j - 1] ; c0 = X[i - 2][j ] ; d0 = X[i - 2][j + 1]; e0 = X[i - 2][j + 2];
             a1 = X[i - 1][j - 2]; b1 = X[i - 1][j - 1]; c1 = X[i - 1][j ]; d1 = X[i - 1][j + 1]; e1 = X[i - 1][j + 2];
@@ -129,30 +129,34 @@ void dilatation_5(uint8 ** X, uint8 ** Y, int mi0, int mj0, int mi1, int mj1){
 
 void morpho_3(uint8 ** X, uint8 ** Y, int mi0, int mj0, int mi1, int mj1){
 
-    //A REVOIR
-    mi0b = mi0 - 1; mi1b = mi1 + 1;
-	mj0b = mj0 - 1; mj1b = mj1 + 1;
+    int mi0b = mi0 - 1; int mi1b = mi1 + 1;
+	int mj0b = mj0 - 1; int mj1b = mj1 + 1;
 
     uint8 ** tmp1 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
     uint8 ** tmp2 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
 
     erosion_3(X, tmp1, mi0, mj0, mi1, mj1);
     dilatation_3(tmp1, tmp2, mi0, mj0, mi1, mj1);
-    erosion_3(tmp2, tmp1, mi0, mj0, mi1, mj1);
-    dilatation_3(tmp1, Y, mi0, mj0, mi1, mj1);
+    dilatation_3(tmp2, tmp1, mi0, mj0, mi1, mj1);
+    erosion_3(tmp1, Y, mi0, mj0, mi1, mj1);
+
+    free_ui8matrix(tmp1, mi0b, mi1b, mj0b, mj1b);
+    free_ui8matrix(tmp2, mi0b, mi1b, mj0b, mj1b);
 }
 
 void morpho_5(uint8 ** X, uint8 ** Y, int mi0, int mj0, int mi1, int mj1){
     
-    //A REVOIR
-    mi0b = mi0 - 2; mi1b = mi1 + 2;
-	mj0b = mj0 - 2; mj1b = mj1 + 2;
+    int mi0b = mi0 - 2; int mi1b = mi1 + 2;
+	int mj0b = mj0 - 2; int mj1b = mj1 + 2;
 
     uint8 ** tmp1 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
     uint8 ** tmp2 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
 
     erosion_5(X, tmp1, mi0, mj0, mi1, mj1);
     dilatation_5(tmp1, tmp2, mi0, mj0, mi1, mj1);
-    erosion_5(tmp2, tmp1, mi0, mj0, mi1, mj1);
-    dilatation_5(tmp1, Y, mi0, mj0, mi1, mj1);
+    dilatation_5(tmp2, tmp1, mi0, mj0, mi1, mj1);
+    erosion_5(tmp1, Y, mi0, mj0, mi1, mj1);
+
+    free_ui8matrix(tmp1, mi0b, mi1b, mj0b, mj1b);
+    free_ui8matrix(tmp2, mi0b, mi1b, mj0b, mj1b);
 }
