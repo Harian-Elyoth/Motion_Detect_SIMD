@@ -10,14 +10,27 @@
 extern "C" {
 #endif
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <string.h>
 
-void allocate_vmatrix();
-void free_vmatrix();
+#include "nrdef.h"
+#include "nrutil.h"
+
+#include "vnrdef.h"
+#include "vnrutil.h"
+
+#include "mutil.h"
+
+#include "mymacro.h"
+#include "simd_macro.h"
+
+
 void duplicate_vborder();
 void gen_pgm_img_simd();
 
-void load_img_to_matrix(char *filename0, char *filename1);
-
+void SigmaDelta_step1_simd(int vmi0b, int vmi1b, int vmj0b, int vmj1b, vuint8** mean0, vuint8** mean1, vuint8** image);
 
 // fonction principale     
 void main_mouvement_simd(int argc, char *argv[]);
