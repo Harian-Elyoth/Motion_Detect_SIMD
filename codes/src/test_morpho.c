@@ -13,6 +13,7 @@
 // ================= PROGRAM =========================
 
 void test_erosion_3(){
+    DEBUG(printf("\n===========================  TEST EROSION 3 =================================\n"));
     gen_img_bin_test(1, 3);
 
     int iter, niter = 4;
@@ -38,6 +39,7 @@ void test_erosion_3(){
 }
 
 void test_dilatation_3(){
+    DEBUG(printf("\n===========================  TEST DILATATION 3 =================================\n"));
     gen_img_bin_test(0, 3);
     int iter, niter = 4;
     int run, nrun = 5;
@@ -54,7 +56,7 @@ void test_dilatation_3(){
 
 	BENCH(printf("cycles/X*Y = %0.6f", cycles/(WIDTH*HEIGHT))); BENCH(puts(""));
 
-    DEBUG(display_ui8matrix(img_filtered_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image érodée : ")); DEBUG(puts(""));
+    DEBUG(display_ui8matrix(img_filtered_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image dilatée : ")); DEBUG(puts(""));
 
     void free_matrix();
 
@@ -62,6 +64,7 @@ void test_dilatation_3(){
 }
 
 void test_erosion_5(){
+    DEBUG(printf("\n===========================  TEST EROSION 5 =================================\n"));
     gen_img_bin_test(1, 5);
     int iter, niter = 4;
     int run, nrun = 5;
@@ -86,6 +89,7 @@ void test_erosion_5(){
 }
 
 void test_dilatation_5(){
+    DEBUG(printf("\n===========================  TEST DILATATION 5 =================================\n"));
     gen_img_bin_test(0, 5);
     int iter, niter = 4;
     int run, nrun = 5;
@@ -102,7 +106,7 @@ void test_dilatation_5(){
 
 	BENCH(printf("cycles/X*Y = %0.6f", cycles/(WIDTH*HEIGHT))); BENCH(puts(""));
 
-    DEBUG(display_ui8matrix(img_filtered_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image érodée : ")); DEBUG(puts(""));
+    DEBUG(display_ui8matrix(img_filtered_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image dilatée : ")); DEBUG(puts(""));
 
     void free_matrix();
 
@@ -110,6 +114,7 @@ void test_dilatation_5(){
 }
 
 void test_morpho_3(){
+    DEBUG(printf("\n===========================  TEST MORPHO 3 =================================\n"));
     gen_img_bin_test(1, 3);
     int iter, niter = 4;
     int run, nrun = 5;
@@ -126,12 +131,13 @@ void test_morpho_3(){
 
 	BENCH(printf("cycles/X*Y = %0.6f", cycles/(WIDTH*HEIGHT))); BENCH(puts(""));
 
-    DEBUG(display_ui8matrix(img_filtered_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image érodée : ")); DEBUG(puts(""));
+    DEBUG(display_ui8matrix(img_filtered_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image transformée : ")); DEBUG(puts(""));
 
     void free_matrix();
 }
 
 void test_morpho_5(){
+    DEBUG(printf("\n===========================  TEST MORPHO 5 =================================\n"));
     gen_img_bin_test(1, 5);
     int iter, niter = 4;
     int run, nrun = 5;
@@ -148,7 +154,7 @@ void test_morpho_5(){
 
 	BENCH(printf("cycles/X*Y = %0.6f", cycles/(WIDTH*HEIGHT))); BENCH(puts(""));
 
-    DEBUG(display_ui8matrix(img_filtered_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image érodée : ")); DEBUG(puts(""));
+    DEBUG(display_ui8matrix(img_filtered_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image transformée : ")); DEBUG(puts(""));
 
     void free_matrix();
 }

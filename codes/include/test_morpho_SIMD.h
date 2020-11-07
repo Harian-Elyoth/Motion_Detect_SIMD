@@ -16,6 +16,7 @@ extern "C" {
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <time.h>
 
 #include "nrdef.h"
 #include "nrutil.h"
@@ -31,14 +32,26 @@ extern "C" {
 
 #define load_uint8(vX, i, j) _mm_load_si128((vuint8 *) &vX[i][j])
 
-void test_erosion_3_SIMD(vuint8 **X, vuint8 **Y, int mi0, int mj0, int mi1, int mj1);
-void test_erosion_5_SIMD(vuint8 **X, vuint8 **Y, int mi0, int mj0, int mi1, int mj1);
+#define HEIGHT_TEST 24
+#define WIDTH_TEST 32
 
-void test_dilatation_3_SIMD(vuint8 **X, vuint8 **Y, int mi0, int mj0, int mi1, int mj1);
-void test_dilatation_5_SIMD(vuint8 **X, vuint8 **Y, int mi0, int mj0, int mi1, int mj1);
+int b_test;
 
-void test_morpho_3_SIMD(vuint8 **X, vuint8 **Y, int mi0, int mj0, int mi1, int mj1);
-void test_morpho_5_SIMD(vuint8 **X, vuint8 **Y, int mi0, int mj0, int mi1, int mj1);
+vuint8 ** vimg_bin_test;
+vuint8 ** vimg_filtered_test;
+
+int vmi0_test, vmi1_test, vmj0_test, vmj1_test; 	// indices scalaire
+int vmi0b_test, vmi1b_test, vmj0b_test, vmj1b_test; // indices scalaires avec bord
+
+
+void test_erosion_3_SIMD();
+void test_erosion_5_SIMD();
+void test_dilatation_3_SIMD();
+void test_dilatation_5_SIMD();
+void test_morpho_3_SIMD();
+void test_morpho_5_SIMD();
+
+void gen_vimg_bin_test_SIMD(int type, int kernel_size);
 
 void main_test_morpho_SIMD(int arg, char * argv[]);
 
