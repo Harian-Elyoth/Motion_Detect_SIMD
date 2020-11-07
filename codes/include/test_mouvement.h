@@ -28,8 +28,8 @@
 extern "C" {
 #endif
 
-void test_SD(bool is_visual);
-void test_SD_dataset();
+void test_mouvement_car(bool is_visual);
+void test_mouvement_dataset();
 
 // fonction principale     
 void main_test_mouvement(int argc, char *argv[]);

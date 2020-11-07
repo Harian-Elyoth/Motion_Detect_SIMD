@@ -29,7 +29,9 @@
 extern "C" {
 #endif
 
-void test_mouvement_SIMD_visual();
+void test_mouvement_SIMD_car(bool is_visual);
+
+void test_mouvement_SIMD_dataset();
 
 // fonction principale     
 void main_test_mouvement_SIMD(int argc, char *argv[]);
