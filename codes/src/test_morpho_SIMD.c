@@ -20,15 +20,15 @@ void test_erosion_3_SIMD(){
 	char * format = "%d ";
     double cycles;
 
-    DEBUG(display_vui8matrix(vimg_bin_test, vmi0b_test, vmi1b_test, vmj0b_test, vmj1b_test, format, "image binaire : ")); DEBUG(puts(""));
+    DEBUG(display_vui8matrix(vimg_bin_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "image binaire : ")); DEBUG(puts(""));
     //On recupère vimg_bin de mouvement et on applique une erosion_3 dessus
-    CHRONO(erosion_3_SIMD(vimg_bin_test, vimg_filtered_test , vmi0_test, vmj0_test, vmi1_test, vmj1_test), cycles);
+    CHRONO(erosion_3_SIMD(vimg_bin_test, vimg_filtered_test , vmi0_test, vmi1_test, vmj0_test, vmj1_test), cycles);
 
     BENCH(printf("cycles = %0.6f", cycles)); BENCH(puts(""));
 
 	BENCH(printf("cycles/X*Y = %0.6f", cycles/(WIDTH*HEIGHT))); BENCH(puts(""));
 
-    DEBUG(display_vui8matrix(vimg_filtered_test, vmi0b_test, vmi1b_test, vmj0b_test, vmj1b_test, format, "image érodée : ")); DEBUG(puts(""));
+    DEBUG(display_vui8matrix(vimg_filtered_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "image érodée : ")); DEBUG(puts(""));
 
     void free_vmatrix();
 }
@@ -44,15 +44,15 @@ void test_erosion_5_SIMD(){
 	char * format = "%d ";
     double cycles;
 
-    DEBUG(display_vui8matrix(vimg_bin_test, vmi0b_test, vmi1b_test, vmj0b_test, vmj1b_test, format, "image binaire : ")); DEBUG(puts(""));
+    DEBUG(display_vui8matrix(vimg_bin_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "image binaire : ")); DEBUG(puts(""));
     //On recupère vimg_bin de mouvement et on applique une erosion_3 dessus
-    CHRONO(erosion_5_SIMD(vimg_bin_test, vimg_filtered_test , vmi0_test, vmj0_test, vmi1_test, vmj1_test), cycles);
+    CHRONO(erosion_5_SIMD(vimg_bin_test, vimg_filtered_test , vmi0_test, vmi1_test, vmj0_test, vmj1_test), cycles);
 
     BENCH(printf("cycles = %0.6f", cycles)); BENCH(puts(""));
 
 	BENCH(printf("cycles/X*Y = %0.6f", cycles/(WIDTH*HEIGHT))); BENCH(puts(""));
 
-    DEBUG(display_vui8matrix(vimg_filtered_test, vmi0b_test, vmi1b_test, vmj0b_test, vmj1b_test, format, "image érodée : ")); DEBUG(puts(""));
+    DEBUG(display_vui8matrix(vimg_filtered_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "image érodée : ")); DEBUG(puts(""));
 
     void free_vmatrix();
 }
@@ -68,15 +68,15 @@ void test_dilatation_3_SIMD(){
 	char * format = "%d ";
     double cycles;
 
-    DEBUG(display_vui8matrix(vimg_bin_test, vmi0b_test, vmi1b_test, vmj0b_test, vmj1b_test, format, "image binaire : ")); DEBUG(puts(""));
+    DEBUG(display_vui8matrix(vimg_bin_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "image binaire : ")); DEBUG(puts(""));
     //On recupère vimg_bin de mouvement et on applique une erosion_3 dessus
-    CHRONO(dilatation_3_SIMD(vimg_bin_test, vimg_filtered_test , vmi0_test, vmj0_test, vmi1_test, vmj1_test), cycles);
+    CHRONO(dilatation_3_SIMD(vimg_bin_test, vimg_filtered_test , vmi0_test, vmi1_test, vmj0_test, vmj1_test), cycles);
 
     BENCH(printf("cycles = %0.6f", cycles)); BENCH(puts(""));
 
 	BENCH(printf("cycles/X*Y = %0.6f", cycles/(WIDTH*HEIGHT))); BENCH(puts(""));
 
-    DEBUG(display_vui8matrix(vimg_filtered_test, vmi0b_test, vmi1b_test, vmj0b_test, vmj1b_test, format, "image dilatée : ")); DEBUG(puts(""));
+    DEBUG(display_vui8matrix(vimg_filtered_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "image dilatée : ")); DEBUG(puts(""));
 
     void free_vmatrix();
 }
@@ -92,15 +92,15 @@ void test_dilatation_5_SIMD(){
 	char * format = "%d ";
     double cycles;
 
-    DEBUG(display_vui8matrix(vimg_bin_test, vmi0b_test, vmi1b_test, vmj0b_test, vmj1b_test, format, "image binaire : ")); DEBUG(puts(""));
+    DEBUG(display_vui8matrix(vimg_bin_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "image binaire : ")); DEBUG(puts(""));
     //On recupère vimg_bin de mouvement et on applique une erosion_3 dessus
-    CHRONO(dilatation_5_SIMD(vimg_bin_test, vimg_filtered_test , vmi0_test, vmj0_test, vmi1_test, vmj1_test), cycles);
+    CHRONO(dilatation_5_SIMD(vimg_bin_test, vimg_filtered_test , vmi0_test, vmi1_test, vmj0_test, vmj1_test), cycles);
 
     BENCH(printf("cycles = %0.6f", cycles)); BENCH(puts(""));
 
 	BENCH(printf("cycles/X*Y = %0.6f", cycles/(WIDTH*HEIGHT))); BENCH(puts(""));
 
-    DEBUG(display_vui8matrix(vimg_filtered_test, vmi0b_test, vmi1b_test, vmj0b_test, vmj1b_test, format, "image dilatée : ")); DEBUG(puts(""));
+    DEBUG(display_vui8matrix(vimg_filtered_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "image dilatée : ")); DEBUG(puts(""));
 
     void free_vmatrix();
 }
@@ -116,15 +116,15 @@ void test_morpho_3_SIMD(){
 	char * format = "%d ";
     double cycles;
 
-    DEBUG(display_vui8matrix(vimg_bin_test, vmi0b_test, vmi1b_test, vmj0b_test, vmj1b_test, format, "image binaire : ")); DEBUG(puts(""));
+    DEBUG(display_vui8matrix(vimg_bin_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "image binaire : ")); DEBUG(puts(""));
     //On recupère vimg_bin de mouvement et on applique une erosion_3 dessus
-    CHRONO(morpho_3_SIMD(vimg_bin_test, vimg_filtered_test , vmi0_test, vmj0_test, vmi1_test, vmj1_test), cycles);
+    CHRONO(morpho_3_SIMD(vimg_bin_test, vimg_filtered_test , vmi0_test, vmi1_test, vmj0_test, vmj1_test), cycles);
 
     BENCH(printf("cycles = %0.6f", cycles)); BENCH(puts(""));
 
 	BENCH(printf("cycles/X*Y = %0.6f", cycles/(WIDTH*HEIGHT))); BENCH(puts(""));
 
-    DEBUG(display_vui8matrix(vimg_filtered_test, vmi0b_test, vmi1b_test, vmj0b_test, vmj1b_test, format, "image transformée : ")); DEBUG(puts(""));
+    DEBUG(display_vui8matrix(vimg_filtered_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "image transformée : ")); DEBUG(puts(""));
 
     void free_vmatrix();
 }
@@ -141,15 +141,15 @@ void test_morpho_5_SIMD(){
 	char * format = "%d ";
     double cycles;
 
-    DEBUG(display_vui8matrix(vimg_bin_test, vmi0b_test, vmi1b_test, vmj0b_test, vmj1b_test, format, "image binaire : ")); DEBUG(puts(""));
+    DEBUG(display_vui8matrix(vimg_bin_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "image binaire : ")); DEBUG(puts(""));
     //On recupère vimg_bin de mouvement et on applique une erosion_3 dessus
-    CHRONO(morpho_5_SIMD(vimg_bin_test, vimg_filtered_test , vmi0_test, vmj0_test, vmi1_test, vmj1_test), cycles);
+    CHRONO(morpho_5_SIMD(vimg_bin_test, vimg_filtered_test , vmi0_test, vmi1_test, vmj0_test, vmj1_test), cycles);
 
     BENCH(printf("cycles = %0.6f", cycles)); BENCH(puts(""));
 
 	BENCH(printf("cycles/X*Y = %0.6f", cycles/(WIDTH*HEIGHT))); BENCH(puts(""));
 
-    DEBUG(display_vui8matrix(vimg_filtered_test, vmi0b_test, vmi1b_test, vmj0b_test, vmj1b_test, format, "image transformée : ")); DEBUG(puts(""));
+    DEBUG(display_vui8matrix(vimg_filtered_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "image transformée : ")); DEBUG(puts(""));
 
     void free_vmatrix();
 }
@@ -158,10 +158,10 @@ void gen_vimg_bin_test_SIMD(int type, int kernel_size){
     
     int seuil;
     if(type){
-       seuil = 80; 
+       seuil = 95; 
     }
     else {
-        seuil = 20;
+        seuil = 5;
     }
     if(kernel_size == 3){
         b_test = 1;
@@ -179,7 +179,7 @@ void gen_vimg_bin_test_SIMD(int type, int kernel_size){
 	
 	// indices matrices avec bord
 	vmi0b_test = vmi0_test-b_test; vmi1b_test = vmi1_test+b_test;
-	vmj0b_test = vmj0_test-b_test; vmj1b_test = vmj1_test+b_test;
+	vmj0b_test = vmj0_test-b_test + 1; vmj1b_test = vmj1_test+b_test - 1;
 
     vimg_bin_test = vui8matrix(vmi0b_test, vmi1b_test, vmj0b_test, vmj1b_test);
 

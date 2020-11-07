@@ -25,7 +25,7 @@ void test_erosion_3(){
 
     DEBUG(display_ui8matrix(img_bin_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image binaire : ")); DEBUG(puts(""));
     //On recupère img_bin de mouvement et on applique une erosion_3 dessus
-    CHRONO(erosion_3(img_bin_test, img_filtered_test ,mi0_test, mj0_test, mi1_test, mj1_test), cycles);
+    CHRONO(erosion_3(img_bin_test, img_filtered_test ,mi0_test, mi1_test, mj0_test, mj1_test), cycles);
 
     BENCH(printf("cycles = %0.6f", cycles)); BENCH(puts(""));
 
@@ -50,7 +50,7 @@ void test_dilatation_3(){
 
     DEBUG(display_ui8matrix(img_bin_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image binaire : ")); DEBUG(puts(""));
     //On recupère img_bin de mouvement et on applique une erosion_3 dessus
-    CHRONO(dilatation_3(img_bin_test, img_filtered_test ,mi0_test, mj0_test, mi1_test, mj1_test), cycles);
+    CHRONO(dilatation_3(img_bin_test, img_filtered_test ,mi0_test, mi1_test, mj0_test, mj1_test), cycles);
 
     BENCH(printf("cycles = %0.6f", cycles)); BENCH(puts(""));
 
@@ -75,7 +75,7 @@ void test_erosion_5(){
 
     DEBUG(display_ui8matrix(img_bin_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image binaire : ")); DEBUG(puts(""));
     //On recupère img_bin de mouvement et on applique une erosion_3 dessus
-    CHRONO(erosion_5(img_bin_test, img_filtered_test ,mi0_test, mj0_test, mi1_test, mj1_test), cycles);
+    CHRONO(erosion_5(img_bin_test, img_filtered_test ,mi0_test, mi1_test, mj0_test, mj1_test), cycles);
 
     BENCH(printf("cycles = %0.6f", cycles)); BENCH(puts(""));
 
@@ -100,7 +100,7 @@ void test_dilatation_5(){
 
     DEBUG(display_ui8matrix(img_bin_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image binaire : ")); DEBUG(puts(""));
     //On recupère img_bin de mouvement et on applique une erosion_3 dessus
-    CHRONO(dilatation_5(img_bin_test, img_filtered_test ,mi0_test, mj0_test, mi1_test, mj1_test), cycles);
+    CHRONO(dilatation_5(img_bin_test, img_filtered_test ,mi0_test, mi1_test, mj0_test, mj1_test), cycles);
 
     BENCH(printf("cycles = %0.6f", cycles)); BENCH(puts(""));
 
@@ -125,7 +125,7 @@ void test_morpho_3(){
 
     DEBUG(display_ui8matrix(img_bin_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image binaire : ")); DEBUG(puts(""));
     //On recupère img_bin de mouvement et on applique une erosion_3 dessus
-    CHRONO(morpho_3(img_bin_test, img_filtered_test ,mi0_test, mj0_test, mi1_test, mj1_test), cycles);
+    CHRONO(morpho_3(img_bin_test, img_filtered_test ,mi0_test, mi1_test, mj0_test, mj1_test), cycles);
 
     BENCH(printf("cycles = %0.6f", cycles)); BENCH(puts(""));
 
@@ -148,7 +148,7 @@ void test_morpho_5(){
 
     DEBUG(display_ui8matrix(img_bin_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image binaire : ")); DEBUG(puts(""));
     //On recupère img_bin de mouvement et on applique une erosion_3 dessus
-    CHRONO(morpho_5(img_bin_test, img_filtered_test ,mi0_test, mj0_test, mi1_test, mj1_test), cycles);
+    CHRONO(morpho_5(img_bin_test, img_filtered_test ,mi0_test, mi1_test, mj0_test, mj1_test), cycles);
 
     BENCH(printf("cycles = %0.6f", cycles)); BENCH(puts(""));
 
