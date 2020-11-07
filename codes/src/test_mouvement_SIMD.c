@@ -131,6 +131,16 @@ DEBUG(printf("After conversion : \n"));DEBUG(puts(""));
 
 DEBUG(display_vui8matrix(image, vmi0b, vmi1b, vmj0b, vmj1b, "%d ", "image : ")); DEBUG(puts(""));
 
+// initiate mean0 et std0 for first iteration
+for (int i = vmi0b; i <= vmi1b; ++i)
+{
+	for (int j = vmj0b; j <= vmj1b; ++j)
+	{
+		mean0[i][j] = image[i][j];
+		std0[i][j]  = init_vuint8(VMIN);
+	}
+}
+
 /*---------------------------------------------------*/
 
 // ----------------- //
