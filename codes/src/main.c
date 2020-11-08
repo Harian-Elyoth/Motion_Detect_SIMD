@@ -35,10 +35,18 @@ void info(void)
 int main(int argc, char *argv[])
 {
     info();
-    
+
+    // main_test_mouvement(argc,argv);
+
+    main_bench_mouvement(argc, argv);
+
+    // main_test_morpho(argc, argv);
+
     // main_test_mouvement_morpho(argc, argv);
-    main_test_morpho_SIMD(argc, argv);
-    //main_mouvement_simd(argc, argv);
+
+    // main_test_mouvement_SIMD(argc, argv);
+
+    main_bench_mouvement_SIMD(argc, argv);
 
     return 0;   
 }
