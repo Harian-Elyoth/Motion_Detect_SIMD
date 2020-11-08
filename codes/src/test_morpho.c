@@ -14,21 +14,12 @@ void test_erosion_3(){
     DEBUG(printf("\n===========================  TEST EROSION 3 =================================\n"));
     gen_img_bin_test(1, 3);
 
-    int iter, niter = 4;
-    int run, nrun = 5;
-    double t0, t1, dt, tmin, t;
-
 	char * format = "%d ";
-    double cycles;
 
     DEBUG(display_ui8matrix(img_bin_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image binaire : ")); DEBUG(puts(""));
     
     //On recupère img_bin de mouvement et on applique une erosion_3 dessus
-    CHRONO(erosion_3(img_bin_test, img_filtered_test , mi0_test, mi1_test, mj0_test, mj1_test), cycles);
-
-    BENCH(printf("cycles = %0.6f", cycles)); BENCH(puts(""));
-
-	BENCH(printf("cycles/X*Y = %0.6f", cycles/(WIDTH_TEST * HEIGHT_TEST))); BENCH(puts(""));
+    erosion_3(img_bin_test, img_filtered_test , mi0_test, mi1_test, mj0_test, mj1_test);
 
     DEBUG(display_ui8matrix(img_filtered_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image érodée : ")); DEBUG(puts(""));
 
@@ -38,21 +29,12 @@ void test_erosion_3(){
 void test_dilatation_3(){
     DEBUG(printf("\n===========================  TEST DILATATION 3 =================================\n"));
     gen_img_bin_test(0, 3);
-    int iter, niter = 4;
-    int run, nrun = 5;
-    double t0, t1, dt, tmin, t;
 
 	char * format = "%d ";
-    double cycles;
 
     DEBUG(display_ui8matrix(img_bin_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image binaire : ")); DEBUG(puts(""));
-
     //On recupère img_bin de mouvement et on applique une erosion_3 dessus
-    CHRONO(dilatation_3(img_bin_test, img_filtered_test , mi0_test, mi1_test, mj0_test, mj1_test), cycles);
-
-    BENCH(printf("cycles = %0.6f", cycles)); BENCH(puts(""));
-
-	BENCH(printf("cycles/X*Y = %0.6f", cycles/(WIDTH_TEST * HEIGHT_TEST))); BENCH(puts(""));
+    dilatation_3(img_bin_test, img_filtered_test , mi0_test, mi1_test, mj0_test, mj1_test);
 
     DEBUG(display_ui8matrix(img_filtered_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image dilatée : ")); DEBUG(puts(""));
 
@@ -62,21 +44,12 @@ void test_dilatation_3(){
 void test_erosion_5(){
     DEBUG(printf("\n===========================  TEST EROSION 5 =================================\n"));
     gen_img_bin_test(1, 5);
-    int iter, niter = 4;
-    int run, nrun = 5;
-    double t0, t1, dt, tmin, t;
 
 	char * format = "%d ";
-    double cycles;
 
     DEBUG(display_ui8matrix(img_bin_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image binaire : ")); DEBUG(puts(""));
-
     //On recupère img_bin de mouvement et on applique une erosion_3 dessus
-    CHRONO(erosion_5(img_bin_test, img_filtered_test, mi0_test, mi1_test, mj0_test, mj1_test), cycles);
-
-    BENCH(printf("cycles = %0.6f", cycles)); BENCH(puts(""));
-
-	BENCH(printf("cycles/X*Y = %0.6f", cycles/(WIDTH_TEST * HEIGHT_TEST))); BENCH(puts(""));
+    erosion_5(img_bin_test, img_filtered_test, mi0_test, mi1_test, mj0_test, mj1_test);
 
     DEBUG(display_ui8matrix(img_filtered_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image érodée : ")); DEBUG(puts(""));
 
@@ -86,21 +59,13 @@ void test_erosion_5(){
 void test_dilatation_5(){
     DEBUG(printf("\n===========================  TEST DILATATION 5 =================================\n"));
     gen_img_bin_test(0, 5);
-    int iter, niter = 4;
-    int run, nrun = 5;
-    double t0, t1, dt, tmin, t;
 
 	char * format = "%d ";
-    double cycles;
 
     DEBUG(display_ui8matrix(img_bin_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image binaire : ")); DEBUG(puts(""));
     
     //On recupère img_bin de mouvement et on applique une erosion_3 dessus
-    CHRONO(dilatation_5(img_bin_test, img_filtered_test, mi0_test, mi1_test, mj0_test, mj1_test), cycles);
-
-    BENCH(printf("cycles = %0.6f", cycles)); BENCH(puts(""));
-
-	BENCH(printf("cycles/X*Y = %0.6f", cycles/(WIDTH_TEST * HEIGHT_TEST))); BENCH(puts(""));
+    dilatation_5(img_bin_test, img_filtered_test, mi0_test, mi1_test, mj0_test, mj1_test);
 
     DEBUG(display_ui8matrix(img_filtered_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image dilatée : ")); DEBUG(puts(""));
 
@@ -110,21 +75,12 @@ void test_dilatation_5(){
 void test_morpho_3(){
     DEBUG(printf("\n===========================  TEST MORPHO 3 =================================\n"));
     gen_img_bin_test(1, 3);
-    int iter, niter = 4;
-    int run, nrun = 5;
-    double t0, t1, dt, tmin, t;
 
 	char * format = "%d ";
-    double cycles;
 
     DEBUG(display_ui8matrix(img_bin_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image binaire : ")); DEBUG(puts(""));
-    
     //On recupère img_bin de mouvement et on applique une erosion_3 dessus
-    CHRONO(morpho_3(img_bin_test, img_filtered_test, mi0_test, mi1_test, mj0_test, mj1_test), cycles);
-
-    BENCH(printf("cycles = %0.6f", cycles)); BENCH(puts(""));
-
-	BENCH(printf("cycles/X*Y = %0.6f", cycles/(WIDTH_TEST * HEIGHT_TEST))); BENCH(puts(""));
+    morpho_3(img_bin_test, img_filtered_test, mi0_test, mi1_test, mj0_test, mj1_test);
 
     DEBUG(display_ui8matrix(img_filtered_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image transformée : ")); DEBUG(puts(""));
 
@@ -134,21 +90,14 @@ void test_morpho_3(){
 void test_morpho_5(){
     DEBUG(printf("\n===========================  TEST MORPHO 5 =================================\n"));
     gen_img_bin_test(1, 5);
-    int iter, niter = 4;
-    int run, nrun = 5;
-    double t0, t1, dt, tmin, t;
 
 	char * format = "%d ";
-    double cycles;
 
     DEBUG(display_ui8matrix(img_bin_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image binaire : ")); DEBUG(puts(""));
 
     //On recupère img_bin de mouvement et on applique une erosion_3 dessus
-    CHRONO(morpho_5(img_bin_test, img_filtered_test, mi0_test, mi1_test, mj0_test, mj1_test), cycles);
+    morpho_5(img_bin_test, img_filtered_test, mi0_test, mi1_test, mj0_test, mj1_test);
 
-    BENCH(printf("cycles = %0.6f", cycles)); BENCH(puts(""));
-
-	BENCH(printf("cycles/X*Y = %0.6f", cycles/(WIDTH_TEST * HEIGHT_TEST))); BENCH(puts(""));
 
     DEBUG(display_ui8matrix(img_filtered_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image transformée : ")); DEBUG(puts(""));
 
