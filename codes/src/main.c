@@ -13,8 +13,6 @@
 
 #include "mutil.h"
 
-#include "simd1D.h"
-#include "simd2D.h"
 
 #include "mouvement_SIMD.h"
 #include "test_mouvement.h"

@@ -15,7 +15,7 @@
 
 #include "mymacro.h"
 #include "simd_macro.h"
-
+#include "simd1D.h"
 // -------------------------------------------------------------------
 void add_vf32vector(vfloat32 *vX1, vfloat32 *vX2, int n, vfloat32 *vY)
 // -------------------------------------------------------------------

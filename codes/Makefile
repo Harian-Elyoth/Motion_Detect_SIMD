@@ -5,14 +5,17 @@
 # Copyright (c) 2000-2007 Lionel Lacassagne
 # with a little help of Stephane Piskorski and Joel Falcou
 
-# -- Lile list ----------
-FILE = main.c simd1D.c simd2D.c nrutil.c vnrutil.c mutil.c mouvement.c test_mouvement.c test_mouvement_morpho.c morpho.c mouvement_SIMD.c test_morpho.c morpho_SIMD.c test_morpho_SIMD.c
+# -- File list ----------
+FILE = main.c nrutil.c vnrutil.c mutil.c mouvement.c test_mouvement.c \
+test_mouvement_morpho.c morpho.c mouvement_SIMD.c test_morpho.c morpho_SIMD.c test_morpho_SIMD.c
+
 
 # -- Paths ----------
 SRC_PATH = src
 OBJ_PATH = obj
 EXE_PATH = exe
 INC_PATH = include
+
 
 # -- OS ----------
 #OS = MACH_OSX
