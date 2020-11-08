@@ -1,15 +1,14 @@
 /* --------------------------------- */
-/* ------- test_mouvement.h -------- */
+/* ------- test_mouvement_SIMD.h -------- */
 /* --------------------------------- */
 
-#ifndef __TEST_MOUVEMENT_H__
-#define __TEST_MOUVEMENT_H__
+#ifndef __TEST_MOUVEMENT_SIMD_H__
+#define __TEST_MOUVEMENT_SIMD_H__
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
-#include <time.h>
 
 #include "nrdef.h"
 #include "nrutil.h"
@@ -23,17 +22,19 @@
 #include "simd_macro.h"
 
 #include "mouvement.h"
+#include "mouvement_SIMD.h"
 
 #ifdef __cplusplus
 #pragma message ("C++")
 extern "C" {
 #endif
 
-void test_mouvement_car(bool is_visual);
-void test_mouvement_dataset();
+void test_mouvement_SIMD_car(bool is_visual);
+
+void test_mouvement_SIMD_dataset();
 
 // fonction principale     
-void main_test_mouvement(int argc, char *argv[]);
+void main_test_mouvement_SIMD(int argc, char *argv[]);
 
 #ifdef __cplusplus
 }

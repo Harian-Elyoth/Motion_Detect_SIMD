@@ -87,10 +87,10 @@ vfloat32 dot_vf32vector(vfloat32 *vX1, vfloat32 *vX2, int n)
 
     vfloat32 x;
 
-    x = SWITCH_1(s);
+    x = SWITCH_1_PS(s);
     s = _mm_add_ps(s, x);
 
-    x = SWITCH_2(s);
+    x = SWITCH_2_PS(s);
     s = _mm_add_ps(s, x);
 
     return s; // attention il faut retourner un registre SIMD et non un scalaire
@@ -116,8 +116,8 @@ void avg3_vf32vector(vfloat32 *vX, int n, vfloat32 *vY)
     for(int i = 0 ; i < n-1 ; i++){
         x2 =  _mm_load_ps((float32*) &vX[i+1]);
 
-        xx0 = VEC_LEFT_1(x0, x1);
-        xx2 = VEC_RIGHT_1(x1, x2);
+        xx0 = VEC_LEFT_1_PS(x0, x1);
+        xx2 = VEC_RIGHT_1_PS(x1, x2);
 
         y = _mm_add_ps(xx0, x1);
         y = _mm_add_ps(y, xx2);
@@ -132,8 +132,8 @@ void avg3_vf32vector(vfloat32 *vX, int n, vfloat32 *vY)
 
     // Epilogue
 
-    xx0 = VEC_LEFT_1(x0, x1);
-    xx2 = VEC_RIGHT_1(x1, x2);
+    xx0 = VEC_LEFT_1_PS(x0, x1);
+    xx2 = VEC_RIGHT_1_PS(x1, x2);
 
     y = _mm_add_ps(xx0, x1);
     y = _mm_add_ps(y, xx2);
@@ -163,10 +163,10 @@ void avg5_vf32vector(vfloat32 *vX, int n, vfloat32 *vY)
 
         x2 = _mm_load_ps((float32*) &vX[i+1]);
 
-        xx0 = VEC_2x2(x0, x1);
-        xx1 = VEC_LEFT_1(x0, x1);
-        xx3 = VEC_RIGHT_1(x1, x2);
-        xx4 = VEC_2x2(x1, x2);
+        xx0 = VEC_2x2_PS(x0, x1);
+        xx1 = VEC_LEFT_1_PS(x0, x1);
+        xx3 = VEC_RIGHT_1_PS(x1, x2);
+        xx4 = VEC_2x2_PS(x1, x2);
 
         y = _mm_add_ps(xx0, xx1);
         y = _mm_add_ps(y, x1);
@@ -183,10 +183,10 @@ void avg5_vf32vector(vfloat32 *vX, int n, vfloat32 *vY)
     
     // Epilogue
 
-    xx0 = VEC_2x2(x0, x1);
-    xx1 = VEC_LEFT_1(x0, x1);
-    xx3 = VEC_RIGHT_1(x1, x2);
-    xx4 = VEC_2x2(x1, x2);
+    xx0 = VEC_2x2_PS(x0, x1);
+    xx1 = VEC_LEFT_1_PS(x0, x1);
+    xx3 = VEC_RIGHT_1_PS(x1, x2);
+    xx4 = VEC_2x2_PS(x1, x2);
 
     y = _mm_add_ps(xx0, xx1);
     y = _mm_add_ps(y, x1);

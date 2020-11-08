@@ -4,7 +4,7 @@
 
 #include "test_mouvement.h"
 
-void test_SD_car(bool is_visual){
+void test_mouvement_car(bool is_visual){
 
 	// BORD
 	int b;
@@ -18,7 +18,8 @@ void test_SD_car(bool is_visual){
     double t0, t1, dt, tmin, t;
 
 	char *format = "%d ";
-    double cycles;
+
+	// taille noyau de convolution	
     int kernel_size = 3;
 
     puts("===============================");
@@ -95,26 +96,10 @@ void test_SD_car(bool is_visual){
     // -- traitements -- //
     // ----------------- //
 
-    BENCH(printf("Sigma Delta :\n\n");)
-
-	CHRONO(SigmaDelta_step1(mi0b, mi1b, mj0b, mj1b, mean0, mean1, image), cycles);
-
-	BENCH(display_ui8matrix(mean0, mi0b, mi1b, mj0b, mj1b, "%d ", "\nmean0 :\n"));
-	BENCH(display_ui8matrix(mean1, mi0b, mi1b, mj0b, mj1b, "%d ", "\nmean1 :\n"));
-
-	BENCH(printf("step 1 :\ncycles = %0.6f", cycles)); BENCH(puts("")); BENCH(printf("cycles/X*Y = %0.6f", cycles/(WIDTH*HEIGHT))); BENCH(puts("")); BENCH(puts(""));
-
-	CHRONO(SigmaDelta_step2(mi0b, mi1b, mj0b, mj1b, image, mean1, img_diff), cycles);
-
-	BENCH(printf("step 2 :\ncycles = %0.6f", cycles)); BENCH(puts("")); BENCH(printf("cycles/X*Y = %0.6f", cycles/(WIDTH*HEIGHT))); BENCH(puts("")); BENCH(puts(""));
-
-	CHRONO(SigmaDelta_step3(mi0b, mi1b, mj0b, mj1b, std0, std1, img_diff), cycles);
-
-	BENCH(printf("step 3 :\ncycles = %0.6f", cycles)); BENCH(puts("")); BENCH(printf("cycles/X*Y = %0.6f", cycles/(WIDTH*HEIGHT))); BENCH(puts("")); BENCH(puts(""));
-
-	CHRONO(SigmaDelta_step4(mi0b, mi1b, mj0b, mj1b, std1, img_diff, img_bin), cycles);
-
-	BENCH(printf("step 4 :\ncycles = %0.6f", cycles)); BENCH(puts("")); BENCH(printf("cycles/X*Y = %0.6f", cycles/(WIDTH*HEIGHT))); BENCH(puts("")); BENCH(puts(""));
+    SigmaDelta_step1(mi0b, mi1b, mj0b, mj1b, mean0, mean1, image);
+	SigmaDelta_step2(mi0b, mi1b, mj0b, mj1b, image, mean1, img_diff);
+	SigmaDelta_step3(mi0b, mi1b, mj0b, mj1b, std0, std1, img_diff);
+	SigmaDelta_step4(mi0b, mi1b, mj0b, mj1b, std1, img_diff, img_bin);
 
 	// convert binary img to pgm img
 	bin_to_pgm(mi0b, mi1b, mj0b, mj1b, img_bin,"SD_out.pgm");
@@ -135,7 +120,7 @@ void test_SD_car(bool is_visual){
 	free_ui8matrix(img_bin, mi0b, mi1b, mj0b, mj1b);
 }
 
-void test_SD_dataset(){
+void test_mouvement_dataset(){
 
 	// BORD
 	int b;
@@ -147,10 +132,15 @@ void test_SD_dataset(){
     int iter, niter = 4;
     int run, nrun = 5;
     double t0, t1, dt, tmin, t;
-    double cycles;
-    int kernel_size = 3;
 
     char *format = "%d ";
+
+	// taille noyau de convolution	
+    int kernel_size = 3;
+
+    puts("==============================");
+	puts("=== test mouvement dataset ===");
+	puts("==============================");
 
     // ------------------------- //
     // -- calculs des indices -- //
@@ -222,23 +212,10 @@ void test_SD_dataset(){
 	    // -- traitements -- //
 	    // ----------------- //
 
-	    BENCH(printf("\nSigma Delta :\n\n");)
-
-		CHRONO(SigmaDelta_step1(mi0b, mi1b, mj0b, mj1b, mean0, mean1, image),cycles);
-
-		BENCH(printf("step 1 : cycles/X*Y = %0.6f", cycles/(WIDTH*HEIGHT))); BENCH(puts(""));
-
-		CHRONO(SigmaDelta_step2(mi0b, mi1b, mj0b, mj1b, image, mean1, img_diff),cycles);
-
-		BENCH(printf("step 2 : cycles/X*Y = %0.6f", cycles/(WIDTH*HEIGHT))); BENCH(puts(""));
-
-		CHRONO(SigmaDelta_step3(mi0b, mi1b, mj0b, mj1b, std0, std1, img_diff),cycles);
-
-		BENCH(printf("step 3 : cycles/X*Y = %0.6f", cycles/(WIDTH*HEIGHT))); BENCH(puts(""));
-
-		CHRONO(SigmaDelta_step4(mi0b, mi1b, mj0b, mj1b, std1, img_diff, img_bin),cycles);
-
-		BENCH(printf("step 4 : cycles/X*Y = %0.6f", cycles/(WIDTH*HEIGHT))); BENCH(puts(""));
+		SigmaDelta_step1(mi0b, mi1b, mj0b, mj1b, mean0, mean1, image);
+		SigmaDelta_step2(mi0b, mi1b, mj0b, mj1b, image, mean1, img_diff);
+		SigmaDelta_step3(mi0b, mi1b, mj0b, mj1b, std0, std1, img_diff);
+		SigmaDelta_step4(mi0b, mi1b, mj0b, mj1b, std1, img_diff, img_bin);
 
 		// built pgm filename out
 		char filename_out[25] = "";
@@ -264,10 +241,16 @@ void test_SD_dataset(){
 	free_ui8matrix(img_bin, mi0b, mi1b, mj0b, mj1b);
 }
 
-
 void main_test_mouvement(int argc, char *argv[])
 {
-	// BENCH(test_SD_car(false));
+	// Genere les images pgm dans pgm_imgs/
 
-	BENCH(test_SD_dataset());	
+	// test unitaire sur petite image generer
+	// test_mouvement_car(true);
+
+	// test unitaire sur image du set
+	test_mouvement_car(false);
+
+	// test global sur tout le set
+	// test_mouvement_dataset();	
 }
