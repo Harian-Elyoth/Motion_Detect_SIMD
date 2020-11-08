@@ -16,11 +16,11 @@
 #include "simd1D.h"
 #include "simd2D.h"
 
-
 #include "test_mouvement.h"
 #include "bench_mouvement.h"
 
 #include "test_morpho.h"
+#include "test_morpho_SIMD.h"
 
 #include "test_mouvement_morpho.h"
 
@@ -51,8 +51,13 @@ int main(int argc, char *argv[])
     // main_test_mouvement_morpho(argc, argv);
 
     // main_test_mouvement_SIMD(argc, argv);
+<<<<<<< HEAD
+    main_bench_mouvement_SIMD(argc, argv);
+
+=======
 
     main_bench_mouvement_SIMD(argc, argv);
+>>>>>>> c3f227d1c50d4a6d781091139b453d8d5e73fd83
 
     return 0;   
 }
