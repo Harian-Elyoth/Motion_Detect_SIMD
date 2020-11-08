@@ -417,8 +417,12 @@ void test_mouvement_morpho_SIMD_dataset(){
 
 void main_test_mouvement_morpho_SIMD(int argc, char *argv[]){
 
+	// Genere les images pgm dans pgm_imgs/
+
+	// test unitaire sur petite image generer
 	// test_mouvement_morpho_SIMD_car(true);
 
+	// test unitaire sur image du set
 	test_mouvement_morpho_SIMD_car(false);
 
 	// test_mouvement_morpho_SIMD_dataset();
