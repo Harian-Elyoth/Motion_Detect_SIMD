@@ -1,10 +1,10 @@
-/* --------------------------------------------------------------------- */
-/* ---  Bench Algorithme Sigma Delta SIMD pour le traitement d'image --- */
-/* --------------------------------------------------------------------- */
+/* ------------------------------------------------------------------------------ */
+/* ---  Bench Algorithme Sigma Delta + Morpho SIMD pour le traitement d'image --- */
+/* ------------------------------------------------------------------------------ */
 
-#include "bench_mouvement_SIMD.h"
+#include "bench_mouvement_morpho_SIMD.h"
 
-void bench_mouvement_SIMD_car(bool is_visual){
+void bench_mouvement_morpho_SIMD_car(bool is_visual){
 
 	int width, height;
 
@@ -29,21 +29,21 @@ void bench_mouvement_SIMD_car(bool is_visual){
 	char *format = "%d ";
 
 	// calcul cpp
-	double cycles_total, cycles_step1, cycles_step2, cycles_step3, cycles_step4;
+	double cycles_total, cycles_step1, cycles_step2, cycles_step3, cycles_step4, cycles_morpho;
 
 	// calcul temps
-	double time_total, time_step1, time_step2, time_step3, time_step4;
+	double time_total, time_step1, time_step2, time_step3, time_step4, time_morpho;
 	clock_t start, finish;
 
 	// calcul debit
-	double debit_total, debit_step1, debit_step2, debit_step3, debit_step4;
+	double debit_total, debit_step1, debit_step2, debit_step3, debit_step4, debit_morpho;
 
 	// taille noyau de convolution	
     int kernel_size = 3;
 
-	puts("=========================================");
-	puts("=== benchmark mouvement unitaire SIMD ===");
-	puts("=========================================");
+	puts("==================================================");
+	puts("=== benchmark mouvement + morpho unitaire SIMD ===");
+	puts("==================================================");
 
 	// BORD
 	// 1 for 3x3 
@@ -75,20 +75,6 @@ void bench_mouvement_SIMD_car(bool is_visual){
 	int vmi0b = vmi0-b; int vmi1b = vmi1+b;
 	int vmj0b = vmj0-1; int vmj1b = vmj1+1;
 
-	DEBUG(puts("")); 
-	DEBUG(printf("mi0b : %d\n", mi0b)); 
-	DEBUG(printf("mi1b : %d\n", mi1b)); 
-	DEBUG(printf("mj0b : %d\n", mj0b)); 
-	DEBUG(printf("mj1b : %d\n", mj1b));
-	DEBUG(puts("")); 
-
-	DEBUG(puts("")); 
-	DEBUG(printf("vmi0b : %d\n", vmi0b)); 
-	DEBUG(printf("vmi1b : %d\n", vmi1b)); 
-	DEBUG(printf("vmj0b : %d\n", vmj0b)); 
-	DEBUG(printf("vmj1b : %d\n", vmj1b));
-	DEBUG(puts("")); 
-
 	// images
 	vuint8** image = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
 
@@ -106,6 +92,8 @@ void bench_mouvement_SIMD_car(bool is_visual){
 	// image binaire (sortie)
 	vuint8 ** img_bin = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
 
+	// image filtrée après morpho
+	vuint8 ** img_filtered = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
 
 	/*---------------------------------------------------*/
 
@@ -241,33 +229,26 @@ void bench_mouvement_SIMD_car(bool is_visual){
 	BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_step4/(WIDTH*HEIGHT))); BENCH(puts(""));
 	BENCH(printf("debit (pixel/sec)   = %0.2f", debit_step4)); BENCH(puts("")); BENCH(puts(""));
 
-	cycles_total = cycles_step1 + cycles_step2 + cycles_step3 + cycles_step4;
-	time_total   = time_step1   + time_step2   + time_step3   + time_step4;
-	debit_total  = debit_step1  + debit_step2  + debit_step3  + debit_step4;
+	start = clock();
+	CHRONO(morpho_3_SIMD(img_bin, img_filtered, vmi0, vmi1, vmj0, vmj1), cycles_morpho); 
+	finish = clock();
+	time_morpho = (double)(finish-start)/CLOCKS_PER_SEC;
+	debit_morpho = (WIDTH*HEIGHT) / time_morpho;
+	time_morpho *= 1000;
+
+	BENCH(printf("Morphologie :")); BENCH(puts(""));
+	BENCH(printf("temps (ms) \t    = %0.6f", time_morpho)); BENCH(puts(""));
+	BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_morpho/(WIDTH*HEIGHT))); BENCH(puts(""));
+	BENCH(printf("debit (pixel/sec)   = %0.2f", debit_morpho)); BENCH(puts("")); BENCH(puts(""));
+
+	cycles_total = cycles_step1 + cycles_step2 + cycles_step3 + cycles_step4 + cycles_morpho;
+	time_total   = time_step1   + time_step2   + time_step3   + time_step4 + time_morpho;
+	debit_total  = debit_step1  + debit_step2  + debit_step3  + debit_step4 + debit_morpho;
 
 	BENCH(printf("Total :")); BENCH(puts(""));
 	BENCH(printf("temps (ms) \t    = %0.6f", time_total)); BENCH(puts(""));
 	BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_total/(WIDTH*HEIGHT))); BENCH(puts(""));
 	BENCH(printf("debit (pixel/sec)   = %0.2f", debit_total)); BENCH(puts("")); BENCH(puts(""));
-
-	/*---------------------------------------------------*/
-
-	DEBUG(puts("================="));
-	DEBUG(puts("=== affichage ==="));
-	DEBUG(puts("================="));
-
-	// --------------- //
-	// -- affichage -- //
-	// --------------- //
-
-	// transfert vui8matrix à ui8matrix 
-
-	uint8 ** img_print = ui8matrix(mi0b, mi1b, mj0b, mj1b);
-
-	vui8matrix_to_ui8matrix(card, vmi0b, vmi1b, vmj0b, vmj1b, img_print, img_bin);
-
-	// convert binary img to pgm img
-	DEBUG(bin_to_pgm(mi0b, mi1b, mj0b, mj1b, img_print, "SD_out.pgm"));
 
 	/*---------------------------------------------------*/
 
@@ -289,11 +270,10 @@ void bench_mouvement_SIMD_car(bool is_visual){
 
 	free_vui8matrix(img_diff, vmi0b, vmi1b, vmj0b, vmj1b);
 	free_vui8matrix(img_bin, vmi0b, vmi1b, vmj0b, vmj1b);
-
-	free_ui8matrix(img_print, mi0b, mi1b, mj0b, mj1b);
+	free_vui8matrix(img_filtered, vmi0b, vmi1b, vmj0b, vmj1b);
 }
 
-void bench_mouvement_SIMD_dataset(){
+void bench_mouvement_morpho_SIMD_dataset(){
 
 	// img reel size
 	int width  = 320; // correspond au nb de colonne  => indice boucle j
@@ -307,10 +287,10 @@ void bench_mouvement_SIMD_dataset(){
 	char *format = "%d ";
 
     // calcul cpp
-	double cycles_dataset, cycles_total, cycles_step1, cycles_step2, cycles_step3, cycles_step4;
+	double cycles_dataset, cycles_total, cycles_step1, cycles_step2, cycles_step3, cycles_step4, cycles_morpho;
 
 	// calcul temps
-	double time_dataset, time_total, time_step1, time_step2, time_step3, time_step4;
+	double time_dataset, time_total, time_step1, time_step2, time_step3, time_step4, time_morpho;
 	clock_t start, finish;
 
 	// calcul debit
@@ -319,9 +299,9 @@ void bench_mouvement_SIMD_dataset(){
 	// taille noyau de convolution	
     int kernel_size = 3;
 
-	puts("========================================");
-	puts("=== benchmark mouvement dataset SIMD ===");
-	puts("========================================");
+	puts("=================================================");
+	puts("=== benchmark mouvement + morpho dataset SIMD ===");
+	puts("=================================================");
 
 	// BORD
 	// 1 for 3x3 
@@ -371,6 +351,9 @@ void bench_mouvement_SIMD_dataset(){
 
 	// image binaire (sortie)
 	vuint8 ** img_bin = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
+
+	// image filtrée après morpho
+	vuint8 ** img_filtered = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
 
 	/*---------------------------------------------------*/
 
@@ -450,14 +433,20 @@ void bench_mouvement_SIMD_dataset(){
 		time_step4 = (double)(finish-start)/CLOCKS_PER_SEC;
 		time_step4 *= 1000;
 
+		start = clock();
+		CHRONO(morpho_3_SIMD(img_bin, img_filtered, vmi0, vmi1, vmj0, vmj1), cycles_morpho); 
+		finish = clock();
+		time_morpho = (double)(finish-start)/CLOCKS_PER_SEC;
+		time_morpho *= 1000;
 
-		cycles_total = cycles_step1 + cycles_step2 + cycles_step3 + cycles_step4;
-		time_total   = time_step1   + time_step2   + time_step3   + time_step4;
+		cycles_total = cycles_step1 + cycles_step2 + cycles_step3 + cycles_step4 + cycles_morpho;
+		time_total   = time_step1   + time_step2   + time_step3   + time_step4 + time_morpho;
 		debit_total  = (WIDTH*HEIGHT) / time_total;
 
 		cycles_dataset += cycles_total/(WIDTH*HEIGHT);
 		time_dataset += time_total;
 		// DEBIT DATASET PAS TROP DE SENS ICI ?
+
 	}
 
 	BENCH(printf("\nTotal dataset :")); BENCH(puts(""));
@@ -480,16 +469,19 @@ void bench_mouvement_SIMD_dataset(){
 
 	free_vui8matrix(img_diff, vmi0b, vmi1b, vmj0b, vmj1b);
 	free_vui8matrix(img_bin, vmi0b, vmi1b, vmj0b, vmj1b);
+	free_vui8matrix(img_filtered, vmi0b, vmi1b, vmj0b, vmj1b);
 }
 
-void main_bench_mouvement_SIMD(int argc, char *argv[]){
+void main_bench_mouvement_morpho_SIMD(int argc, char *argv[]){
+
+	// Affiche les métriques de performance
 
 	// benchmark unitaire sur petite images test generer
-	// bench_mouvement_SIMD_car(true);
+	// bench_mouvement_morpho_SIMD_car(true);
 
 	// benchmark unitaire sur image du set
-	bench_mouvement_SIMD_car(false);
+	bench_mouvement_morpho_SIMD_car(false);
 
 	// benchmark global sur tout le dataset
-	// bench_mouvement_SIMD_dataset();
+	// bench_mouvement_morpho_SIMD_dataset();
 }

@@ -375,8 +375,8 @@ void main_bench_mouvement_morpho(int argc, char *argv[]){
 	// bench_mouvement_morpho_car(true);
 
 	// benchmark unitaire sur image du set
-	// bench_mouvement_morpho_car(false);
+	bench_mouvement_morpho_car(false);
 
 	// benchmark global sur tout le dataset
-	bench_mouvement_morpho_dataset();
+	// bench_mouvement_morpho_dataset();
 }
