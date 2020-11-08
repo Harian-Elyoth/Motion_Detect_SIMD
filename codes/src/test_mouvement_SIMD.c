@@ -398,7 +398,7 @@ void test_mouvement_SIMD_dataset(){
 		snprintf(filename_out, 25, "SD_out_%d.pgm", i);
 
 		// convert binary img to pgm img
-		bin_to_pgm(mi0b, mi1b, mj0b, mj1b, img_print, filename_out);
+		DEBUG(bin_to_pgm(mi0b, mi1b, mj0b, mj1b, img_print, filename_out));
 
 		// free temp ui8matrix
 		free_ui8matrix(img_print, mi0b, mi1b, mj0b, mj1b);
