@@ -1,10 +1,10 @@
-/* ---------------------------------------------------------------- */
-/* ---  Bench Algorithme Sigma Delta pour le traitement d'image --- */
-/* ---------------------------------------------------------------- */
+/* ------------------------------------------------------------------------- */
+/* ---  Bench Algorithme Sigma Delta + Morpho pour le traitement d'image --- */
+/* ------------------------------------------------------------------------- */
 
-#include "bench_mouvement.h"
+#include "bench_mouvement_morpho.h"
 
-void bench_mouvement_car(bool is_visual){
+void bench_mouvement_morpho_car(bool is_visual){
 
 	// BORD
 	int b;
@@ -20,21 +20,21 @@ void bench_mouvement_car(bool is_visual){
 	char *format = "%d ";
 
 	// calcul cpp
-	double cycles_total, cycles_step1, cycles_step2, cycles_step3, cycles_step4;
+	double cycles_total, cycles_step1, cycles_step2, cycles_step3, cycles_step4, cycles_morpho;
 
 	// calcul temps
-	double time_total, time_step1, time_step2, time_step3, time_step4;
+	double time_total, time_step1, time_step2, time_step3, time_step4, time_morpho;
 	clock_t start, finish;
 
 	// calcul debit
-	double debit_total, debit_step1, debit_step2, debit_step3, debit_step4;
+	double debit_total, debit_step1, debit_step2, debit_step3, debit_step4, debit_morpho;
 
 	// taille noyau de convolution	
     int kernel_size = 3;
 
-    puts("====================================");
-    puts("=== benchmark mouvement unitaire ===");
-    puts("====================================");
+    puts("=============================================");
+    puts("=== benchmark mouvement + morpho unitaire ===");
+    puts("=============================================");
 
     // ------------------------- //
     // -- calculs des indices -- //
@@ -62,16 +62,17 @@ void bench_mouvement_car(bool is_visual){
     // -- allocation -- //
     // ---------------- //
 
-	uint8** image 		= ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** image 			= ui8matrix(mi0b, mi1b, mj0b, mj1b);
 
-	uint8** mean0 		= ui8matrix(mi0b, mi1b, mj0b, mj1b);
-	uint8** mean1 		= ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** mean0 			= ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** mean1 			= ui8matrix(mi0b, mi1b, mj0b, mj1b);
 
-	uint8** std0 		= ui8matrix(mi0b, mi1b, mj0b, mj1b);
-	uint8** std1 		= ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** std0 			= ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** std1 			= ui8matrix(mi0b, mi1b, mj0b, mj1b);
 
-	uint8** img_diff 	= ui8matrix(mi0b, mi1b, mj0b, mj1b);
-	uint8** img_bin 	= ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** img_diff 		= ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** img_bin 		= ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** img_filtered	= ui8matrix(mi0b, mi1b, mj0b, mj1b);
 
 	// -------------- //
     // -- prologue -- //
@@ -156,9 +157,22 @@ void bench_mouvement_car(bool is_visual){
 	BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_step4/(WIDTH*HEIGHT))); BENCH(puts(""));
 	BENCH(printf("debit (pixel/sec)   = %0.2f", debit_step4)); BENCH(puts("")); BENCH(puts(""));
 
-	cycles_total = cycles_step1 + cycles_step2 + cycles_step3 + cycles_step4;
-	time_total   = time_step1   + time_step2   + time_step3   + time_step4;
-	debit_total  = debit_step1  + debit_step2  + debit_step3  + debit_step4;
+
+	start = clock();
+	CHRONO(morpho_3(img_bin, img_filtered, mi0, mi1, mj0, mj1), cycles_morpho); 
+	finish = clock();
+	time_morpho = (double)(finish-start)/CLOCKS_PER_SEC;
+	debit_morpho = (WIDTH*HEIGHT) / time_morpho;
+	time_morpho *= 1000;
+
+	BENCH(printf("Morphologie :")); BENCH(puts(""));
+	BENCH(printf("temps (ms) \t    = %0.6f", time_morpho)); BENCH(puts(""));
+	BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_morpho/(WIDTH*HEIGHT))); BENCH(puts(""));
+	BENCH(printf("debit (pixel/sec)   = %0.2f", debit_morpho)); BENCH(puts("")); BENCH(puts(""));
+
+	cycles_total = cycles_step1 + cycles_step2 + cycles_step3 + cycles_step4 + cycles_morpho;
+	time_total   = time_step1   + time_step2   + time_step3   + time_step4 + time_morpho;
+	debit_total  = debit_step1  + debit_step2  + debit_step3  + debit_step4 + debit_morpho;
 
 	BENCH(printf("Total :")); BENCH(puts(""));
 	BENCH(printf("temps (ms) \t    = %0.6f", time_total)); BENCH(puts(""));
@@ -181,7 +195,7 @@ void bench_mouvement_car(bool is_visual){
 	free_ui8matrix(img_bin, mi0b, mi1b, mj0b, mj1b);
 }
 
-void bench_mouvement_dataset(){
+void bench_mouvement_morpho_dataset(){
 
 	// BORD
 	int b;
@@ -197,21 +211,21 @@ void bench_mouvement_dataset(){
     char *format = "%d ";
 
     // calcul cpp
-	double cycles_dataset, cycles_total, cycles_step1, cycles_step2, cycles_step3, cycles_step4;
+	double cycles_dataset, cycles_total, cycles_step1, cycles_step2, cycles_step3, cycles_step4, cycles_morpho;
 
 	// calcul temps
-	double time_dataset, time_total, time_step1, time_step2, time_step3, time_step4;
+	double time_dataset, time_total, time_step1, time_step2, time_step3, time_step4, time_morpho;
 	clock_t start, finish;
 
 	// calcul debit
-	double debit_dataset, debit_total, debit_step1, debit_step2, debit_step3, debit_step4;
+	double debit_dataset, debit_total, debit_step1, debit_step2, debit_step3, debit_step4, debit_morpho;
 
 	// taille noyau de convolution	
     int kernel_size = 3;
 
-    puts("===================================");
-	puts("=== benchmark mouvement dataset ===");
-	puts("===================================");
+    puts("============================================");
+	puts("=== benchmark mouvement + morpho dataset ===");
+	puts("============================================");
 
     // ------------------------- //
     // -- calculs des indices -- //
@@ -232,16 +246,18 @@ void bench_mouvement_dataset(){
     // -- allocation -- //
     // ---------------- //
 
-	uint8** image = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** image 			= ui8matrix(mi0b, mi1b, mj0b, mj1b);
 
-	uint8** mean0 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
-	uint8** mean1 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** mean0 			= ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** mean1 			= ui8matrix(mi0b, mi1b, mj0b, mj1b);
 
-	uint8** std0 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
-	uint8** std1 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** std0 			= ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** std1 			= ui8matrix(mi0b, mi1b, mj0b, mj1b);
 
-	uint8** img_diff = ui8matrix(mi0b, mi1b, mj0b, mj1b);
-	uint8** img_bin = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** img_diff 		= ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** img_bin 		= ui8matrix(mi0b, mi1b, mj0b, mj1b);
+
+	uint8** img_filtered 	= ui8matrix(mi0b, mi1b, mj0b, mj1b);
 
 	// -------------- //
     // -- prologue -- //
@@ -283,6 +299,7 @@ void bench_mouvement_dataset(){
 	    // -- traitements -- //
 	    // ----------------- //
 
+		// SIGMA DELTA
 		start = clock();
 		CHRONO(SigmaDelta_step1(mi0b, mi1b, mj0b, mj1b, mean0, mean1, image), cycles_step1);
 		finish = clock();
@@ -311,8 +328,17 @@ void bench_mouvement_dataset(){
 		debit_step4 = (WIDTH*HEIGHT) / time_step4;
 		time_step4 *= 1000;
 
-		cycles_total = cycles_step1 + cycles_step2 + cycles_step3 + cycles_step4;
-		time_total   = time_step1   + time_step2   + time_step3   + time_step4;
+		// MORPHOLOGIE
+		start = clock();
+		CHRONO(morpho_3(img_bin, img_filtered, mi0, mi1, mj0, mj1), cycles_morpho); 
+		finish = clock();
+		time_morpho = (double)(finish-start)/CLOCKS_PER_SEC;
+		debit_morpho = (WIDTH*HEIGHT) / time_morpho;
+		time_morpho *= 1000;
+
+		// TOTAL
+		cycles_total = cycles_step1 + cycles_step2 + cycles_step3 + cycles_step4 + cycles_morpho;
+		time_total   = time_step1   + time_step2   + time_step3   + time_step4 + time_morpho;
 		debit_total  = (WIDTH*HEIGHT) / time_total;
 
 		cycles_dataset += cycles_total/(WIDTH*HEIGHT);
@@ -341,16 +367,16 @@ void bench_mouvement_dataset(){
 	free_ui8matrix(img_bin, mi0b, mi1b, mj0b, mj1b);
 }
 
-void main_bench_mouvement(int argc, char *argv[]){
+void main_bench_mouvement_morpho(int argc, char *argv[]){
 
 	// Affiche les métriques de performance
 
 	// benchmark unitaire sur petite images test generer
-	// bench_mouvement_car(true);
+	// bench_mouvement_morpho_car(true);
 
 	// benchmark unitaire sur image du set
-	bench_mouvement_car(false);
+	bench_mouvement_morpho_car(false);
 
 	// benchmark global sur tout le dataset
-	// bench_mouvement_dataset();
+	// bench_mouvement_morpho_dataset();
 }
