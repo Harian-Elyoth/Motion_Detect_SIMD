@@ -67,15 +67,18 @@ void erosion_3_SIMD(vuint8 ** vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0, in
     }
 }
 
-void erosion_5_SIMD(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0, int vmj1){
-        //vecteur aligné
+void erosion_5_SIMD(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0, int vmj1) {
+    
+    //vecteur aligné
     vuint8 a2, b2, c2, d2, e2;
+
     //vecteur non-alignés
     vuint8 aa0, aa1, aa3, aa4;
     vuint8 bb0, bb1, bb3, bb4;
     vuint8 cc0, cc1, cc3, cc4;
     vuint8 dd0, dd1, dd3, dd4;
     vuint8 ee0, ee1, ee3, ee4;
+
     //vecteur sortie
     vuint8 y;
 
@@ -158,12 +161,14 @@ void erosion_5_SIMD(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0, int
 }
 
 
-void dilatation_3_SIMD(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0, int vmj1){
-        //vecteur aligné
-
+void dilatation_3_SIMD(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0, int vmj1) {
+        
+    //vecteur aligné
     vuint8 a1, b1, c1;
+
     //vecteur non-alignés
     vuint8 aa0, aa2, bb0, bb2, cc0, cc2;
+
     //vecteur sortie
     vuint8 y;
 
@@ -176,8 +181,6 @@ void dilatation_3_SIMD(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0, 
 
     int vmj0b = vmj0 - bord;
     int vmj1b = vmj1 + bord;
-
-    
 
     for(j = vmj0 ; j <= vmj1 ; j++){
 
@@ -215,7 +218,8 @@ void dilatation_3_SIMD(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0, 
     }
 }
 
-void dilatation_5_SIMD(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0, int vmj1){
+void dilatation_5_SIMD(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0, int vmj1) {
+    
     //vecteur aligné
     vuint8 a2, b2, c2, d2, e2;
     //vecteur non-alignés
@@ -305,7 +309,7 @@ void dilatation_5_SIMD(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0, 
     }
 }
 
-void morpho_3_SIMD(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0, int vmj1){
+void morpho_3_SIMD(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0, int vmj1) {
     
     int bord = 1;
     

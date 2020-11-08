@@ -21,14 +21,7 @@ void test_mouvement_SIMD_car(bool is_visual){
 		height = 240; // correspond au nb de ligne    => indice boucle i
 	}
 
-
-	// chronometrie
-	int iter, niter = 4;
-	int run, nrun = 5;
-	double t0, t1, dt, tmin, t;
-
 	char *format = "%d ";
-	double cycles_total, cycles_step1, cycles_step2, cycles_step3, cycles_step4;
 	int kernel_size = 3;
 
 	puts("====================================");
@@ -235,14 +228,6 @@ void test_mouvement_SIMD_dataset(){
 	int width  = 320; // correspond au nb de colonne  => indice boucle j
 	int height = 240; // correspond au nb de ligne    => indice boucle i
 
-	// chronometrie
-	int iter, niter = 4;
-	int run, nrun = 5;
-	double t0, t1, dt, tmin, t;
-
-	char *format = "%d ";
-	double cycles_step1, cycles_step2, cycles_step3, cycles_step4;
-	double cycles_total, cpp_dataset; 
 	int kernel_size = 3;
 
 	puts("===================================");

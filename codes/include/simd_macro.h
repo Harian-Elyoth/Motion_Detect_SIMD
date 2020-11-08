@@ -51,12 +51,18 @@
 #define SWITCH_4_EPI8(x)  _mm_shuffle_epi8(x, init_vuint8_all(4, 5, 6, 7, 0, 1, 2, 3, 12, 13, 14, 15, 8, 9, 10, 11)) // abcdefghijklmnop -> efghabcdmnopijkl
 #define SWITCH_8_EPI8(x)  _mm_shuffle_epi8(x, init_vuint8_all(8, 9, 10, 11, 12, 13, 14, 15, 0, 1, 2, 3, 4, 5, 6, 7)) // abcdefghijklmnop -> ijklmnopabcdefgh
 
+//VEC LEFT AND RIGHT
+#define VEC_LEFT1_EPI8(x1, x2) _mm_add_epi8(_mm_bslli_si128(x2, 1), _mm_bsrli_si128(x1, 15)) // x1 abcdefghijklmnop ; x2 qrstuvwxyz012345 -> pqrstuvwxyz01234
+#define VEC_RIGHT1_EPI8(x1, x2) _mm_add_epi8(_mm_bslli_si128(x2, 15), _mm_bsrli_si128(x1, 1)) // x1 abcdefghijklmnop ; x2 qrstuvwxyz012345 -> bcdefghijklmnop0
+#define VEC_LEFT2_EPI8(x1, x2) _mm_add_epi8(_mm_bslli_si128(x2, 2), _mm_bsrli_si128(x1, 14))
+#define VEC_RIGHT2_EPI8(x1, x2) _mm_add_epi8(_mm_bslli_si128(x2, 14), _mm_bsrli_si128(x1, 2))
+
 // COMPARE
 #define VEC_CMPEQ_EPI8(x, y) _mm_cmpeq_epi8(x, y) // if x = y => 255 else 0
 #define VEC_CMPGT_EPI8(x, y) _mm_cmpgt_epi8(x, y) // if x > y => 255 else 0
 #define VEC_CMPLT_EPI8(x, y) _mm_cmplt_epi8(x, y) // if x < y => 255 else 0
 
-// CALCULS
+// CALCULS BASES
 #define VEC_AND_EPI8(x, y) _mm_and_si128(x, y) 	// ET logique bit a bit
 #define VEC_ADD_EPI8(x, y) _mm_add_epi8(x, y)  	// Addition 8 bits 
 #define VEC_SUB_EPI8(x, y) _mm_sub_epi8(x, y)  	// Soustraction 8 bits 
@@ -65,32 +71,9 @@
 #define VEC_MAX_EPI8(x, y) _mm_max_epi8(x, y) 	// Max 8 bits
 #define VEC_MIN_EPI8(x, y) _mm_min_epi8(x, y) 	// Min 8 bits
 
-
-// ------------------ //
-// --- MACRO EPI8 --- //
-// ------------------ //
-
-// MEMORY
-#define VEC_LOAD_2D_EPI8(i, j, X) _mm_load_si128((vuint8 *) &X[i][j])
-#define VEC_STORE_2D_EPI8(x, i, j, X) _mm_store_si128((vuint8 *) &X[i][j], x)
-
-// SHUFFLE
-#define ROT_RIGHT_EPI8(x) _mm_shuffle_epi8(x, init_vuint8_all(15, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14)); // abcdefghijklmnop -> pabcdefghijklmno
-#define ROT_LEFT_EPI8(x)  _mm_shuffle_epi8(x, init_vuint8_all(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0)); // abcdefghijklmnop -> bcdefghijklmnopa
-#define SWITCH_1_EPI8(x)  _mm_shuffle_epi8(x, init_vuint8_all(1, 0, 3, 2, 5, 4, 7, 6, 9, 8, 11, 10, 13, 12, 15, 14)); // abcdefghijklmnop -> badcfehgjilknmpo
-#define SWITCH_2_EPI8(x)  _mm_shuffle_epi8(x, init_vuint8_all(2, 3, 0, 1, 6, 7, 4, 5, 10, 11, 8, 9, 14, 15, 12, 13)); // abcdefghijklmnop -> cdabghefklijopmn
-#define SWITCH_4_EPI8(x)  _mm_shuffle_epi8(x, init_vuint8_all(4, 5, 6, 7, 0, 1, 2, 3, 12, 13, 14, 15, 8, 9, 10, 11)); // abcdefghijklmnop -> efghabcdmnopijkl
-#define SWITCH_8_EPI8(x)  _mm_shuffle_epi8(x, init_vuint8_all(8, 9, 10, 11, 12, 13, 14, 15, 0, 1, 2, 3, 4, 5, 6, 7)); // abcdefghijklmnop -> ijklmnopabcdefgh
-
-//VEC LEFT AND RIGHT
-#define VEC_LEFT1_EPI8(x1, x2) _mm_add_epi8(_mm_bslli_si128(x2, 1), _mm_bsrli_si128(x1, 15)) // x1 abcdefghijklmnop ; x2 qrstuvwxyz012345 -> pqrstuvwxyz01234
-#define VEC_RIGHT1_EPI8(x1, x2) _mm_add_epi8(_mm_bslli_si128(x2, 15), _mm_bsrli_si128(x1, 1)) // x1 abcdefghijklmnop ; x2 qrstuvwxyz012345 -> bcdefghijklmnop0
-#define VEC_LEFT2_EPI8(x1, x2) _mm_add_epi8(_mm_bslli_si128(x2, 2), _mm_bsrli_si128(x1, 14))
-#define VEC_RIGHT2_EPI8(x1, x2) _mm_add_epi8(_mm_bslli_si128(x2, 14), _mm_bsrli_si128(x1, 2))
-
 // CALCULS SUR 9 VECTEURS
 #define VEC_AND_9_EPI8(x1, x2, x3, x4, x5, x6, x7, x8, x9) _mm_and_si128(x1, _mm_and_si128(x2, _mm_and_si128(x3, _mm_and_si128(x4, _mm_and_si128(x5, _mm_and_si128(x6, _mm_and_si128(x7, _mm_and_si128(x8, x9))))))))
-#define VEC_OR_9_EPI8(x1, x2, x3, x4, x5, x6, x7, x8, x9) _mm_or_si128(x1, _mm_or_si128(x2, _mm_or_si128(x3, _mm_or_si128(x4, _mm_or_si128(x5, _mm_or_si128(x6, _mm_or_si128(x7, _mm_or_si128(x8, x9))))))));
+#define VEC_OR_9_EPI8(x1, x2, x3, x4, x5, x6, x7, x8, x9) _mm_or_si128(x1, _mm_or_si128(x2, _mm_or_si128(x3, _mm_or_si128(x4, _mm_or_si128(x5, _mm_or_si128(x6, _mm_or_si128(x7, _mm_or_si128(x8, x9))))))))
 
 //CALCULS SUR 25 VECTEURS
 #define VEC_AND_25_EPI8(x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17, x18, x19, x20, x21, x22, x23, x24, x25) \
@@ -106,17 +89,5 @@ _mm_or_si128(x6, _mm_or_si128(x7, _mm_or_si128(x8, _mm_or_si128(x9, _mm_or_si128
 _mm_or_si128(x11, _mm_or_si128(x12, _mm_or_si128(x13, _mm_or_si128(x14, _mm_or_si128(x15, \
 _mm_or_si128(x16, _mm_or_si128(x17, _mm_or_si128(x18, _mm_or_si128(x19, _mm_or_si128(x20, \
 _mm_or_si128(x21, _mm_or_si128(x22, _mm_or_si128(x23, _mm_or_si128(x24, x25))))))))))))))))))))))))
-
-// COMPARE
-#define VEC_CMPEQ_EPI8(x, y) _mm_cmpeq_epi8(x, y) // if x = y => 255 else 0
-#define VEC_CMPGT_EPI8(x, y) _mm_cmpgt_epi8(x, y) // if x > y => 255 else 0
-#define VEC_CMPLT_EPI8(x, y) _mm_cmplt_epi8(x, y) // if x < y => 255 else 0
-
-// CALCULS
-#define VEC_AND_EPI8(x, y) _mm_and_si128(x, y); // ET logique bit a bit
-#define VEC_ADD_EPI8(x, y) _mm_add_epi8(x, y);  // Addition 8 bit 
-#define VEC_SUB_EPI8(x, y) _mm_sub_epi8(x, y);  // Soustraction 8 bit 
-
-#define VEC_ABS_EPI8(x) _mm_abs_epi8(x);		// Valeur absolue
 
 #endif // __SIMD_MACRO_H__

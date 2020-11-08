@@ -5,8 +5,10 @@
 # Copyright (c) 2000-2007 Lionel Lacassagne
 # with a little help of Stephane Piskorski and Joel Falcou
 
-# -- Lile list ----------
-FILE = main.c simd1D.c nrutil.c vnrutil.c mutil.c mouvement.c morpho.c test_mouvement.c test_mouvement_morpho.c test_morpho.c mouvement_SIMD.c test_mouvement_SIMD.c bench_mouvement.c bench_mouvement_SIMD.c
+# -- File list ----------
+FILE = 	main.c nrutil.c vnrutil.c mutil.c mouvement.c morpho.c test_mouvement.c test_mouvement_morpho.c \
+		test_morpho.c mouvement_SIMD.c test_mouvement_SIMD.c bench_mouvement.c bench_mouvement_SIMD.c \
+		morpho_SIMD.c test_mouvement_morpho_SIMD.c
 
 # -- Paths ----------
 SRC_PATH = src
@@ -48,22 +50,22 @@ OBJ = $(addprefix ${OBJ_PATH}/, $(addsuffix .o, $(basename $(FILE))))
 
 # -- Base rules ----------
 $(OBJ_PATH)/%.o : $(SRC_PATH)/%.c
-    $(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
 
 #-----Main rule ----------
 $(EXE_PATH)/$(PRODUCT): $(OBJ)
-    $(CC) -o $@ $^ $(LDFLAGS) $(OPTFLAGS) $(CFG) $(INC) $(LIB) -lm
+	$(CC) -o $@ $^ $(LDFLAGS) $(OPTFLAGS) $(CFG) $(INC) $(LIB) -lm
 
 # -- Other stuff ----------
 depend:
-    makedepend $(CFLAGS) -Y $(SRC)
+	makedepend $(CFLAGS) -Y $(SRC)
 
 clean:
-    rm -f $(OBJ)
-    rm -f ${LIB_PATH}/${PRODUCT}
-    rm -f pgm_imgs/.pgm
-    rm -f exe/.*
+	rm -f $(OBJ)
+	rm -f ${LIB_PATH}/${PRODUCT}
+	rm -f pgm_imgs/*.pgm
+	rm -f exe/*
 
 tar:
-    tar -cvf deriche_SSE.tar Makefile src include
-    gzip -9 deriche_SSE.tar
+	tar -cvf deriche_SSE.tar Makefile src include
+	gzip -9 deriche_SSE.tar

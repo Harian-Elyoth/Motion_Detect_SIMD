@@ -356,8 +356,8 @@ void main_bench_mouvement(int argc, char *argv[]){
 	// bench_mouvement_car(true);
 
 	// benchmark unitaire sur image du set
-	// bench_mouvement_car(false);
+	bench_mouvement_car(false);
 
 	// benchmark global sur tout le dataset
-	bench_mouvement_dataset();
+	// bench_mouvement_dataset();
 }
