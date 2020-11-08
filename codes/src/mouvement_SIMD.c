@@ -2,141 +2,14 @@
 /* ---  Algorithme Sigma Delta en SIMD pour le traitement d'image --- */
 /* ------------------------------------------------------------------ */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <string.h>
-
-#include "nrdef.h"
-#include "nrutil.h"
-
-#include "vnrdef.h"
-#include "vnrutil.h"
-
-#include "mutil.h"
-
-#include "mymacro.h"
-#include "simd_macro.h"
-
 #include "mouvement_SIMD.h"
 
-// MACRO MIN MAX
-#define MIN(x, y) (((x) < (y)) ? (x) : (y))
-#define MAX(x, y) (((x) > (y)) ? (x) : (y))
 
-// NB IMAGES
-#define NB_IMG 200
+void duplicate_vborder(int mi0, int mi1, int mj0, int mj1, int b, vuint8** image){
 
-// facteur ecart type
-#define N 3
-
-// valeurs ecart type min et max (fix)
-#define VMIN 1
-#define VMAX 254
-
-// img size
-int WIDTH  = 32; // correspond au nb de colonne  => indice boucle j
-int HEIGHT = 16; // correspond au nb de ligne    => indice boucle i
-
-// BORD
-int b;
-
-// CARDINALITE
-int card;
-
-int mi0, mi1, mj0, mj1; 	// indices scalaires
-int mi0b, mi1b, mj0b, mj1b; // indices scalaires avec bord
-
-int vmi0, vmi1, vmj0, vmj1; 	// indices vectoriels
-int vmi0b, vmi1b, vmj0b, vmj1b; // indices vectoriels avec bord
-
-// images
-vuint8** image0;
-vuint8** image1;
-
-// moyennes
-vuint8** mean0;
-vuint8** mean1;		
-
-// ecart-types
-vuint8** std0;
-vuint8** std1;			
-
-// image de différence
-vuint8 ** img_diff;	
-
-// image binaire (sortie)
-vuint8 ** img_bin;
-
-void allocate_vmatrix(){
-	
-	// cardinalité des registres
-	card = card_vuint8(); // 16
-
-	// 1 for 3x3 
-	b = 1; 
-
-	// 2 for 5x5
-	//b = 2;
-
-	// indices scalaires matrices
-	mi0 = 0; mi1 = HEIGHT-1;
-	mj0 = 0; mj1 = WIDTH-1;
-	
-	// indices scalaires matrices avec bord
-	mi0b = mi0-b; mi1b = mi1+b;
-	mj0b = mj0-b; mj1b = mj1+b;
-
-	// indices vectoriels matrices
-	vmi0 = 0; vmi1 = (HEIGHT)-1;
-	vmj0 = 0; vmj1 = (WIDTH/card)-1;
-	
-	// indices vectoriels matrices avec bord
-	vmi0b = vmi0-b; vmi1b = vmi1+b;
-	vmj0b = vmj0-b; vmj1b = vmj1+b;
-	
-	DEBUG(puts("")); 
-	DEBUG(printf("mi0b : %d\n", mi0b)); 
-	DEBUG(printf("mi1b : %d\n", mi1b)); 
-	DEBUG(printf("mj0b : %d\n", mj0b)); 
-	DEBUG(printf("mj1b : %d\n", mj1b));
-	DEBUG(puts("")); 
-
-	DEBUG(puts("")); 
-	DEBUG(printf("vmi0b : %d\n", vmi0b)); 
-	DEBUG(printf("vmi1b : %d\n", vmi1b)); 
-	DEBUG(printf("vmj0b : %d\n", vmj0b)); 
-	DEBUG(printf("vmj1b : %d\n", vmj1b));
-	DEBUG(puts("")); 
-
-	image0 = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
-	image1 = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
-
-	mean0 = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
-	mean1 = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
-
-	std0 = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
-	std1 = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
-
-	img_diff = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
-	img_bin = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
-}
-
-void free_vmatrix(){
-	free_vui8matrix(image0, vmi0b, vmi1b, vmj0b, vmj1b);
-	free_vui8matrix(image1, vmi0b, vmi1b, vmj0b, vmj1b);
-
-	free_vui8matrix(mean0, vmi0b, vmi1b, vmj0b, vmj1b);
-	free_vui8matrix(mean1, vmi0b, vmi1b, vmj0b, vmj1b);
-
-	free_vui8matrix(std0, vmi0b, vmi1b, vmj0b, vmj1b);
-	free_vui8matrix(std1, vmi0b, vmi1b, vmj0b, vmj1b);
-
-	free_vui8matrix(img_diff, vmi0b, vmi1b, vmj0b, vmj1b);
-	free_vui8matrix(img_bin, vmi0b, vmi1b, vmj0b, vmj1b);
-}
-
-void duplicate_vborder(){
+	// indices matrices avec bord
+	int mi0b = mi0-b; int mi1b = mi1+b;
+	int mj0b = mj0-b; int mj1b = mj1+b;
 
 	for (int i = mi0b; i <= mi1b; ++i)
 	{
@@ -154,101 +27,223 @@ void duplicate_vborder(){
 				}
 
 				// Bord Gauche
-				image0[i][mj0 - k] = image0[i][mj0];
-				image1[i][mj0 - k] = image1[i][mj0];
+				image[i][mj0 - k] = image[i][mj0];
 
 				// Bord Droit
-				image0[i][mj1 + k] = image0[i][mj1];
-				image1[i][mj1 + k] = image1[i][mj1];
+				image[i][mj1 + k] = image[i][mj1];
 
 				// Bord Haut
-				image0[mi0 - k][j] = image0[mi0][j];
-				image1[mi0 - k][j] = image1[mi0][j];
+				image[mi0 - k][j] = image[mi0][j];
 
 				// Bord Bas
-				image0[mi1 + k][j] = image0[mi1][j];
-				image1[mi1 + k][j] = image1[mi1][j];
+				image[mi1 + k][j] = image[mi1][j];
 			}
 		}
 	}
 }
 
-void load_img_to_matrix(char *filename0, char *filename1){
-
-	uint8 ** img0 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
-	uint8 ** img1 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
-
-	MLoadPGM_ui8matrix(filename0, mi0b, mi1b, mj0b, mj1b, img0);
-	MLoadPGM_ui8matrix(filename1, mi0b, mi1b, mj0b, mj1b, img1);
-
-	DEBUG(display_ui8matrix(img0, mi0b, mi1b, mj0b, mj1b, "%d ", "img0 : ")); DEBUG(puts(""));
-
-	DEBUG(printf("Before conversion\n");)
-
-	DEBUG(puts("")); 
-	DEBUG(printf("vmi0 : %d\n", vmi0)); 
-	DEBUG(printf("vmi1 : %d\n", vmi1)); 
-	DEBUG(printf("vmj0 : %d\n", vmj0)); 
-	DEBUG(printf("vmj1 : %d\n", vmj1));
-	DEBUG(puts("")); 
-
-	for (int i = vmi0; i <= vmi1; ++i)
-	{
-		for (int j = vmj0; j <= vmj1; ++j)
-		{
-			image0[i][j] = init_vuint8_all(	img0[i][(j * card) + 0 ], img0[i][(j * card) + 1 ], img0[i][(j * card) + 2 ], img0[i][(j * card) + 3 ], 
-											img0[i][(j * card) + 4 ], img0[i][(j * card) + 5 ], img0[i][(j * card) + 6 ], img0[i][(j * card) + 7 ], 
-											img0[i][(j * card) + 8 ], img0[i][(j * card) + 9 ], img0[i][(j * card) + 10], img0[i][(j * card) + 11], 
-											img0[i][(j * card) + 12], img0[i][(j * card) + 13], img0[i][(j * card) + 14], img0[i][(j * card) + 15]);
-		} 
-	}
-
-	DEBUG(printf("After conversion\n");)DEBUG(puts(""));
-}
-
-// ce fichier de test est fortement inspiré de la source suivante : https://www.tutorialspoint.com/c-program-to-write-an-image-in-pgm-format 
 void gen_pgm_img_simd(){
-   	int i, j;
+
    	int w = 32, h = 16;
 
-   	uint8 **image_t = ui8matrix(mi0b, mi1b, mj0b, mj1b);
-   	uint8 **image_t2 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+   	uint8 **image_t  = ui8matrix(0, h, 0, w);
+   	uint8 **image_t2 = ui8matrix(0, h, 0, w);
 
-   	for (int i = mi0; i <= mi1; ++i)
+   	for (int i = 0; i < h; ++i)
    	{
-   		for (int j = mj0; j <= mj1; ++j)
+   		for (int j = 0; j < w; ++j)
    		{
-   			image_t[i][j]  = i + j;
-   			image_t2[i][j] = i + j;
+   			image_t [i][j]  = i + j + (j*10);
+   			image_t2[i][j]  = i + j + (i*10);
    		}
    	}
 
 	// save result on pgm file
-	SavePGM_ui8matrix(image_t , 0, h, 0, w, "pgm_imgs/my_pgm1.pgm");
-	SavePGM_ui8matrix(image_t2, 0, h, 0, w, "pgm_imgs/my_pgm2.pgm");
-
-	load_img_to_matrix("pgm_imgs/my_pgm1.pgm", "pgm_imgs/my_pgm2.pgm");
+	SavePGM_ui8matrix(image_t  , 0, h, 0, w, "pgm_imgs/my_pgm1.pgm");
+	SavePGM_ui8matrix(image_t2 , 0, h, 0, w, "pgm_imgs/my_pgm2.pgm");
 }
 
-void test_SD_simd(){
+void SigmaDelta_step1_simd(int vmi0b, int vmi1b, int vmj0b, int vmj1b, vuint8** mean0, vuint8** mean1, vuint8** image){
 
-	allocate_vmatrix();
+	vuint8 mean0_reg, mean1_reg, image_reg;
+	vuint8 cmplt, cmpgt;
+	vuint8 ones, reslt, resgt;
 
-	gen_pgm_img_simd();
+	ones = init_vuint8(1);
 
-	duplicate_vborder();
+	for (int i = vmi0b; i <= vmi1b; ++i)
+	{
+		for (int j = vmj0b; j <= vmj1b; ++j)
+		{
+			mean0_reg = VEC_LOAD_2D_EPI8(i, j, mean0);
+			image_reg = VEC_LOAD_2D_EPI8(i, j, image);
 
-	DEBUG(puts(""));
+			// DEBUG(display_vuint8(mean0_reg, " %d ", " mean0_reg : ")); DEBUG(puts(""));
+			// DEBUG(display_vuint8(image_reg, " %d ", " image_reg :  ")); DEBUG(puts(""));
+			// DEBUG(display_vuint8(mean1_reg, " %d ", " mean1_reg :  ")); DEBUG(puts(""));
+			// DEBUG(puts(""));
 
-	DEBUG(display_vui8matrix(image0, vmi0b, vmi1b, vmj0b, vmj1b, "%d ", "image0 : ")); DEBUG(puts(""));
+			cmplt = VEC_CMPLT_EPI8(mean0_reg, image_reg);
+			cmpgt = VEC_CMPGT_EPI8(mean0_reg, image_reg);	
 
-	free_vmatrix();
+			// DEBUG(display_vuint8(cmplt, " %d ", " cmplt : ")); DEBUG(printf("\n\n"));
+			// DEBUG(display_vuint8(cmpgt, " %d ", " cmpgt : ")); DEBUG(printf("\n\n"));
 
+			reslt = VEC_AND_EPI8(cmplt, ones);
+			resgt = VEC_AND_EPI8(cmpgt, ones);
+			// DEBUG(display_vuint8(reslt, " %d ", " reslt : ")); DEBUG(printf("\n\n"));
+			// DEBUG(display_vuint8(resgt, " %d ", " resgt : ")); DEBUG(printf("\n\n"));
+
+			mean1_reg = VEC_SUB_EPI8(VEC_ADD_EPI8(mean0_reg, reslt), resgt); 
+			// DEBUG(display_vuint8(mean1_reg, " %d ", " mean1_reg : ")); DEBUG(printf("\n\n"));
+
+			VEC_STORE_2D_EPI8(mean1_reg, i, j, mean1);
+		}
+	}
 }
 
-void main_mouvement_simd(int argc, char *argv[])
-{
-	DEBUG(test_SD_simd());
+void SigmaDelta_step2_simd(int vmi0b, int vmi1b, int vmj0b, int vmj1b, vuint8** image, vuint8** mean1, vuint8** img_diff){
+
+	vuint8 mean1_reg, image_reg, abs_reg;
+
+	for (int i = vmi0b; i < vmi1b; ++i)
+	{
+		for (int j = vmj0b; j < vmj1b; ++j)
+		{
+			mean1_reg = VEC_LOAD_2D_EPI8(i, j, mean1);
+			image_reg = VEC_LOAD_2D_EPI8(i, j, image);
+
+			abs_reg = VEC_ABS_EPI8(VEC_SUB_EPI8(mean1_reg, image_reg));
+
+			VEC_STORE_2D_EPI8(abs_reg, i, j, img_diff);
+		}
+	}
 }
 
+void SigmaDelta_step3_simd(int vmi0b, int vmi1b, int vmj0b, int vmj1b, vuint8** std0, vuint8** std1, vuint8** img_diff){
 
+	vuint8 std0_reg, std1_reg;
+
+	vuint8 N_reg, N_img_diff_reg, VMAX_reg, VMIN_reg;
+
+	vuint8 cmplt, cmpgt, reslt, resgt, ones;
+
+	N_reg 		= init_vuint8(N);
+	ones  		= init_vuint8(1);
+	VMAX_reg	= init_vuint8(VMAX);
+	VMIN_reg	= init_vuint8(VMIN);
+
+	for (int i = vmi0b; i < vmi1b; ++i)
+	{
+		for (int j = vmj0b; j < vmj1b; ++j)
+		{
+			N_img_diff_reg = VEC_LOAD_2D_EPI8(i, j, img_diff);
+
+			// simul multiplication
+			for(int k = 0; k < N; ++k)
+			{
+				N_img_diff_reg = VEC_ADD_EPI8(N_img_diff_reg, N_reg);
+			}
+
+			std0_reg = VEC_LOAD_2D_EPI8(i, j, std0);
+
+			cmplt = VEC_CMPLT_EPI8(std0_reg, N_img_diff_reg);
+			cmpgt = VEC_CMPGT_EPI8(std0_reg, N_img_diff_reg);
+
+			reslt = VEC_AND_EPI8(cmplt, ones);
+			resgt = VEC_AND_EPI8(cmpgt, ones);
+
+			std1_reg = VEC_SUB_EPI8(VEC_ADD_EPI8(std1_reg, reslt), resgt); 
+
+			// clamp to [Vmin,Vmax]
+			std1_reg = VEC_MAX_EPI8(VEC_MIN_EPI8(std1_reg, VMAX_reg), VMIN_reg);
+
+			VEC_STORE_2D_EPI8(std1_reg, i, j, std1);
+		}
+	}
+}	
+
+void SigmaDelta_step4_simd(int vmi0b, int vmi1b, int vmj0b, int vmj1b, vuint8** std1, vuint8** img_diff, vuint8** img_bin){
+
+	vuint8 std1_reg, img_diff_reg, img_bin_reg;
+
+	vuint8 cmpgt, ones;
+
+	ones = init_vuint8(1);
+
+	for (int i = vmi0b; i < vmi1b; ++i)
+	{
+		for (int j = vmj0b; j < vmj1b; ++j)
+		{
+			std1_reg 		= VEC_LOAD_2D_EPI8(i, j, std1);
+			img_diff_reg 	= VEC_LOAD_2D_EPI8(i, j, img_diff);
+
+			cmpgt = VEC_CMPLT_EPI8(std1_reg, img_diff_reg);
+
+			img_bin_reg = VEC_AND_EPI8(cmpgt, ones);
+
+			VEC_STORE_2D_EPI8(img_bin_reg, i, j, img_bin);
+		}
+	}
+}
+
+void ui8matrix_to_vui8matrix(int card, int vmi0b, int vmi1b, int vmj0b, int vmj1b, uint8** img, vuint8** img_simd){
+
+	for (int i = vmi0b; i <= vmi1b; ++i)
+	{
+		for (int j = vmj0b; j <= vmj1b; ++j)
+		{
+			if (j == vmj0b)
+			{
+				img_simd[i][j] = init_vuint8(img[i][j]);
+			}
+			else if (j == vmj1b)
+			{
+				img_simd[i][j] = init_vuint8(img[i][j*card]);
+			}
+			else{
+				img_simd[i][j] = init_vuint8_all(	img[i][(j * card) + 0 ], img[i][(j * card) + 1 ], img[i][(j * card) + 2 ], img[i][(j * card) + 3 ], 
+												img[i][(j * card) + 4 ], img[i][(j * card) + 5 ], img[i][(j * card) + 6 ], img[i][(j * card) + 7 ], 
+												img[i][(j * card) + 8 ], img[i][(j * card) + 9 ], img[i][(j * card) + 10], img[i][(j * card) + 11], 
+												img[i][(j * card) + 12], img[i][(j * card) + 13], img[i][(j * card) + 14], img[i][(j * card) + 15]);
+			}
+		} 
+	}
+}
+
+void vui8matrix_to_ui8matrix(int card, int vmi0b, int vmi1b, int vmj0b, int vmj1b, uint8** img, vuint8** img_simd){
+
+	for (int i = vmi0b; i <= vmi1b; ++i)
+	{
+		for (int j = vmj0b; j <= vmj1b; ++j)
+		{
+			if (j == vmj0b)
+			{
+				img[i][j] = (uint8)(_mm_extract_epi8(img_simd[i][j], 15));
+			}
+			else if (j == vmj1b)
+			{
+				img[i][j] = (uint8)(_mm_extract_epi8(img_simd[i][j], 0));	
+			}
+			else{
+
+				img[i][j * card + 0 ] = (uint8)(_mm_extract_epi8(img_simd[i][j], 0 ));
+				img[i][j * card + 1 ] = (uint8)(_mm_extract_epi8(img_simd[i][j], 1 ));
+				img[i][j * card + 2 ] = (uint8)(_mm_extract_epi8(img_simd[i][j], 2 ));
+				img[i][j * card + 3 ] = (uint8)(_mm_extract_epi8(img_simd[i][j], 3 ));
+				img[i][j * card + 4 ] = (uint8)(_mm_extract_epi8(img_simd[i][j], 4 ));
+				img[i][j * card + 5 ] = (uint8)(_mm_extract_epi8(img_simd[i][j], 5 ));
+				img[i][j * card + 6 ] = (uint8)(_mm_extract_epi8(img_simd[i][j], 6 ));
+				img[i][j * card + 7 ] = (uint8)(_mm_extract_epi8(img_simd[i][j], 7 ));
+				img[i][j * card + 8 ] = (uint8)(_mm_extract_epi8(img_simd[i][j], 8 ));
+				img[i][j * card + 9 ] = (uint8)(_mm_extract_epi8(img_simd[i][j], 9 ));
+				img[i][j * card + 10] = (uint8)(_mm_extract_epi8(img_simd[i][j], 10));
+				img[i][j * card + 11] = (uint8)(_mm_extract_epi8(img_simd[i][j], 11));
+				img[i][j * card + 12] = (uint8)(_mm_extract_epi8(img_simd[i][j], 12));
+				img[i][j * card + 13] = (uint8)(_mm_extract_epi8(img_simd[i][j], 13));
+				img[i][j * card + 14] = (uint8)(_mm_extract_epi8(img_simd[i][j], 14));
+				img[i][j * card + 15] = (uint8)(_mm_extract_epi8(img_simd[i][j], 15));
+			}
+		} 
+	}
+}

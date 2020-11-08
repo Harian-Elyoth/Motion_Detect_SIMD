@@ -1,9 +1,9 @@
-/* --------------------------------- */
-/* ------- test_mouvement.h -------- */
-/* --------------------------------- */
+/* --------------------------------------- */
+/* ------- bench_mouvement_SIMD.h -------- */
+/* --------------------------------------- */
 
-#ifndef __TEST_MOUVEMENT_H__
-#define __TEST_MOUVEMENT_H__
+#ifndef __BENCH_MOUVEMENT_SIMD_H__
+#define __BENCH_MOUVEMENT_SIMD_H__
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -22,18 +22,18 @@
 #include "mymacro.h"
 #include "simd_macro.h"
 
-#include "mouvement.h"
+#include "mouvement_SIMD.h"
 
 #ifdef __cplusplus
 #pragma message ("C++")
 extern "C" {
 #endif
 
-void test_mouvement_car(bool is_visual);
-void test_mouvement_dataset();
+void bench_mouvement_SIMD_car(bool is_visual);
+void bench_mouvement_SIMD_dataset();
 
 // fonction principale     
-void main_test_mouvement(int argc, char *argv[]);
+void main_bench_mouvement_SIMD(int argc, char *argv[]);
 
 #ifdef __cplusplus
 }

@@ -4,94 +4,140 @@
 ===============================================================
 */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <string.h>
-
-#include "nrdef.h"
-#include "nrutil.h"
-
-#include "vnrdef.h"
-#include "vnrutil.h"
-
-#include "mutil.h"
-
-#include "mymacro.h"
-#include "simd_macro.h"
-
-#include "mouvement.h"
-#include "morpho.h"
 #include "test_mouvement_morpho.h"
 
 
 void test_mouvement_morpho(){
+
+	// BORD
+	int b;
+
+	int mi0, mi1, mj0, mj1; 	// indices scalaire
+	int mi0b, mi1b, mj0b, mj1b; // indices scalaires avec bord
 
 	// chronometrie
     int iter, niter = 4;
     int run, nrun = 5;
     double t0, t1, dt, tmin, t;
     double cycles;
-
-    char *format = "%d ";
     int kernel_size = 3;
 
-    // alloue les matrices images, moyennes, ecart-types, diff, binaire
-	allocate_matrix(kernel_size);
+    char *format = "%d ";
+
+    // ------------------------- //
+    // -- calculs des indices -- //
+    // ------------------------- //
+
+    // 1 for 3x3 / 2 for 5x5
+    b = 1; 
+
+    // indices matrices
+	mi0 = 0; mi1 = HEIGHT - 1;
+	mj0 = 0; mj1 = WIDTH  - 1;
+	
+	// indices matrices avec bord
+	mi0b = mi0-b; mi1b = mi1+b;
+	mj0b = mj0-b; mj1b = mj1+b;
+
+	// ---------------- //
+    // -- allocation -- //
+    // ---------------- //
+
+	uint8 ** image = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+
+	uint8 ** mean0 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8 ** mean1 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+
+	uint8 ** std0 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8 ** std1 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+
+	uint8 ** img_diff = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8 ** img_bin = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+
+	uint8 ** img_filtered = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+
+	// -------------- //
+    // -- prologue -- //
+    // -------------- //
+
+	MLoadPGM_ui8matrix("../car3/car_3000.pgm", mi0b, mi1b, mj0b, mj1b, image);
+
+	duplicate_border(mi0, mi1, mj0, mj1, b, image);
+
+	// initiate mean0 et std0 for first iteration
+	for (int i = mi0b; i <= mi1b; ++i)
+	{
+		for (int j = mj0b; j <= mj1b; ++j)
+		{
+			mean0[i][j] = image[i][j];
+			std0[i][j]  = VMIN;
+		}
+	}
 
 	int count = 3000;
 
 	for (int i = 1; i < NB_IMG ; ++i)
 	{
+		count++;
 
-		char filename0[25] = "";
+		char filename[25] = "";
 
-		snprintf(filename0, 25, "../car3/car_%d.pgm", count);
+		snprintf(filename, 25, "../car3/car_%d.pgm", count);
 
-		count += 1;
+		// --------------------------- //
+    	// -- chargement de l'image -- //
+    	// --------------------------- //
 
-		char filename1[25] = "";
+		MLoadPGM_ui8matrix(filename, mi0b, mi1b, mj0b, mj1b, image);
 
-		snprintf(filename1, 25, "../car3/car_%d.pgm", count);
+		duplicate_border(mi0, mi1, mj0, mj1, b, image);
 
-		// CHARGER LES IMAGES PUIS FAIRE TRAITEMENTS
+		// ----------------- //
+	    // -- traitements -- //
+	    // ----------------- //
 
-		MLoadPGM_ui8matrix(filename0, mi0b, mi1b, mj0b, mj1b, image0);
-		MLoadPGM_ui8matrix(filename1, mi0b, mi1b, mj0b, mj1b, image1);
+	    BENCH(printf("\nSigma Delta :\n\n");)
 
-		// Fait uniquement au 1er tour de boucle	
-		if (i == 1){
+		CHRONO(SigmaDelta_step1(mi0b, mi1b, mj0b, mj1b, mean0, mean1, image),cycles);
+		BENCH(printf("step 1 : cpp (cycles/X*Y) = %0.6f", cycles/(WIDTH * HEIGHT))); BENCH(puts(""));
 
-			// initiate mean0 et std0
-			for (int i = mi0b; i <= mi1b; ++i)
-			{
-				for (int j = mj0b; j <= mj1b; ++j)
-				{
-					mean0[i][j] = image0[i][j];
-					std0[i][j]  = VMIN;
-				}
-			}
-		}
+		CHRONO(SigmaDelta_step2(mi0b, mi1b, mj0b, mj1b, image, mean1, img_diff),cycles);
+		BENCH(printf("step 2 : cpp (cycles/X*Y) = %0.6f", cycles/(WIDTH * HEIGHT))); BENCH(puts(""));
 
-		CHRONO(SigmaDelta(),cycles);
+		CHRONO(SigmaDelta_step3(mi0b, mi1b, mj0b, mj1b, std0, std1, img_diff),cycles);
+		BENCH(printf("step 3 : cpp (cycles/X*Y) = %0.6f", cycles/(WIDTH * HEIGHT))); BENCH(puts(""));
 
-		BENCH(printf("SIGMA DELTA : "));
-		BENCH(printf("it = %d, cycles/X*Y = %0.6f", i, cycles/(WIDTH * HEIGHT))); BENCH(puts(""));
+		CHRONO(SigmaDelta_step4(mi0b, mi1b, mj0b, mj1b, std1, img_diff, img_bin),cycles);
+		BENCH(printf("step 4 : cpp (cycles/X*Y) = %0.6f", cycles/(WIDTH * HEIGHT))); BENCH(puts(""));
 
-		CHRONO(morpho_3(img_bin, img_filtered, mi0, mj0, mi1, mj1),cycles);
+		BENCH(printf("\n\nMorphologie Mathematiques :\n\n"));
 
-		BENCH(printf("MORPHOLOGIE : "));
-		BENCH(printf("it = %d, cycles/X*Y = %0.6f", i, cycles/(WIDTH * HEIGHT))); BENCH(puts(""));
+		CHRONO(morpho_3(img_bin, img_filtered, mi0, mi1, mj0, mj1),cycles); 
+		BENCH(printf("morpho_3 : cpp (cycles/X*Y) = %0.6f", cycles/(WIDTH * HEIGHT))); BENCH(puts(""));
 
 		// built pgm filename out
 		char filename_out[25] = "";
-		snprintf(filename_out, 25, "SD_out_%d.pgm", i);
+		snprintf(filename_out, 25, "MM_out_%d.pgm", i);
 
-		filtered_to_pgm(filename_out);
+		bin_to_pgm(mi0b, mi1b, mj0b, mj1b, img_filtered, filename_out);
 	}
 
-	// free all matrix
-	void free_matrix();
+	// ---------- //
+    // -- free -- //
+    // ---------- //
+
+	free_ui8matrix(image, mi0b, mi1b, mj0b, mj1b);
+
+	free_ui8matrix(mean0, mi0b, mi1b, mj0b, mj1b);
+	free_ui8matrix(mean1, mi0b, mi1b, mj0b, mj1b);
+
+	free_ui8matrix(std0, mi0b, mi1b, mj0b, mj1b);
+	free_ui8matrix(std1, mi0b, mi1b, mj0b, mj1b);
+
+	free_ui8matrix(img_diff, mi0b, mi1b, mj0b, mj1b);
+	free_ui8matrix(img_bin, mi0b, mi1b, mj0b, mj1b);
+
+	free_ui8matrix(img_filtered, mi0b, mi1b, mj0b, mj1b);
 }
 
 void main_test_mouvement_morpho(int argc, char *argv[])
