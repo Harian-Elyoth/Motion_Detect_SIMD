@@ -16,7 +16,6 @@ void duplicate_border(int mi0, int mi1, int mj0, int mj1, int b, uint8** image){
 		{
 			for (int k = 0; k <= b; ++k)
 			{
-
 				// economise des tours de boucles => plus performant !
 
 				if(i > mi0 && i <= mi1){
@@ -61,12 +60,78 @@ void SigmaDelta_step1(int mi0b, int mi1b, int mj0b, int mj1b, uint8** mean0, uin
 	}
 }
 
+void SigmaDelta_step1_opti(int mi0b, int mi1b, int mj0b, int mj1b, uint8** mean0, uint8** mean1, uint8** image){
+
+	int k = 4;
+
+	for (int i = mi0b; i <= mi1b; ++i)
+	{
+		for (int j = mj0b; j <= mj1b / k; j = j + k)
+		{
+			if (mean0[i][j] < image[i][j]){
+				mean1[i][j] = mean0[i][j] + 1;
+			}
+			else if (mean0[i][j] > image[i][j]){
+				mean1[i][j] = mean0[i][j] - 1;
+			}
+			else{
+				mean1[i][j] = mean0[i][j];
+			}
+
+			if (mean0[i][j+1] < image[i][j+1]){
+				mean1[i][j+1] = mean0[i][j+1] + 1;
+			}
+			else if (mean0[i][j+1] > image[i][j+1]){
+				mean1[i][j+1] = mean0[i][j+1] - 1;
+			}
+			else{
+				mean1[i][j+1] = mean0[i][j+1];
+			}
+
+			if (mean0[i][j+2] < image[i][j+2]){
+				mean1[i][j+2] = mean0[i][j+2] + 1;
+			}
+			else if (mean0[i][j+2] > image[i][j+2]){
+				mean1[i][j+2] = mean0[i][j+2] - 1;
+			}
+			else{
+				mean1[i][j+2] = mean0[i][j+2];
+			}
+
+			if (mean0[i][j+3] < image[i][j+3]){
+				mean1[i][j+3] = mean0[i][j+3] + 1;
+			}
+			else if (mean0[i][j+3] > image[i][j+3]){
+				mean1[i][j+3] = mean0[i][j+3] - 1;
+			}
+			else{
+				mean1[i][j+3] = mean0[i][j+3];
+			}
+		}
+	}
+}
+
 void SigmaDelta_step2(int mi0b, int mi1b, int mj0b, int mj1b, uint8** image, uint8** mean1, uint8** img_diff){
 
 	for (int i = mi0b; i <= mi1b; ++i){
 
 		for (int j = mj0b; j <= mj1b; ++j){
 			img_diff[i][j] = abs(mean1[i][j] - image[i][j]);
+		}
+	}
+}
+
+void SigmaDelta_step2_opti(int mi0b, int mi1b, int mj0b, int mj1b, uint8** image, uint8** mean1, uint8** img_diff){
+
+	int k = 4;
+
+	for (int i = mi0b; i <= mi1b; ++i){
+
+		for (int j = mj0b; j <= mj1b / k ; j = j + k){
+			img_diff[i][j + 0] = abs(mean1[i][j + 0] - image[i][j + 0]);
+			img_diff[i][j + 1] = abs(mean1[i][j + 1] - image[i][j + 1]);
+			img_diff[i][j + 2] = abs(mean1[i][j + 2] - image[i][j + 2]);
+			img_diff[i][j + 3] = abs(mean1[i][j + 3] - image[i][j + 3]);
 		}
 	}
 }
@@ -95,6 +160,79 @@ void SigmaDelta_step3(int mi0b, int mi1b, int mj0b, int mj1b, uint8** std0, uint
 	}
 }
 
+void SigmaDelta_step3_opti(int mi0b, int mi1b, int mj0b, int mj1b, uint8** std0, uint8** std1, uint8** img_diff){
+
+	int k = 4;
+
+	for (int i = mi0b; i <= mi1b; ++i)
+	{
+		for (int j = mj0b; j <= mj1b / k; j = j + k)
+		{
+			if (std0[i][j + 0] < N * img_diff[i][j + 0]){
+				std1[i][j + 0] = std0[i][j + 0] + 1;
+			}
+
+			else if (std0[i][j + 0] > N * img_diff[i][j + 0]){
+				std1[i][j + 0] = std0[i][j + 0] - 1;
+			}
+
+			else{
+				std1[i][j + 0] = std0[i][j + 0];
+			}
+
+			/*---------------------------------------------------*/
+
+			if (std0[i][j + 1] < N * img_diff[i][j + 1]){
+				std1[i][j + 1] = std0[i][j + 1] + 1;
+			}
+
+			else if (std0[i][j + 1] > N * img_diff[i][j + 1]){
+				std1[i][j + 1] = std0[i][j + 1] - 1;
+			}
+
+			else{
+				std1[i][j + 1] = std0[i][j + 1];
+			}
+
+			/*---------------------------------------------------*/
+			
+			if (std0[i][j + 2] < N * img_diff[i][j + 2]){
+				std1[i][j + 2] = std0[i][j + 2] + 1;
+			}
+
+			else if (std0[i][j + 2] > N * img_diff[i][j + 2]){
+				std1[i][j + 2] = std0[i][j + 2] - 1;
+			}
+
+			else{
+				std1[i][j + 2] = std0[i][j + 2];
+			}
+
+			/*---------------------------------------------------*/
+			
+			if (std0[i][j + 3] < N * img_diff[i][j + 3]){
+				std1[i][j + 3] = std0[i][j + 3] + 1;
+			}
+
+			else if (std0[i][j + 3] > N * img_diff[i][j + 3]){
+				std1[i][j + 3] = std0[i][j + 3] - 1;
+			}
+
+			else{
+				std1[i][j + 3] = std0[i][j + 3];
+			}
+
+			/*---------------------------------------------------*/
+			
+			// clamp to [Vmin,Vmax]
+			std1[i][j + 0] = MAX(MIN(std1[i][j + 0], VMAX), VMIN);
+			std1[i][j + 1] = MAX(MIN(std1[i][j + 1], VMAX), VMIN);
+			std1[i][j + 2] = MAX(MIN(std1[i][j + 1], VMAX), VMIN);
+			std1[i][j + 3] = MAX(MIN(std1[i][j + 1], VMAX), VMIN);
+		}
+	}
+}
+
 void SigmaDelta_step4(int mi0b, int mi1b, int mj0b, int mj1b, uint8** std1, uint8** img_diff, uint8** img_bin){
 
 	for (int i = mi0b; i <= mi1b; ++i)
@@ -106,6 +244,51 @@ void SigmaDelta_step4(int mi0b, int mi1b, int mj0b, int mj1b, uint8** std1, uint
 			}
 			else{
 				img_bin[i][j] = 1;
+			}
+		}
+	}
+}
+
+void SigmaDelta_step4_opti(int mi0b, int mi1b, int mj0b, int mj1b, uint8** std1, uint8** img_diff, uint8** img_bin){
+
+	int k = 4;
+
+	for (int i = mi0b; i <= mi1b; ++i)
+	{
+		for (int j = mj0b; j <= mj1b / k; j = j + k)
+		{
+			if (img_diff[i][j + 0] < std1[i][j + 0]){
+				img_bin[i][j + 0] = 0;
+			}
+			else{
+				img_bin[i][j + 0] = 1;
+			}
+
+			/*---------------------------------------------------*/
+
+			if (img_diff[i][j + 1] < std1[i][j + 1]){
+				img_bin[i][j + 1] = 0;
+			}
+			else{
+				img_bin[i][j + 1] = 1;
+			}
+
+			/*---------------------------------------------------*/
+
+			if (img_diff[i][j + 2] < std1[i][j + 2]){
+				img_bin[i][j + 2] = 0;
+			}
+			else{
+				img_bin[i][j + 2] = 1;
+			}
+
+			/*---------------------------------------------------*/
+			
+			if (img_diff[i][j + 3] < std1[i][j + 3]){
+				img_bin[i][j + 3] = 0;
+			}
+			else{
+				img_bin[i][j + 3] = 1;
 			}
 		}
 	}
