@@ -134,6 +134,10 @@ void test_mouvement_morpho_dataset(){
 
     char *format = "%d ";
 
+    puts("=======================================");
+	puts("=== test mouvement + morpho dataset ===");
+	puts("=======================================");
+
     // ------------------------- //
     // -- calculs des indices -- //
     // ------------------------- //

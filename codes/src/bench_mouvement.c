@@ -158,7 +158,7 @@ void bench_mouvement_car(bool is_visual){
 
 	cycles_total = cycles_step1 + cycles_step2 + cycles_step3 + cycles_step4;
 	time_total   = time_step1   + time_step2   + time_step3   + time_step4;
-	debit_total  = debit_step1  + debit_step2  + debit_step3  + debit_step4;
+	debit_total  = (WIDTH*HEIGHT) / time_total;
 
 	BENCH(printf("Total :")); BENCH(puts(""));
 	BENCH(printf("temps (ms) \t    = %0.6f", time_total)); BENCH(puts(""));

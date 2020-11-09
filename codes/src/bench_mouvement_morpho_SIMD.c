@@ -185,7 +185,7 @@ void bench_mouvement_morpho_SIMD_car(bool is_visual){
 	CHRONO(SigmaDelta_step1_simd(vmi0b, vmi1b, vmj0b, vmj1b, mean0, mean1, image), cycles_step1);
 	finish = clock();
 	time_step1 = (double)(finish-start)/CLOCKS_PER_SEC;
-	debit_step1 = (WIDTH*HEIGHT) / time_step1;
+	debit_step1 = (width*height) / time_step1;
 	time_step1 *= 1000;
 
 	BENCH(printf("step 1 :")); BENCH(puts(""));
@@ -197,7 +197,7 @@ void bench_mouvement_morpho_SIMD_car(bool is_visual){
 	CHRONO(SigmaDelta_step2_simd(vmi0b, vmi1b, vmj0b, vmj1b, image, mean1, img_diff), cycles_step2);
 	finish = clock();
 	time_step2 = (double)(finish-start)/CLOCKS_PER_SEC;
-	debit_step2 = (WIDTH*HEIGHT) / time_step2;
+	debit_step2 = (width*height) / time_step2;
 	time_step2 *= 1000;
 
 	BENCH(printf("step 2 :")); BENCH(puts(""));
@@ -209,7 +209,7 @@ void bench_mouvement_morpho_SIMD_car(bool is_visual){
 	CHRONO(SigmaDelta_step3_simd(vmi0b, vmi1b, vmj0b, vmj1b, std0, std1, img_diff), cycles_step3);
 	finish = clock();
 	time_step3 = (double)(finish-start)/CLOCKS_PER_SEC;
-	debit_step3 = (WIDTH*HEIGHT) / time_step3;
+	debit_step3 = (width*height) / time_step3;
 	time_step3 *= 1000;
 
 	BENCH(printf("step 3 :")); BENCH(puts(""));
@@ -221,7 +221,7 @@ void bench_mouvement_morpho_SIMD_car(bool is_visual){
 	CHRONO(SigmaDelta_step4_simd( vmi0b, vmi1b, vmj0b, vmj1b, std1, img_diff, img_bin), cycles_step4);
 	finish = clock();
 	time_step4 = (double)(finish-start)/CLOCKS_PER_SEC;
-	debit_step4 = (WIDTH*HEIGHT) / time_step4;
+	debit_step4 = (width*height) / time_step4;
 	time_step4 *= 1000;
 
 	BENCH(printf("step 4 :")); BENCH(puts(""));
@@ -233,7 +233,7 @@ void bench_mouvement_morpho_SIMD_car(bool is_visual){
 	CHRONO(morpho_3_SIMD(img_bin, img_filtered, vmi0, vmi1, vmj0, vmj1), cycles_morpho); 
 	finish = clock();
 	time_morpho = (double)(finish-start)/CLOCKS_PER_SEC;
-	debit_morpho = (WIDTH*HEIGHT) / time_morpho;
+	debit_morpho = (width*height) / time_morpho;
 	time_morpho *= 1000;
 
 	BENCH(printf("Morphologie :")); BENCH(puts(""));
@@ -243,7 +243,7 @@ void bench_mouvement_morpho_SIMD_car(bool is_visual){
 
 	cycles_total = cycles_step1 + cycles_step2 + cycles_step3 + cycles_step4 + cycles_morpho;
 	time_total   = time_step1   + time_step2   + time_step3   + time_step4 + time_morpho;
-	debit_total  = debit_step1  + debit_step2  + debit_step3  + debit_step4 + debit_morpho;
+	debit_total  = (width*height) / time_total;;
 
 	BENCH(printf("Total :")); BENCH(puts(""));
 	BENCH(printf("temps (ms) \t    = %0.6f", time_total)); BENCH(puts(""));
@@ -441,7 +441,7 @@ void bench_mouvement_morpho_SIMD_dataset(){
 
 		cycles_total = cycles_step1 + cycles_step2 + cycles_step3 + cycles_step4 + cycles_morpho;
 		time_total   = time_step1   + time_step2   + time_step3   + time_step4 + time_morpho;
-		debit_total  = (WIDTH*HEIGHT) / time_total;
+		debit_total  = (width*height) / time_total;
 
 		cycles_dataset += cycles_total/(WIDTH*HEIGHT);
 		time_dataset += time_total;

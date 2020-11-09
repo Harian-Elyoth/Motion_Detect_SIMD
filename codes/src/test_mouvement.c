@@ -249,8 +249,8 @@ void main_test_mouvement(int argc, char *argv[])
 	// test_mouvement_car(true);
 
 	// test unitaire sur image du set
-	test_mouvement_car(false);
+	// test_mouvement_car(false);
 
 	// test global sur tout le set
-	// test_mouvement_dataset();	
+	test_mouvement_dataset();	
 }
