@@ -48,6 +48,13 @@ void test_mouvement_car(bool is_visual){
 	mi0b = mi0-b; mi1b = mi1+b;
 	mj0b = mj0-b; mj1b = mj1+b;
 
+	DEBUG(puts("")); 
+	DEBUG(printf("mi0b : %d\n", mi0b)); 
+	DEBUG(printf("mi1b : %d\n", mi1b)); 
+	DEBUG(printf("mj0b : %d\n", mj0b)); 
+	DEBUG(printf("mj1b : %d\n", mj1b));
+	DEBUG(puts("")); 
+
 	// ---------------- //
     // -- allocation -- //
     // ---------------- //
@@ -96,10 +103,14 @@ void test_mouvement_car(bool is_visual){
     // -- traitements -- //
     // ----------------- //
 
-    SigmaDelta_step1(mi0b, mi1b, mj0b, mj1b, mean0, mean1, image);
-	SigmaDelta_step2(mi0b, mi1b, mj0b, mj1b, image, mean1, img_diff);
-	SigmaDelta_step3(mi0b, mi1b, mj0b, mj1b, std0, std1, img_diff);
-	SigmaDelta_step4(mi0b, mi1b, mj0b, mj1b, std1, img_diff, img_bin);
+    DEBUG(display_ui8matrix(image, mi0b, mi1b, mj0b, mj1b, " %d ", "image"));
+
+    SigmaDelta_step1_opti(mi0b, mi1b, mj0b, mj1b, mean0, mean1, image);
+	SigmaDelta_step2_opti(mi0b, mi1b, mj0b, mj1b, image, mean1, img_diff);
+	SigmaDelta_step3_opti(mi0b, mi1b, mj0b, mj1b, std0, std1, img_diff);
+	SigmaDelta_step4_opti(mi0b, mi1b, mj0b, mj1b, std1, img_diff, img_bin);
+
+	DEBUG(display_ui8matrix(img_bin, mi0b, mi1b, mj0b, mj1b, " %d ", "img_bin"));
 
 	// convert binary img to pgm img
 	bin_to_pgm(mi0b, mi1b, mj0b, mj1b, img_bin,"SD_out.pgm");
@@ -249,8 +260,8 @@ void main_test_mouvement(int argc, char *argv[])
 	// test_mouvement_car(true);
 
 	// test unitaire sur image du set
-	// test_mouvement_car(false);
+	test_mouvement_car(false);
 
 	// test global sur tout le set
-	test_mouvement_dataset();	
+	// test_mouvement_dataset();	
 }

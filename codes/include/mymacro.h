@@ -9,7 +9,7 @@
 // activer ou desactiver le define ci-dessous pour passer du mode de mise au point
 // au mode benchmark
 
-#define ENABLE_BENCHMARK
+// #define ENABLE_BENCHMARK
 
 // -------------------------------------------
 // -- ne rien ecrire en dessous de cette ligne
@@ -33,6 +33,9 @@
 #endif
 
 //#define CHRONO(X,t)  tmin = 1e38; for(run=0; run<nrun; run++) { t0 = (double) _rdtsc(); for(iter=0; iter<niter; iter++) { X; } t1 = (double) _rdtsc(); dt=t1-t0; if(dt<tmin) tmin = dt; } t = tmin / (double) niter
+
+// clock processeur intel 
+#define CLK_PROC 1800000000
 
 #define CHRONO(X,t)                       \
     tmin = 1e38;                          \
