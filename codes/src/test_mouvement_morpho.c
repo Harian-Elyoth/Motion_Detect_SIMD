@@ -101,7 +101,7 @@ void test_mouvement_morpho_car(bool is_visual){
 	SigmaDelta_step4(mi0b, mi1b, mj0b, mj1b, std1, img_diff, img_bin);
 
 	// MORPHOLOGIE
-	morpho_3(img_bin, img_filtered, mi0, mi1, mj0, mj1); 
+	morpho_3_opti(img_bin, img_filtered, mi0, mi1, mj0, mj1); 
 
 	// convert binary img to pgm img
 	bin_to_pgm(mi0b, mi1b, mj0b, mj1b, img_bin,"SD_out.pgm");
@@ -217,12 +217,11 @@ void test_mouvement_morpho_dataset(){
 		SigmaDelta_step4(mi0b, mi1b, mj0b, mj1b, std1, img_diff, img_bin);
 
 		// MORPHOLOGIE
-		morpho_3(img_bin, img_filtered, mi0, mi1, mj0, mj1); 
+		morpho_3_opti(img_bin, img_filtered, mi0, mi1, mj0, mj1); 
 
 		// built pgm filename out
 		char filename_out[25] = "";
 		snprintf(filename_out, 25, "MM_out_%d.pgm", i);
-
 		bin_to_pgm(mi0b, mi1b, mj0b, mj1b, img_filtered, filename_out);
 	}
 

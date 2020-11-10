@@ -23,14 +23,12 @@
 #include "simd_macro.h"
 
 #include "morpho.h"
+#include "mouvement.h"
 
 #ifdef __cplusplus
 #pragma message ("C++")
 extern "C" {
 #endif
-
-#define HEIGHT_BENCH 24
-#define WIDTH_BENCH 32
 
 int b_bench;
 
@@ -48,6 +46,15 @@ void bench_dilatation_5();
 
 void bench_morpho_3();
 void bench_morpho_5();
+
+void bench_erosion_3_opti();
+void bench_erosion_5_opti();
+
+void bench_dilatation_3_opti();
+void bench_dilatation_5_opti();
+
+void bench_morpho_3_opti();
+void bench_morpho_5_opti();
 void gen_img_bin_bench(int type, int kernel_size);
 
 // fonction principale     

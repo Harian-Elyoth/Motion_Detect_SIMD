@@ -104,6 +104,102 @@ void test_morpho_5(){
     void free_matrix();
 }
 
+
+void test_erosion_3_opti(){
+    DEBUG(printf("\n===========================  TEST EROSION 3_opti =================================\n"));
+    gen_img_bin_test(1, 3);
+
+	char * format = "%d ";
+
+    DEBUG(display_ui8matrix(img_bin_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image binaire : ")); DEBUG(puts(""));
+    
+    //On recupère img_bin de mouvement et on applique une erosion_3 dessus
+    erosion_3_opti(img_bin_test, img_filtered_test , mi0_test, mi1_test, mj0_test, mj1_test);
+
+    DEBUG(display_ui8matrix(img_filtered_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image érodée : ")); DEBUG(puts(""));
+
+    void free_matrix();
+}
+
+void test_dilatation_3_opti(){
+    DEBUG(printf("\n===========================  TEST DILATATION 3_opti =================================\n"));
+    gen_img_bin_test(0, 3);
+
+	char * format = "%d ";
+
+    DEBUG(display_ui8matrix(img_bin_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image binaire : ")); DEBUG(puts(""));
+    //On recupère img_bin de mouvement et on applique une erosion_3 dessus
+    dilatation_3_opti(img_bin_test, img_filtered_test , mi0_test, mi1_test, mj0_test, mj1_test);
+
+    DEBUG(display_ui8matrix(img_filtered_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image dilatée : ")); DEBUG(puts(""));
+
+    void free_matrix();
+}
+
+void test_erosion_5_opti(){
+    DEBUG(printf("\n===========================  TEST EROSION 5_opti =================================\n"));
+    gen_img_bin_test(1, 5);
+
+	char * format = "%d ";
+
+    DEBUG(display_ui8matrix(img_bin_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image binaire : ")); DEBUG(puts(""));
+    //On recupère img_bin de mouvement et on applique une erosion_3 dessus
+    erosion_5_opti(img_bin_test, img_filtered_test, mi0_test, mi1_test, mj0_test, mj1_test);
+
+    DEBUG(display_ui8matrix(img_filtered_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image érodée : ")); DEBUG(puts(""));
+
+    void free_matrix();
+}
+
+void test_dilatation_5_opti(){
+    DEBUG(printf("\n===========================  TEST DILATATION 5_opti =================================\n"));
+    gen_img_bin_test(0, 5);
+
+	char * format = "%d ";
+
+    DEBUG(display_ui8matrix(img_bin_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image binaire : ")); DEBUG(puts(""));
+    
+    //On recupère img_bin de mouvement et on applique une erosion_3 dessus
+    dilatation_5_opti(img_bin_test, img_filtered_test, mi0_test, mi1_test, mj0_test, mj1_test);
+
+    DEBUG(display_ui8matrix(img_filtered_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image dilatée : ")); DEBUG(puts(""));
+
+    void free_matrix();
+}
+
+void test_morpho_3_opti(){
+    DEBUG(printf("\n===========================  TEST MORPHO 3_opti =================================\n"));
+    gen_img_bin_test(1, 3);
+
+	char * format = "%d ";
+
+    DEBUG(display_ui8matrix(img_bin_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image binaire : ")); DEBUG(puts(""));
+    //On recupère img_bin de mouvement et on applique une erosion_3 dessus
+    morpho_3_opti(img_bin_test, img_filtered_test, mi0_test, mi1_test, mj0_test, mj1_test);
+
+    DEBUG(display_ui8matrix(img_filtered_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image transformée : ")); DEBUG(puts(""));
+
+    void free_matrix();
+}
+
+void test_morpho_5_opti(){
+    DEBUG(printf("\n===========================  TEST MORPHO 5_opti =================================\n"));
+    gen_img_bin_test(1, 5);
+
+	char * format = "%d ";
+
+    DEBUG(display_ui8matrix(img_bin_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image binaire : ")); DEBUG(puts(""));
+
+    //On recupère img_bin de mouvement et on applique une erosion_3 dessus
+    morpho_5_opti(img_bin_test, img_filtered_test, mi0_test, mi1_test, mj0_test, mj1_test);
+
+
+    DEBUG(display_ui8matrix(img_filtered_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image transformée : ")); DEBUG(puts(""));
+
+    void free_matrix();
+}
+
+
 //type = 1 : test pour érosion (majorité de 1) ///// type = 0 : test pour dilatation majourité de 0
 void gen_img_bin_test(int type, int kernel_size){
     
