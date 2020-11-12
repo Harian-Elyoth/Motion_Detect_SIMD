@@ -130,7 +130,7 @@ void test_mouvement_morpho_dataset(){
 	int mi0, mi1, mj0, mj1; 	// indices scalaire
 	int mi0b, mi1b, mj0b, mj1b; // indices scalaires avec bord
 
-    int kernel_size = 3;
+    int kernel_size = 5;
 
     char *format = "%d ";
 
@@ -143,7 +143,7 @@ void test_mouvement_morpho_dataset(){
     // ------------------------- //
 
     // 1 for 3x3 / 2 for 5x5
-    b = 1; 
+    b = 2; 
 
     // indices matrices
 	mi0 = 0; mi1 = HEIGHT - 1;
@@ -217,12 +217,12 @@ void test_mouvement_morpho_dataset(){
 		SigmaDelta_step4(mi0b, mi1b, mj0b, mj1b, std1, img_diff, img_bin);
 
 		// MORPHOLOGIE
-		morpho_3_opti(img_bin, img_filtered, mi0, mi1, mj0, mj1); 
-
+		morpho_5_opti(img_bin, img_filtered, mi0, mi1, mj0, mj1); 
+		printf("JE FINIE MA MORPHO\n");
 		// built pgm filename out
 		char filename_out[25] = "";
 		snprintf(filename_out, 25, "MM_out_%d.pgm", i);
-		bin_to_pgm(mi0b, mi1b, mj0b, mj1b, img_filtered, filename_out);
+		bin_to_pgm(mi0, mi1, mj0, mj1, img_filtered, filename_out);
 	}
 
 	// ---------- //

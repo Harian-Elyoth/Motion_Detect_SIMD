@@ -205,10 +205,10 @@ void gen_img_bin_test(int type, int kernel_size){
     
     int seuil;
     if(type){
-       seuil = 80; 
+       seuil = 50; 
     }
     else {
-        seuil = 20;
+        seuil = 50;
     }
     if(kernel_size == 3){
         b_test = 1;
@@ -236,12 +236,20 @@ void gen_img_bin_test(int type, int kernel_size){
     srand(time(NULL));
     for(int i = mi0_test ; i <= mi1_test ; i++){
         for(int j = mj0_test ; j <= mj1_test ; j++){
+            /*
             if(rand() % 100 < seuil){
                 img_bin_test[i][j] = 1;
             }
             else {
                 img_bin_test[i][j] = 0;
             }
+            */
+           if(i < 20 && (j >= 10 && j <= 20)){
+               img_bin_test[i][j] = 1;
+           }
+           else {
+               img_bin_test[i][j] = 0;
+           }
         }
     }
 }
@@ -252,9 +260,11 @@ void main_test_morpho(int argc, char *argv[])
 
     //test_erosion_3();
     //test_erosion_5();
-    //test_dilatation_3();
+    //test_erosion_3_opti();
+    //test_dilatation_3_opti();
+    test_morpho_5_opti();
     //test_dilatation_5();
-    test_morpho_3();
+    //test_morpho_3();
     // test_morpho_5();
     
 }

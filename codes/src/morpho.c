@@ -47,37 +47,42 @@ void erosion_3_opti(uint8 ** X, uint8 ** Y, int mi0, int mi1, int mj0, int mj1){
     int r = mj1 % k;
 
     for(i = mi0 ; i <= mi1 ; i++){
-        
+        //printf("i : %d\n", i);
         j = mj0;
 
-        a0 = X[i - 1][j - 1]; b0 = X[i + 0][j - 1]; c0 = X[i + 1][j - 1];
-        a1 = X[i - 1][j + 0]; b1 = X[i + 0][j + 0]; c1 = X[i + 1][j + 0];
+        a0 = X[i - 1][j - 1]; a1 = X[i - 1][j + 0];
+        b0 = X[i + 0][j - 1]; b1 = X[i + 0][j + 0];
+        c0 = X[i + 1][j - 1]; c1 = X[i + 1][j + 0];
+          
 
-        for(j = mj0 ; j <= mj1 - r ; j = j + 3){
+        for(j = mj0 ; j <= mj1 - r ; j = j + k){
+            //printf("j : %d\n", j);
             //Detection d'un zero sur le kernel autour du IJ
             //Si il y a un zero, dans le kernel alors le Yij prends 0, sinon il prends 1
-            a2 = X[i - 1][j + 1]; b2 = X[i + 0][j + 1]; c2 = X[i + 1][j + 1];
+            a2 = X[i - 1][j + 1]; a3 = X[i - 1][j + 2]; a4 = X[i - 1][j + 3];
+            b2 = X[i + 0][j + 1]; b3 = X[i + 0][j + 2]; b4 = X[i + 0][j + 3];
+            c2 = X[i + 1][j + 1]; c3 = X[i + 1][j + 2]; c4 = X[i + 1][j + 3];
+              
 
+            
             r0 = a0 && b0 && c0;
             r1 = a1 && b1 && c1;
             r2 = a2 && b2 && c2;
-
+            
             s0 = r0 && r1 && r2;
-
-            a3 = X[i - 1][j + 2]; b3 = X[i + 0][j + 2]; c3 = X[i + 1][j + 2];
 
             r3 = a3 && b3 && c3;
 
             s1 = r1 && r2 && r3;
 
-            a4 = X[i - 1][j + 3]; b4 = X[i + 0][j + 3]; c3 = X[i + 1][j + 3];
-
             r4 = a4 && b4 && c4;
 
             s2 = r2 && r3 && r4;
+
             Y[i][j + 0] = s0;
             Y[i][j + 1] = s1;
             Y[i][j + 2] = s2;
+
             a0 = a3; a1 = a4;
             b0 = b3; b1 = b4;
             c0 = c3; c1 = c4;
@@ -126,7 +131,7 @@ void erosion_5_opti(uint8 ** X, uint8 ** Y, int mi0, int mi1, int mj0, int mj1){
     int i, j;
     int k = 5;
     int r = mj1 % k;
-
+    printf("mi0 : %d, mi1 : %d, mj0 : %d, mj1 : %d\n", mi0, mi1, mj0, mj1);
     for(i = mi0 ; i <= mi1 ; i++){
 
         j = mj0;
@@ -138,35 +143,37 @@ void erosion_5_opti(uint8 ** X, uint8 ** Y, int mi0, int mi1, int mj0, int mj1){
 
         for(j = mj0 ; j <= mj1 - k; j = j + 5){
 
-            a4 = X[i - 2][j + 2] ; b4 = X[i - 1][j + 2]; c4 = X[i + 0][j + 2]; d4 = X[i + 1][j + 2]; e4 = X[i + 2][j + 2];
-            
+            a4 = X[i - 2][j + 2]; a5 = X[i - 2][j + 3]; a6 = X[i - 2][j + 4]; a7 = X[i - 2][j + 5]; a8 = X[i - 2][j + 6];
+            b4 = X[i - 1][j + 2]; b5 = X[i - 1][j + 3]; b6 = X[i - 1][j + 4]; b7 = X[i - 1][j + 5]; b8 = X[i - 1][j + 6];
+            c4 = X[i + 0][j + 2]; c5 = X[i + 0][j + 3]; c6 = X[i + 0][j + 4]; c7 = X[i + 0][j + 5]; c8 = X[i + 0][j + 6];
+            d4 = X[i + 1][j + 2]; d5 = X[i + 1][j + 3]; d6 = X[i + 1][j + 4]; d7 = X[i + 1][j + 5]; d8 = X[i + 1][j + 6];
+            e4 = X[i + 2][j + 2]; e5 = X[i + 2][j + 3]; e6 = X[i + 2][j + 4]; e7 = X[i + 2][j + 5]; e8 = X[i + 2][j + 6];
+                           
+               
+
             r0 = a0 && b0 && c0 && d0 && e0;
             r1 = a1 && b1 && c1 && d1 && e1;
             r2 = a2 && b2 && c2 && d2 && e2;
-            r3 = a3 && b3 && d3 && c3 && e3;
+            r3 = a3 && b3 && c3 && d3 && e3;
             r4 = a4 && b4 && c4 && d4 && e4;
 
             s0 = r0 && r1 && r2 && r3 && r4;
 
-            a5 = X[i - 2][j + 3] ; b5 = X[i - 1][j + 3]; c5 = X[i + 0][j + 3]; d5 = X[i + 1][j + 3]; e5 = X[i + 2][j + 3];
 
             r5 = a5 && b5 && c5 && d5 && e5;
 
             s1 = r1 && r2 && r3 && r4 && r5;
 
-            a6 = X[i - 2][j + 4] ; b6 = X[i - 1][j + 4]; c6 = X[i + 0][j + 4]; d6 = X[i + 1][j + 4]; e6 = X[i + 2][j + 4];
 
             r6 = a6 && b6 && c6 && d6 && e6;
 
             s2 = r2 && r3 && r4 && r5 && r6;
 
-            a7 = X[i - 2][j + 5] ; b7 = X[i - 1][j + 5]; c7 = X[i + 0][j + 5]; d7 = X[i + 1][j + 5]; e7 = X[i + 2][j + 5];
 
             r7 = a7 && b7 && c7 && d7 && e7;
 
             s3 = r3 && r4 && r5 && r6 && r7;
 
-            a8 = X[i - 2][j + 6] ; b8 = X[i - 1][j + 6]; c8 = X[i + 0][j + 6]; d8 = X[i + 1][j + 6]; e8 = X[i + 2][j + 6];
 
             r8 = a8 && b8 && c8 && d8 && e8;
 
@@ -178,11 +185,11 @@ void erosion_5_opti(uint8 ** X, uint8 ** Y, int mi0, int mi1, int mj0, int mj1){
             Y[i][j + 3] = s3;
             Y[i][j + 4] = s4;
 
-            a0 = a5; a1 = a6;
-            b0 = b5; b1 = b6;
-            c0 = c5; c1 = c6;
-            d0 = d5; d1 = d6;
-            e0 = e5; e1 = e6; 
+            a0 = a5; a1 = a6; a2 = a7; a3 = a8;
+            b0 = b5; b1 = b6; b2 = b7; b3 = b8;
+            c0 = c5; c1 = c6; c2 = c7; c3 = c8;
+            d0 = d5; d1 = d6; d2 = d7; d3 = d8;
+            e0 = e5; e1 = e6; e2 = e7; e3 = e8;
         }
     }
 }
@@ -226,34 +233,30 @@ void dilatation_3_opti(uint8 ** X, uint8 ** Y, int mi0, int mi1, int mj0, int mj
         
         j = mj0;
 
-        a0 = X[i - 1][j - 1]; b0 = X[i + 0][j - 1]; c0 = X[i + 1][j - 1];
-        a1 = X[i - 1][j + 0]; b1 = X[i + 0][j + 0]; c1 = X[i + 1][j + 0];
+        a0 = X[i - 1][j - 1]; a1 = X[i - 1][j + 0];
+        b0 = X[i + 0][j - 1]; b1 = X[i + 0][j + 0];
+        c0 = X[i + 1][j - 1]; c1 = X[i + 1][j + 0];
 
         for(j = mj0 ; j <= mj1 - r ; j = j + 3){
 
-            a2 = X[i - 1][j + 1]; b2 = X[i + 0][j + 1]; c2 = X[i + 1][j + 1];
+            a2 = X[i - 1][j + 1]; a3 = X[i - 1][j + 2]; a4 = X[i - 1][j + 3];
+            b2 = X[i + 0][j + 1]; b3 = X[i + 0][j + 2]; b4 = X[i + 0][j + 3];
+            c2 = X[i + 1][j + 1]; c3 = X[i + 1][j + 2]; c4 = X[i + 1][j + 3];
 
             r0 = a0 || b0 || c0;
             r1 = a1 || b1 || c1;
             r2 = a2 || b2 || c2;
-
-            s0 = r0 || r1 || r2;
-
-            a3 = X[i - 1][j + 2]; b3 = X[i + 0][j + 2]; c3 = X[i + 1][j + 2];
-
             r3 = a3 || b3 || c3;
-
-            s1 = r1 || r2 || r3;
-
-            a4 = X[i - 1][j + 3]; b4 = X[i + 0][j + 3]; c3 = X[i + 1][j + 3];
-
             r4 = a4 || b4 || c4;
 
+            s0 = r0 || r1 || r2;
+            s1 = r1 || r2 || r3;
             s2 = r2 || r3 || r4;
 
             Y[i][j + 0] = s0;
             Y[i][j + 1] = s1;
             Y[i][j + 2] = s2;
+
             a0 = a3; a1 = a4;
             b0 = b3; b1 = b4;
             c0 = c3; c1 = c4;
@@ -313,38 +316,26 @@ void dilatation_5_opti(uint8 ** X, uint8 ** Y, int mi0, int mi1, int mj0, int mj
 
         for(j = mj0 ; j <= mj1 - r; j = j + 5){
 
-            a4 = X[i - 2][j + 2] ; b4 = X[i - 1][j + 2]; c4 = X[i + 0][j + 2]; d4 = X[i + 1][j + 2]; e4 = X[i + 2][j + 2];
-            
+            a4 = X[i - 2][j + 2]; a5 = X[i - 2][j + 3]; a6 = X[i - 2][j + 4]; a7 = X[i - 2][j + 5]; a8 = X[i - 2][j + 6];
+            b4 = X[i - 1][j + 2]; b5 = X[i - 1][j + 3]; b6 = X[i - 1][j + 4]; b7 = X[i - 1][j + 5]; b8 = X[i - 1][j + 6];
+            c4 = X[i + 0][j + 2]; c5 = X[i + 0][j + 3]; c6 = X[i + 0][j + 4]; c7 = X[i + 0][j + 5]; c8 = X[i + 0][j + 6];
+            d4 = X[i + 1][j + 2]; d5 = X[i + 1][j + 3]; d6 = X[i + 1][j + 4]; d7 = X[i + 1][j + 5]; d8 = X[i + 1][j + 6];
+            e4 = X[i + 2][j + 2]; e5 = X[i + 2][j + 3]; e6 = X[i + 2][j + 4]; e7 = X[i + 2][j + 5]; e8 = X[i + 2][j + 6];
+
             r0 = a0 || b0 || c0 || d0 || e0;
             r1 = a1 || b1 || c1 || d1 || e1;
             r2 = a2 || b2 || c2 || d2 || e2;
             r3 = a3 || b3 || d3 || c3 || e3;
             r4 = a4 || b4 || c4 || d4 || e4;
-
-            s0 = r0 || r1 || r2 || r3 || r4;
-
-            a5 = X[i - 2][j + 3] ; b5 = X[i - 1][j + 3]; c5 = X[i + 0][j + 3]; d5 = X[i + 1][j + 3]; e5 = X[i + 2][j + 3];
-
             r5 = a5 || b5 || c5 || d5 || e5;
-
-            s1 = r1 || r2 || r3 || r4 || r5;
-
-            a6 = X[i - 2][j + 4] ; b6 = X[i - 1][j + 4]; c6 = X[i + 0][j + 4]; d6 = X[i + 1][j + 4]; e6 = X[i + 2][j + 4];
-
             r6 = a6 || b6 || c6 || d6 || e6;
-
-            s2 = r2 || r3 || r4 || r5 || r6;
-
-            a7 = X[i - 2][j + 5] ; b7 = X[i - 1][j + 5]; c7 = X[i + 0][j + 5]; d7 = X[i + 1][j + 5]; e7 = X[i + 2][j + 5];
-
             r7 = a7 || b7 || c7 || d7 || e7;
-
-            s3 = r3 || r4 || r5 || r6 || r7;
-
-            a8 = X[i - 2][j + 6] ; b8 = X[i - 1][j + 6]; c8 = X[i + 0][j + 6]; d8 = X[i + 1][j + 6]; e8 = X[i + 2][j + 6];
-
             r8 = a8 || b8 || c8 || d8 || e8;
 
+            s0 = r0 || r1 || r2 || r3 || r4;
+            s1 = r1 || r2 || r3 || r4 || r5;
+            s2 = r2 || r3 || r4 || r5 || r6;
+            s3 = r3 || r4 || r5 || r6 || r7;
             s4 = r4 || r5 || r6 || r7 || r8;
 
             Y[i][j + 0] = s0;
@@ -353,11 +344,11 @@ void dilatation_5_opti(uint8 ** X, uint8 ** Y, int mi0, int mi1, int mj0, int mj
             Y[i][j + 3] = s3;
             Y[i][j + 4] = s4;
 
-            a0 = a5; a1 = a6;
-            b0 = b5; b1 = b6;
-            c0 = c5; c1 = c6;
-            d0 = d5; d1 = d6;
-            e0 = e5; e1 = e6; 
+            a0 = a5; a1 = a6; a2 = a7; a3 = a8;
+            b0 = b5; b1 = b6; b2 = b7; b3 = b8;
+            c0 = c5; c1 = c6; c2 = c7; c3 = c8;
+            d0 = d5; d1 = d6; d2 = d7; d3 = d8;
+            e0 = e5; e1 = e6; e2 = e7; e3 = e8;
         }
     }
 }

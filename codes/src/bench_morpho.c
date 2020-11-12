@@ -437,11 +437,11 @@ void main_bench_morpho(int argc, char *argv[])
     //bench_dilatation_3();
     //bench_dilatation_3();
 
-    bench_erosion_3();
+    //bench_erosion_3();
     //bench_dilatation_5();
    // bench_morpho_3();
 
-    bench_erosion_3_opti();
+    //bench_erosion_3_opti();
     //bench_erosion_5();
     //bench_dilatation_3_opti();
     //bench_dilatation_3_opti();
