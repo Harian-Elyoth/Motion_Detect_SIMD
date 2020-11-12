@@ -5,8 +5,9 @@
 #include "bench_morpho.h"
 
 void bench_erosion_3(){
+
     gen_img_bin_bench(1, 3);
-    printf("0\n");
+
     int iter, niter = 4;
     int run, nrun = 5;
     double t0, t1, dt, tmin, t;
@@ -14,20 +15,20 @@ void bench_erosion_3(){
 	char * format = "%d ";
     double cycles;
     double time;
-    clock_t start, finish;
     double debit;
     
     //On recupère img_bin_bench de mouvement et on applique une erosion_3 dessus
 
     CHRONO(erosion_3(img_bin_bench, img_filtered_bench , mi0_bench, mi1_bench, mj0_bench, mj1_bench), cycles);
-    time = (double)cycles/CLK_PROC;
-    debit = (WIDTH  * HEIGHT ) / time;
+    
+    time = (double)(cycles/CLK_PROC);
+    debit = (WIDTH  * HEIGHT) / time;
+
     BENCH(printf("Bench erosion 3 :\n"));
     BENCH(printf("temps (ms) \t    = %0.6f", time * 1000)); BENCH(puts(""));
     BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles/(WIDTH  * HEIGHT ))); BENCH(puts(""));
     BENCH(printf("debit (pixel/sec)   = %0.2f", debit)); BENCH(puts("")); BENCH(puts(""));
 
-    void free_matrix();
 }
 
 void bench_erosion_5(){
@@ -40,24 +41,25 @@ void bench_erosion_5(){
 	char * format = "%d ";
     double cycles;
     double time;
-    clock_t start, finish;
     double debit;
     
     //On recupère img_bin_bench de mouvement et on applique une erosion_3 dessus
     CHRONO(erosion_5(img_bin_bench, img_filtered_bench , mi0_bench, mi1_bench, mj0_bench, mj1_bench), cycles);
-    time = (double)cycles/CLK_PROC;
-    debit = (WIDTH  * HEIGHT ) / time;
-    BENCH(printf("Bench erosion 3 :\n"));
+    
+    time = (double)(cycles/CLK_PROC);
+    debit = (WIDTH  * HEIGHT) / time;
+
+    BENCH(printf("Bench erosion 5 :\n"));
     BENCH(printf("temps (ms) \t    = %0.6f", time * 1000)); BENCH(puts(""));
     BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles/(WIDTH  * HEIGHT ))); BENCH(puts(""));
     BENCH(printf("debit (pixel/sec)   = %0.2f", debit)); BENCH(puts("")); BENCH(puts(""));
 
-
-    void free_matrix();
 }
 
 void bench_dilatation_3(){
+    
     gen_img_bin_bench(0, 3);
+    
     int iter, niter = 4;
     int run, nrun = 5;
     double t0, t1, dt, tmin, t;
@@ -65,24 +67,24 @@ void bench_dilatation_3(){
 	char * format = "%d ";
     double cycles;
     double time;
-    clock_t start, finish;
     double debit;
     
     //On recupère img_bin_bench de mouvement et on applique une erosion_3 dessus
     CHRONO(dilatation_3(img_bin_bench, img_filtered_bench , mi0_bench, mi1_bench, mj0_bench, mj1_bench), cycles);
-    time = (double)cycles/CLK_PROC;
+    
+    time = (double)(cycles/CLK_PROC);
     debit = (WIDTH  * HEIGHT ) / time;
-    BENCH(printf("Bench erosion 3 :\n"));
+
+    BENCH(printf("Bench dilatation 3 :\n"));
     BENCH(printf("temps (ms) \t    = %0.6f", time * 1000)); BENCH(puts(""));
     BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles/(WIDTH  * HEIGHT ))); BENCH(puts(""));
     BENCH(printf("debit (pixel/sec)   = %0.2f", debit)); BENCH(puts("")); BENCH(puts(""));
-
-    void free_matrix();
 }
 
 void bench_dilatation_5(){
 
     gen_img_bin_bench(0, 5);
+
     int iter, niter = 4;
     int run, nrun = 5;
     double t0, t1, dt, tmin, t;
@@ -90,23 +92,24 @@ void bench_dilatation_5(){
 	char * format = "%d ";
     double cycles;
     double time;
-    clock_t start, finish;
     double debit;
     
     //On recupère img_bin_bench de mouvement et on applique une erosion_3 dessus
     CHRONO(dilatation_5(img_bin_bench, img_filtered_bench , mi0_bench, mi1_bench, mj0_bench, mj1_bench), cycles);
-    time = (double)cycles/CLK_PROC;
+    
+    time = (double)(cycles/CLK_PROC);
     debit = (WIDTH  * HEIGHT ) / time;
-    BENCH(printf("Bench erosion 3 :\n"));
+
+    BENCH(printf("Bench dilatation 5 :\n"));
     BENCH(printf("temps (ms) \t    = %0.6f", time * 1000)); BENCH(puts(""));
     BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles/(WIDTH  * HEIGHT ))); BENCH(puts(""));
     BENCH(printf("debit (pixel/sec)   = %0.2f", debit)); BENCH(puts("")); BENCH(puts(""));
-
-    void free_matrix();
 }
 
 void bench_morpho_3(){
+    
     gen_img_bin_bench(1, 3);
+
     int iter, niter = 4;
     int run, nrun = 5;
     double t0, t1, dt, tmin, t;
@@ -114,23 +117,24 @@ void bench_morpho_3(){
 	char * format = "%d ";
     double cycles;
     double time;
-    clock_t start, finish;
     double debit;
     
     //On recupère img_bin_bench de mouvement et on applique une erosion_3 dessus
     CHRONO(morpho_3(img_bin_bench, img_filtered_bench , mi0_bench, mi1_bench, mj0_bench, mj1_bench), cycles);
+    
     time = (double)cycles/CLK_PROC;
     debit = (WIDTH  * HEIGHT ) / time;
-    BENCH(printf("Bench erosion 3 :\n"));
+
+    BENCH(printf("Bench morpho 3 :\n"));
     BENCH(printf("temps (ms) \t    = %0.6f", time * 1000)); BENCH(puts(""));
     BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles/(WIDTH  * HEIGHT ))); BENCH(puts(""));
     BENCH(printf("debit (pixel/sec)   = %0.2f", debit)); BENCH(puts("")); BENCH(puts(""));
-
-    void free_matrix();
 }
 
 void bench_morpho_5(){
-    gen_img_bin_bench(1, 3);
+    
+    gen_img_bin_bench(1, 5);
+    
     int iter, niter = 4;
     int run, nrun = 5;
     double t0, t1, dt, tmin, t;
@@ -138,21 +142,18 @@ void bench_morpho_5(){
 	char * format = "%d ";
     double cycles;
     double time;
-    clock_t start, finish;
     double debit;
     
-    //On recupère img_bin_bench de mouvement et on applique une erosion_3 dessus
     CHRONO(morpho_5(img_bin_bench, img_filtered_bench , mi0_bench, mi1_bench, mj0_bench, mj1_bench), cycles);
+    
     time = (double)cycles/CLK_PROC;
     debit = (WIDTH  * HEIGHT ) / time;
-    BENCH(printf("Bench erosion 3 :\n"));
+
+    BENCH(printf("Bench morpho 5 :\n"));
     BENCH(printf("temps (ms) \t    = %0.6f", time * 1000)); BENCH(puts(""));
     BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles/(WIDTH  * HEIGHT ))); BENCH(puts(""));
     BENCH(printf("debit (pixel/sec)   = %0.2f", debit)); BENCH(puts("")); BENCH(puts(""));
-
-    void free_matrix();
 }
-
 
 void bench_erosion_3_opti(){
     
@@ -165,24 +166,24 @@ void bench_erosion_3_opti(){
 	char * format = "%d ";
     double cycles;
     double time;
-    clock_t start, finish;
     double debit;
     
     //On recupère img_bin_bench de mouvement et on applique une erosion_3 dessus
     CHRONO(erosion_3_opti(img_bin_bench, img_filtered_bench , mi0_bench, mi1_bench, mj0_bench, mj1_bench), cycles);
-    time = (double)cycles/CLK_PROC;
+
+    time = (double)(cycles/CLK_PROC);
     debit = (WIDTH  * HEIGHT ) / time;
+
     BENCH(printf("Bench erosion 3 :\n"));
     BENCH(printf("temps (ms) \t    = %0.6f", time * 1000)); BENCH(puts(""));
     BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles/(WIDTH  * HEIGHT ))); BENCH(puts(""));
     BENCH(printf("debit (pixel/sec)   = %0.2f", debit)); BENCH(puts("")); BENCH(puts(""));
-
-    void free_matrix();
 }
 
 void bench_erosion_5_opti(){
 
     gen_img_bin_bench(1, 5);
+
     int iter, niter = 4;
     int run, nrun = 5;
     double t0, t1, dt, tmin, t;
@@ -190,24 +191,24 @@ void bench_erosion_5_opti(){
 	char * format = "%d ";
     double cycles;
     double time;
-    clock_t start, finish;
     double debit;
     
-    //On recupère img_bin_bench de mouvement et on applique une erosion_3 dessus
+    //On recupère img_bin_bench de mouvement et on applique une erosion 5 dessus
     CHRONO(erosion_5_opti(img_bin_bench, img_filtered_bench , mi0_bench, mi1_bench, mj0_bench, mj1_bench), cycles);
-    time = (double)cycles/CLK_PROC;
+
+    time = (double)(cycles/CLK_PROC);
     debit = (WIDTH  * HEIGHT ) / time;
-    BENCH(printf("Bench erosion 3 :\n"));
+
+    BENCH(printf("Bench erosion 5 :\n"));
     BENCH(printf("temps (ms) \t    = %0.6f", time * 1000)); BENCH(puts(""));
     BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles/(WIDTH  * HEIGHT ))); BENCH(puts(""));
     BENCH(printf("debit (pixel/sec)   = %0.2f", debit)); BENCH(puts("")); BENCH(puts(""));
-
-
-    void free_matrix();
 }
 
 void bench_dilatation_3_opti(){
+    
     gen_img_bin_bench(0, 3);
+    
     int iter, niter = 4;
     int run, nrun = 5;
     double t0, t1, dt, tmin, t;
@@ -215,24 +216,23 @@ void bench_dilatation_3_opti(){
 	char * format = "%d ";
     double cycles;
     double time;
-    clock_t start, finish;
     double debit;
     
-    //On recupère img_bin_bench de mouvement et on applique une erosion_3 dessus
     CHRONO(dilatation_3_opti(img_bin_bench, img_filtered_bench , mi0_bench, mi1_bench, mj0_bench, mj1_bench), cycles);
+    
     time = (double)cycles/CLK_PROC;
     debit = (WIDTH  * HEIGHT ) / time;
-    BENCH(printf("Bench erosion 3 :\n"));
+
+    BENCH(printf("Bench dilatation 3 :\n"));
     BENCH(printf("temps (ms) \t    = %0.6f", time * 1000)); BENCH(puts(""));
     BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles/(WIDTH  * HEIGHT ))); BENCH(puts(""));
     BENCH(printf("debit (pixel/sec)   = %0.2f", debit)); BENCH(puts("")); BENCH(puts(""));
-
-    void free_matrix();
 }
 
 void bench_dilatation_5_opti(){
 
     gen_img_bin_bench(0, 5);
+
     int iter, niter = 4;
     int run, nrun = 5;
     double t0, t1, dt, tmin, t;
@@ -240,23 +240,23 @@ void bench_dilatation_5_opti(){
 	char * format = "%d ";
     double cycles;
     double time;
-    clock_t start, finish;
     double debit;
     
-    //On recupère img_bin_bench de mouvement et on applique une erosion_3 dessus
     CHRONO(dilatation_5_opti(img_bin_bench, img_filtered_bench , mi0_bench, mi1_bench, mj0_bench, mj1_bench), cycles);
+
     time = (double)cycles/CLK_PROC;
     debit = (WIDTH  * HEIGHT ) / time;
+
     BENCH(printf("Bench erosion 3 :\n"));
     BENCH(printf("temps (ms) \t    = %0.6f", time * 1000)); BENCH(puts(""));
     BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles/(WIDTH  * HEIGHT ))); BENCH(puts(""));
     BENCH(printf("debit (pixel/sec)   = %0.2f", debit)); BENCH(puts("")); BENCH(puts(""));
-
-    void free_matrix();
 }
 
 void bench_morpho_3_opti(){
+    
     gen_img_bin_bench(1, 3);
+
     int iter, niter = 4;
     int run, nrun = 5;
     double t0, t1, dt, tmin, t;
@@ -264,23 +264,23 @@ void bench_morpho_3_opti(){
 	char * format = "%d ";
     double cycles;
     double time;
-    clock_t start, finish;
     double debit;
     
-    //On recupère img_bin_bench de mouvement et on applique une erosion_3 dessus
     CHRONO(morpho_3_opti(img_bin_bench, img_filtered_bench , mi0_bench, mi1_bench, mj0_bench, mj1_bench), cycles);
+
     time = (double)cycles/CLK_PROC;
     debit = (WIDTH  * HEIGHT ) / time;
+
     BENCH(printf("Bench erosion 3 :\n"));
     BENCH(printf("temps (ms) \t    = %0.6f", time * 1000)); BENCH(puts(""));
     BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles/(WIDTH  * HEIGHT ))); BENCH(puts(""));
     BENCH(printf("debit (pixel/sec)   = %0.2f", debit)); BENCH(puts("")); BENCH(puts(""));
-
-    void free_matrix();
 }
 
 void bench_morpho_5_opti(){
-    gen_img_bin_bench(1, 3);
+    
+    gen_img_bin_bench(1, 5);
+
     int iter, niter = 4;
     int run, nrun = 5;
     double t0, t1, dt, tmin, t;
@@ -288,19 +288,17 @@ void bench_morpho_5_opti(){
 	char * format = "%d ";
     double cycles;
     double time;
-    clock_t start, finish;
     double debit;
     
-    //On recupère img_bin_bench de mouvement et on applique une erosion_3 dessus
     CHRONO(morpho_5_opti(img_bin_bench, img_filtered_bench , mi0_bench, mi1_bench, mj0_bench, mj1_bench), cycles);
+
     time = (double)cycles/CLK_PROC;
     debit = (WIDTH  * HEIGHT ) / time;
+
     BENCH(printf("Bench erosion 3 :\n"));
     BENCH(printf("temps (ms) \t    = %0.6f", time * 1000)); BENCH(puts(""));
     BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles/(WIDTH  * HEIGHT ))); BENCH(puts(""));
     BENCH(printf("debit (pixel/sec)   = %0.2f", debit)); BENCH(puts("")); BENCH(puts(""));
-
-    void free_matrix();
 }
 
 void gen_img_bin_bench(int type, int kernel_size){
@@ -347,8 +345,14 @@ void gen_img_bin_bench(int type, int kernel_size){
     //     }
     // }
 
-    b_bench = 1; 
-
+    if (kernel_size == 3)
+    {
+        b_bench = 1; 
+    }
+    else
+    {
+        b_bench = 2; 
+    }
 
     // indices matrices
     mi0_bench = 0; mi1_bench = HEIGHT  - 1;
@@ -425,30 +429,26 @@ void gen_img_bin_bench(int type, int kernel_size){
 	free_ui8matrix(std1, mi0b_bench, mi1b_bench, mj0b_bench, mj1b_bench);
 
 	free_ui8matrix(img_diff, mi0b_bench, mi1b_bench, mj0b_bench, mj1b_bench);
-
 }
 
 void main_bench_morpho(int argc, char *argv[])
 {
+    // bench_erosion_3();
+    // bench_dilatation_3();
 
+    // bench_erosion_5();
+    // bench_dilatation_5();
 
-    //bench_erosion_3();
-    //bench_erosion_5();
-    //bench_dilatation_3();
-    //bench_dilatation_3();
-
-    //bench_erosion_3();
-    //bench_dilatation_5();
-   // bench_morpho_3();
+    bench_morpho_3();
+    bench_morpho_5();
 
     //bench_erosion_3_opti();
-    //bench_erosion_5();
     //bench_dilatation_3_opti();
     //bench_dilatation_3_opti();
-
     //bench_erosion_3_opti();
+
     //bench_dilatation_5();
     //bench_morpho_3_opti();
-    //bench_morpho_5();
+
     
 }
