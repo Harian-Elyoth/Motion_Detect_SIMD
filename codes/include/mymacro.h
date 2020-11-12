@@ -9,7 +9,7 @@
 // activer ou desactiver le define ci-dessous pour passer du mode de mise au point
 // au mode benchmark
 
-#define ENABLE_BENCHMARK
+//#define ENABLE_BENCHMARK
 
 // -------------------------------------------
 // -- ne rien ecrire en dessous de cette ligne
@@ -60,6 +60,8 @@
 #define CHRONO(X,t)  X
 #define BENCH(X)
 #define DEBUG(X) X
+#define CLK_PROC 1800000000
+
 #endif
 
 #endif // __MY_MACRO_H__

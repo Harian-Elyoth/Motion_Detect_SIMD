@@ -48,6 +48,15 @@ void test_erosion_5();
 void test_dilatation_5();
 void test_morpho_3();
 void test_morpho_5();
+
+void test_erosion_3_opti();
+void test_dilatation_3_opti();
+void test_erosion_5_opti();
+void test_dilatation_5_opti();
+void test_morpho_3_opti();
+void test_morpho_5_opti();
+
+
 void gen_img_bin_test(int type, int kernel_size);
 
 // fonction principale
