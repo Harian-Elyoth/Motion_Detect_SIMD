@@ -33,7 +33,6 @@ void bench_mouvement_SIMD_car(bool is_visual){
 
 	// calcul temps
 	double time_total, time_step1, time_step2, time_step3, time_step4;
-	clock_t start, finish;
 
 	// calcul debit
 	double debit_total, debit_step1, debit_step2, debit_step3, debit_step4;
@@ -74,20 +73,6 @@ void bench_mouvement_SIMD_car(bool is_visual){
 	// indices vectoriels matrices avec bord
 	int vmi0b = vmi0-b; int vmi1b = vmi1+b;
 	int vmj0b = vmj0-1; int vmj1b = vmj1+1;
-
-	DEBUG(puts("")); 
-	DEBUG(printf("mi0b : %d\n", mi0b)); 
-	DEBUG(printf("mi1b : %d\n", mi1b)); 
-	DEBUG(printf("mj0b : %d\n", mj0b)); 
-	DEBUG(printf("mj1b : %d\n", mj1b));
-	DEBUG(puts("")); 
-
-	DEBUG(puts("")); 
-	DEBUG(printf("vmi0b : %d\n", vmi0b)); 
-	DEBUG(printf("vmi1b : %d\n", vmi1b)); 
-	DEBUG(printf("vmj0b : %d\n", vmj0b)); 
-	DEBUG(printf("vmj1b : %d\n", vmj1b));
-	DEBUG(puts("")); 
 
 	// images
 	vuint8** image = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
@@ -193,10 +178,8 @@ void bench_mouvement_SIMD_car(bool is_visual){
 
 	BENCH(printf("Sigma Delta :\n\n"));
 
-	start = clock();
 	CHRONO(SigmaDelta_step1_simd(vmi0b, vmi1b, vmj0b, vmj1b, mean0, mean1, image), cycles_step1);
-	finish = clock();
-	time_step1 = (double)(finish-start)/CLOCKS_PER_SEC;
+	time_step1 = (double)(cycles_step1/CLK_PROC);
 	debit_step1 = (width*height) / time_step1;
 	time_step1 *= 1000;
 
@@ -205,10 +188,8 @@ void bench_mouvement_SIMD_car(bool is_visual){
 	BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_step1/(WIDTH*HEIGHT))); BENCH(puts("")); 
 	BENCH(printf("debit (pixel/sec)   = %0.2f", debit_step1)); BENCH(puts("")); BENCH(puts(""));
 
-	start = clock();
 	CHRONO(SigmaDelta_step2_simd(vmi0b, vmi1b, vmj0b, vmj1b, image, mean1, img_diff), cycles_step2);
-	finish = clock();
-	time_step2 = (double)(finish-start)/CLOCKS_PER_SEC;
+	time_step2 = (double)(cycles_step2/CLK_PROC);
 	debit_step2 = (width*height) / time_step2;
 	time_step2 *= 1000;
 
@@ -217,10 +198,8 @@ void bench_mouvement_SIMD_car(bool is_visual){
 	BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_step2/(WIDTH*HEIGHT))); BENCH(puts(""));
 	BENCH(printf("debit (pixel/sec)   = %0.2f", debit_step2)); BENCH(puts("")); BENCH(puts(""));
 
-	start = clock();
 	CHRONO(SigmaDelta_step3_simd(vmi0b, vmi1b, vmj0b, vmj1b, std0, std1, img_diff), cycles_step3);
-	finish = clock();
-	time_step3 = (double)(finish-start)/CLOCKS_PER_SEC;
+	time_step3 = (double)(cycles_step3/CLK_PROC);
 	debit_step3 = (width*height) / time_step3;
 	time_step3 *= 1000;
 
@@ -229,10 +208,8 @@ void bench_mouvement_SIMD_car(bool is_visual){
 	BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_step3/(WIDTH*HEIGHT))); BENCH(puts(""));
 	BENCH(printf("debit (pixel/sec)   = %0.2f", debit_step3)); BENCH(puts("")); BENCH(puts(""));
 
-	start = clock();
 	CHRONO(SigmaDelta_step4_simd( vmi0b, vmi1b, vmj0b, vmj1b, std1, img_diff, img_bin), cycles_step4);
-	finish = clock();
-	time_step4 = (double)(finish-start)/CLOCKS_PER_SEC;
+	time_step4 = (double)(cycles_step4/CLK_PROC);
 	debit_step4 = (width*height) / time_step4;
 	time_step4 *= 1000;
 
@@ -249,25 +226,6 @@ void bench_mouvement_SIMD_car(bool is_visual){
 	BENCH(printf("temps (ms) \t    = %0.6f", time_total)); BENCH(puts(""));
 	BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_total/(WIDTH*HEIGHT))); BENCH(puts(""));
 	BENCH(printf("debit (pixel/sec)   = %0.2f", debit_total)); BENCH(puts("")); BENCH(puts(""));
-
-	/*---------------------------------------------------*/
-
-	DEBUG(puts("================="));
-	DEBUG(puts("=== affichage ==="));
-	DEBUG(puts("================="));
-
-	// --------------- //
-	// -- affichage -- //
-	// --------------- //
-
-	// transfert vui8matrix à ui8matrix 
-
-	uint8 ** img_print = ui8matrix(mi0b, mi1b, mj0b, mj1b);
-
-	vui8matrix_to_ui8matrix(card, vmi0b, vmi1b, vmj0b, vmj1b, img_print, img_bin);
-
-	// convert binary img to pgm img
-	DEBUG(bin_to_pgm(mi0b, mi1b, mj0b, mj1b, img_print, "SD_out.pgm"));
 
 	/*---------------------------------------------------*/
 
@@ -289,8 +247,6 @@ void bench_mouvement_SIMD_car(bool is_visual){
 
 	free_vui8matrix(img_diff, vmi0b, vmi1b, vmj0b, vmj1b);
 	free_vui8matrix(img_bin, vmi0b, vmi1b, vmj0b, vmj1b);
-
-	free_ui8matrix(img_print, mi0b, mi1b, mj0b, mj1b);
 }
 
 void bench_mouvement_SIMD_dataset(){
@@ -311,7 +267,6 @@ void bench_mouvement_SIMD_dataset(){
 
 	// calcul temps
 	double time_dataset, time_total, time_step1, time_step2, time_step3, time_step4;
-	clock_t start, finish;
 
 	// calcul debit
 	double debit_dataset, debit_total;
@@ -426,30 +381,21 @@ void bench_mouvement_SIMD_dataset(){
 	    // -- traitements -- //
 	    // ----------------- //
 
-		start = clock();
 		CHRONO(SigmaDelta_step1_simd(vmi0b, vmi1b, vmj0b, vmj1b, mean0, mean1, image), cycles_step1);
-		finish = clock();
-		time_step1 = (double)(finish-start)/CLOCKS_PER_SEC;
+		time_step1 = (double)(cycles_step1/CLK_PROC);
 		time_step1 *= 1000;
 
-		start = clock();
 		CHRONO(SigmaDelta_step2_simd(vmi0b, vmi1b, vmj0b, vmj1b, image, mean1, img_diff), cycles_step2);
-		finish = clock();
-		time_step2 = (double)(finish-start)/CLOCKS_PER_SEC;
+		time_step2 = (double)(cycles_step2/CLK_PROC);
 		time_step2 *= 1000;
 
-		start = clock();
 		CHRONO(SigmaDelta_step3_simd(vmi0b, vmi1b, vmj0b, vmj1b, std0, std1, img_diff), cycles_step3);
-		finish = clock();
-		time_step3 = (double)(finish-start)/CLOCKS_PER_SEC;
+		time_step3 = (double)(cycles_step3/CLK_PROC);
 		time_step3 *= 1000;
 
-		start = clock();
 		CHRONO(SigmaDelta_step4_simd( vmi0b, vmi1b, vmj0b, vmj1b, std1, img_diff, img_bin), cycles_step4);
-		finish = clock();
-		time_step4 = (double)(finish-start)/CLOCKS_PER_SEC;
+		time_step4 = (double)(cycles_step4/CLK_PROC);
 		time_step4 *= 1000;
-
 
 		cycles_total = cycles_step1 + cycles_step2 + cycles_step3 + cycles_step4;
 		time_total   = time_step1   + time_step2   + time_step3   + time_step4;

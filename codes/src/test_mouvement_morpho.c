@@ -104,11 +104,11 @@ void test_mouvement_morpho_car(bool is_visual){
 	morpho_3_opti(img_bin, img_filtered, mi0, mi1, mj0, mj1); 
 
 	// convert binary img to pgm img
-	bin_to_pgm(mi0b, mi1b, mj0b, mj1b, img_bin,"SD_out.pgm");
+	bin_to_pgm(mi0, mi1, mj0, mj1, img_bin,"SD_out.pgm");
 
 	// ---------- //
-    // -- free -- //
-    // ---------- //
+  // -- free -- //
+  // ---------- //
 
 	free_ui8matrix(image, mi0b, mi1b, mj0b, mj1b);
 
@@ -129,12 +129,9 @@ void test_mouvement_morpho_dataset(){
 
 	int mi0, mi1, mj0, mj1; 	// indices scalaire
 	int mi0b, mi1b, mj0b, mj1b; // indices scalaires avec bord
+  char *format = "%d ";
 
-    int kernel_size = 5;
-
-    char *format = "%d ";
-
-    puts("=======================================");
+  puts("=======================================");
 	puts("=== test mouvement + morpho dataset ===");
 	puts("=======================================");
 
@@ -171,8 +168,8 @@ void test_mouvement_morpho_dataset(){
 	uint8 ** img_filtered = ui8matrix(mi0b, mi1b, mj0b, mj1b);
 
 	// -------------- //
-    // -- prologue -- //
-    // -------------- //
+  // -- prologue -- //
+  // -------------- //
 
 	MLoadPGM_ui8matrix("../car3/car_3000.pgm", mi0b, mi1b, mj0b, mj1b, image);
 
@@ -199,16 +196,16 @@ void test_mouvement_morpho_dataset(){
 		snprintf(filename, 25, "../car3/car_%d.pgm", count);
 
 		// --------------------------- //
-    	// -- chargement de l'image -- //
-    	// --------------------------- //
+    // -- chargement de l'image -- //
+    // --------------------------- //
 
 		MLoadPGM_ui8matrix(filename, mi0b, mi1b, mj0b, mj1b, image);
 
 		duplicate_border(mi0, mi1, mj0, mj1, b, image);
 
 		// ----------------- //
-	    // -- traitements -- //
-	    // ----------------- //
+	  // -- traitements -- //
+	  // ----------------- //
 
 		// SIGMA DELTA
 		SigmaDelta_step1(mi0b, mi1b, mj0b, mj1b, mean0, mean1, image);
@@ -217,8 +214,8 @@ void test_mouvement_morpho_dataset(){
 		SigmaDelta_step4(mi0b, mi1b, mj0b, mj1b, std1, img_diff, img_bin);
 
 		// MORPHOLOGIE
-		morpho_5_opti(img_bin, img_filtered, mi0, mi1, mj0, mj1); 
-		printf("JE FINIE MA MORPHO\n");
+		morpho_5(img_bin, img_filtered, mi0, mi1, mj0, mj1); 
+
 		// built pgm filename out
 		char filename_out[25] = "";
 		snprintf(filename_out, 25, "MM_out_%d.pgm", i);
@@ -226,8 +223,8 @@ void test_mouvement_morpho_dataset(){
 	}
 
 	// ---------- //
-    // -- free -- //
-    // ---------- //
+  // -- free -- //
+  // ---------- //
 
 	free_ui8matrix(image, mi0b, mi1b, mj0b, mj1b);
 

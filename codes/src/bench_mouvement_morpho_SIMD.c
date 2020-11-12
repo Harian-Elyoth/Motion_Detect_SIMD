@@ -33,7 +33,6 @@ void bench_mouvement_morpho_SIMD_car(bool is_visual){
 
 	// calcul temps
 	double time_total, time_step1, time_step2, time_step3, time_step4, time_morpho;
-	clock_t start, finish;
 
 	// calcul debit
 	double debit_total, debit_step1, debit_step2, debit_step3, debit_step4, debit_morpho;
@@ -181,10 +180,8 @@ void bench_mouvement_morpho_SIMD_car(bool is_visual){
 
 	BENCH(printf("Sigma Delta :\n\n"));
 
-	start = clock();
 	CHRONO(SigmaDelta_step1_simd(vmi0b, vmi1b, vmj0b, vmj1b, mean0, mean1, image), cycles_step1);
-	finish = clock();
-	time_step1 = (double)(finish-start)/CLOCKS_PER_SEC;
+	time_step1 = (double)(cycles_step1/CLK_PROC);
 	debit_step1 = (width*height) / time_step1;
 	time_step1 *= 1000;
 
@@ -193,10 +190,8 @@ void bench_mouvement_morpho_SIMD_car(bool is_visual){
 	BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_step1/(WIDTH*HEIGHT))); BENCH(puts("")); 
 	BENCH(printf("debit (pixel/sec)   = %0.2f", debit_step1)); BENCH(puts("")); BENCH(puts(""));
 
-	start = clock();
 	CHRONO(SigmaDelta_step2_simd(vmi0b, vmi1b, vmj0b, vmj1b, image, mean1, img_diff), cycles_step2);
-	finish = clock();
-	time_step2 = (double)(finish-start)/CLOCKS_PER_SEC;
+	time_step2 = (double)(cycles_step2/CLK_PROC);
 	debit_step2 = (width*height) / time_step2;
 	time_step2 *= 1000;
 
@@ -205,10 +200,8 @@ void bench_mouvement_morpho_SIMD_car(bool is_visual){
 	BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_step2/(WIDTH*HEIGHT))); BENCH(puts(""));
 	BENCH(printf("debit (pixel/sec)   = %0.2f", debit_step2)); BENCH(puts("")); BENCH(puts(""));
 
-	start = clock();
 	CHRONO(SigmaDelta_step3_simd(vmi0b, vmi1b, vmj0b, vmj1b, std0, std1, img_diff), cycles_step3);
-	finish = clock();
-	time_step3 = (double)(finish-start)/CLOCKS_PER_SEC;
+	time_step3 = (double)(cycles_step3/CLK_PROC);
 	debit_step3 = (width*height) / time_step3;
 	time_step3 *= 1000;
 
@@ -217,10 +210,9 @@ void bench_mouvement_morpho_SIMD_car(bool is_visual){
 	BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_step3/(WIDTH*HEIGHT))); BENCH(puts(""));
 	BENCH(printf("debit (pixel/sec)   = %0.2f", debit_step3)); BENCH(puts("")); BENCH(puts(""));
 
-	start = clock();
+	
 	CHRONO(SigmaDelta_step4_simd( vmi0b, vmi1b, vmj0b, vmj1b, std1, img_diff, img_bin), cycles_step4);
-	finish = clock();
-	time_step4 = (double)(finish-start)/CLOCKS_PER_SEC;
+	time_step4 = (double)(cycles_step4/CLK_PROC);
 	debit_step4 = (width*height) / time_step4;
 	time_step4 *= 1000;
 
@@ -229,10 +221,8 @@ void bench_mouvement_morpho_SIMD_car(bool is_visual){
 	BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_step4/(WIDTH*HEIGHT))); BENCH(puts(""));
 	BENCH(printf("debit (pixel/sec)   = %0.2f", debit_step4)); BENCH(puts("")); BENCH(puts(""));
 
-	start = clock();
 	CHRONO(morpho_3_SIMD(img_bin, img_filtered, vmi0, vmi1, vmj0, vmj1), cycles_morpho); 
-	finish = clock();
-	time_morpho = (double)(finish-start)/CLOCKS_PER_SEC;
+	time_morpho = (double)(cycles_morpho/CLK_PROC);
 	debit_morpho = (width*height) / time_morpho;
 	time_morpho *= 1000;
 
@@ -291,7 +281,6 @@ void bench_mouvement_morpho_SIMD_dataset(){
 
 	// calcul temps
 	double time_dataset, time_total, time_step1, time_step2, time_step3, time_step4, time_morpho;
-	clock_t start, finish;
 
 	// calcul debit
 	double debit_dataset, debit_total;
@@ -409,34 +398,24 @@ void bench_mouvement_morpho_SIMD_dataset(){
 	    // -- traitements -- //
 	    // ----------------- //
 
-		start = clock();
 		CHRONO(SigmaDelta_step1_simd(vmi0b, vmi1b, vmj0b, vmj1b, mean0, mean1, image), cycles_step1);
-		finish = clock();
-		time_step1 = (double)(finish-start)/CLOCKS_PER_SEC;
+		time_step1 = (double)(cycles_step1/CLK_PROC);
 		time_step1 *= 1000;
 
-		start = clock();
 		CHRONO(SigmaDelta_step2_simd(vmi0b, vmi1b, vmj0b, vmj1b, image, mean1, img_diff), cycles_step2);
-		finish = clock();
-		time_step2 = (double)(finish-start)/CLOCKS_PER_SEC;
+		time_step2 = (double)(cycles_step2/CLK_PROC);
 		time_step2 *= 1000;
 
-		start = clock();
 		CHRONO(SigmaDelta_step3_simd(vmi0b, vmi1b, vmj0b, vmj1b, std0, std1, img_diff), cycles_step3);
-		finish = clock();
-		time_step3 = (double)(finish-start)/CLOCKS_PER_SEC;
+		time_step3 = (double)(cycles_step3/CLK_PROC);
 		time_step3 *= 1000;
 
-		start = clock();
 		CHRONO(SigmaDelta_step4_simd( vmi0b, vmi1b, vmj0b, vmj1b, std1, img_diff, img_bin), cycles_step4);
-		finish = clock();
-		time_step4 = (double)(finish-start)/CLOCKS_PER_SEC;
+		time_step4 = (double)(cycles_step4/CLK_PROC);
 		time_step4 *= 1000;
 
-		start = clock();
 		CHRONO(morpho_3_SIMD(img_bin, img_filtered, vmi0, vmi1, vmj0, vmj1), cycles_morpho); 
-		finish = clock();
-		time_morpho = (double)(finish-start)/CLOCKS_PER_SEC;
+		time_morpho = (double)(cycles_morpho/CLK_PROC);
 		time_morpho *= 1000;
 
 		cycles_total = cycles_step1 + cycles_step2 + cycles_step3 + cycles_step4 + cycles_morpho;
