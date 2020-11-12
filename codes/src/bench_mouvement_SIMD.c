@@ -247,8 +247,6 @@ void bench_mouvement_SIMD_car(bool is_visual){
 
 	free_vui8matrix(img_diff, vmi0b, vmi1b, vmj0b, vmj1b);
 	free_vui8matrix(img_bin, vmi0b, vmi1b, vmj0b, vmj1b);
-
-	free_ui8matrix(img_print, mi0b, mi1b, mj0b, mj1b);
 }
 
 void bench_mouvement_SIMD_dataset(){

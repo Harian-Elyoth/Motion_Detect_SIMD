@@ -64,6 +64,9 @@ void SigmaDelta_step3_opti(int mi0b, int mi1b, int mj0b, int mj1b, uint8** std0,
 void SigmaDelta_step4(int mi0b, int mi1b, int mj0b, int mj1b, uint8** std1, uint8** img_diff, uint8** img_bin);
 void SigmaDelta_step4_opti(int mi0b, int mi1b, int mj0b, int mj1b, uint8** std1, uint8** img_diff, uint8** img_bin);
 
+void SigmaDelta_full(int mi0b, int mi1b, int mj0b, int mj1b,  uint8** image, uint8** mean0, uint8** mean1, uint8** img_diff, uint8** std0, uint8** std1, uint8** img_bin);
+void SigmaDelta_full_opti(int mi0b, int mi1b, int mj0b, int mj1b,  uint8** image, uint8** mean0, uint8** std0, uint8** img_bin);
+
 void duplicate_border(int mi0b, int mi1b, int mj0b, int mj1b, int b, uint8** image);
 
 void gen_pgm_img();

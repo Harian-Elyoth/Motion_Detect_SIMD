@@ -105,15 +105,19 @@ void test_mouvement_car(bool is_visual){
 
     DEBUG(display_ui8matrix(image, mi0b, mi1b, mj0b, mj1b, " %d ", "image"));
 
-    SigmaDelta_step1_opti(mi0b, mi1b, mj0b, mj1b, mean0, mean1, image);
-	SigmaDelta_step2_opti(mi0b, mi1b, mj0b, mj1b, image, mean1, img_diff);
-	SigmaDelta_step3_opti(mi0b, mi1b, mj0b, mj1b, std0, std1, img_diff);
-	SigmaDelta_step4_opti(mi0b, mi1b, mj0b, mj1b, std1, img_diff, img_bin);
+ 	// SigmaDelta_step1_opti(mi0b, mi1b, mj0b, mj1b, mean0, mean1, image);
+	// SigmaDelta_step2_opti(mi0b, mi1b, mj0b, mj1b, image, mean1, img_diff);
+	// SigmaDelta_step3_opti(mi0b, mi1b, mj0b, mj1b, std0, std1, img_diff);
+	// SigmaDelta_step4_opti(mi0b, mi1b, mj0b, mj1b, std1, img_diff, img_bin);
+
+	// SigmaDelta_full(mi0b, mi1b, mj0b, mj1b, image, mean0, mean1, img_diff, std0, std1, img_bin);
+
+	SigmaDelta_full_opti(mi0b, mi1b, mj0b, mj1b, image, mean0, std0, img_bin);
 
 	DEBUG(display_ui8matrix(img_bin, mi0b, mi1b, mj0b, mj1b, " %d ", "img_bin"));
 
 	// convert binary img to pgm img
-	bin_to_pgm(mi0b, mi1b, mj0b, mj1b, img_bin,"SD_out.pgm");
+	bin_to_pgm(mi0, mi1, mj0, mj1, img_bin,"SD_out.pgm");
 
 	// ---------- //
     // -- free -- //
@@ -223,17 +227,21 @@ void test_mouvement_dataset(){
 	    // -- traitements -- //
 	    // ----------------- //
 
-		SigmaDelta_step1(mi0b, mi1b, mj0b, mj1b, mean0, mean1, image);
-		SigmaDelta_step2(mi0b, mi1b, mj0b, mj1b, image, mean1, img_diff);
-		SigmaDelta_step3(mi0b, mi1b, mj0b, mj1b, std0, std1, img_diff);
-		SigmaDelta_step4(mi0b, mi1b, mj0b, mj1b, std1, img_diff, img_bin);
+		// SigmaDelta_step1(mi0b, mi1b, mj0b, mj1b, mean0, mean1, image);
+		// SigmaDelta_step2(mi0b, mi1b, mj0b, mj1b, image, mean1, img_diff);
+		// SigmaDelta_step3(mi0b, mi1b, mj0b, mj1b, std0, std1, img_diff);
+		// SigmaDelta_step4(mi0b, mi1b, mj0b, mj1b, std1, img_diff, img_bin);
+
+		// SigmaDelta_full(mi0b, mi1b, mj0b, mj1b, image, mean0, mean1, img_diff, std0, std1, img_bin);
+
+		SigmaDelta_full_opti(mi0b, mi1b, mj0b, mj1b, image, mean0, std0, img_bin);
 
 		// built pgm filename out
 		char filename_out[25] = "";
 		snprintf(filename_out, 25, "SD_out_%d.pgm", i);
 
 		// convert binary img to pgm img
-		bin_to_pgm(mi0b, mi1b, mj0b, mj1b, img_bin, filename_out);
+		bin_to_pgm(mi0, mi1, mj0, mj1, img_bin, filename_out);
 	}
 
 	// ---------- //
@@ -260,7 +268,7 @@ void main_test_mouvement(int argc, char *argv[])
 	// test_mouvement_car(true);
 
 	// test unitaire sur image du set
-	test_mouvement_car(false);
+	// test_mouvement_car(false);
 
 	// test global sur tout le set
 	// test_mouvement_dataset();	

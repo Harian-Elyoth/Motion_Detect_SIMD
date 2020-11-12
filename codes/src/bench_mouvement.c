@@ -22,14 +22,17 @@ void bench_mouvement_car(bool is_visual){
 	// calcul cpp
 	double cycles_total, cycles_step1, cycles_step2, cycles_step3, cycles_step4;
 	double cycles_total_opti, cycles_step1_opti, cycles_step2_opti, cycles_step3_opti, cycles_step4_opti;
+	double cycles_total_full, cycles_total_full_opti;
 
 	// calcul temps
 	double time_total, time_step1, time_step2, time_step3, time_step4;
 	double time_total_opti, time_step1_opti, time_step2_opti, time_step3_opti, time_step4_opti;
+	double time_total_full, time_total_full_opti;
 
 	// calcul debit
 	double debit_total, debit_step1, debit_step2, debit_step3, debit_step4;
 	double debit_total_opti, debit_step1_opti, debit_step2_opti, debit_step3_opti, debit_step4_opti;
+	double debit_total_full, debit_total_full_opti;
 
 	// taille noyau de convolution	
     int kernel_size = 3;
@@ -207,6 +210,27 @@ void bench_mouvement_car(bool is_visual){
 	BENCH(printf("temps (ms) \t    = %0.6f", time_total_opti)); BENCH(puts(""));
 	BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_total_opti/(WIDTH*HEIGHT))); BENCH(puts(""));
 	BENCH(printf("debit (pixel/sec)   = %0.2f", debit_total_opti)); BENCH(puts("")); BENCH(puts(""));
+
+	CHRONO(SigmaDelta_full(mi0b, mi1b, mj0b, mj1b, image, mean0, mean1, img_diff, std0, std1, img_bin), cycles_total_full);
+	time_total_full = (double)(cycles_total_full/CLK_PROC);
+	debit_total_full = (WIDTH*HEIGHT) / time_total_full;
+	time_total_full *= 1000;
+
+	BENCH(printf("Total full :")); BENCH(puts(""));
+	BENCH(printf("temps (ms) \t    = %0.6f", time_total_full)); BENCH(puts(""));
+	BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_total_full/(WIDTH*HEIGHT))); BENCH(puts(""));
+	BENCH(printf("debit (pixel/sec)   = %0.2f", debit_total_full)); BENCH(puts("")); BENCH(puts(""));	
+
+	CHRONO(SigmaDelta_full_opti(mi0b, mi1b, mj0b, mj1b, image, mean0, std0, img_bin), cycles_total_full_opti);
+	time_total_full_opti = (double)(cycles_total_full_opti/CLK_PROC);
+	debit_total_full_opti = (WIDTH*HEIGHT) / time_total_full_opti;
+	time_total_full_opti *= 1000;
+
+	BENCH(printf("Total full optimisé :")); BENCH(puts(""));
+	BENCH(printf("temps (ms) \t    = %0.6f", time_total_full_opti)); BENCH(puts(""));
+	BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_total_full_opti/(WIDTH*HEIGHT))); BENCH(puts(""));
+	BENCH(printf("debit (pixel/sec)   = %0.2f", debit_total_full_opti)); BENCH(puts("")); BENCH(puts(""));	
+
 
 	// ---------- //
     // -- free -- //
