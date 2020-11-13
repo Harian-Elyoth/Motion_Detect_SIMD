@@ -166,7 +166,7 @@ void bench_morpho_5_SIMD(){
 }
 
 void gen_vimg_bin_bench_SIMD(int type, int kernel_size){
-    
+    /*
     int seuil;
     if(type){
        seuil = 95; 
@@ -207,7 +207,8 @@ void gen_vimg_bin_bench_SIMD(int type, int kernel_size){
             
         }
     }
-
+    */
+   
 	
 }
 
