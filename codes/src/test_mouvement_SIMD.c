@@ -22,7 +22,6 @@ void test_mouvement_SIMD_car(bool is_visual){
 	}
 
 	char *format = "%d ";
-	int kernel_size = 3;
 
 	puts("====================================");
 	puts("=== test mouvement unitaire SIMD ===");
@@ -174,11 +173,16 @@ void test_mouvement_SIMD_car(bool is_visual){
 	// -- traitements -- //
 	// ----------------- //
 
-	SigmaDelta_step1_simd(vmi0b, vmi1b, vmj0b, vmj1b, mean0, mean1, image);
-	SigmaDelta_step2_simd(vmi0b, vmi1b, vmj0b, vmj1b, image, mean1, img_diff);
-	SigmaDelta_step3_simd(vmi0b, vmi1b, vmj0b, vmj1b, std0, std1, img_diff);
-	SigmaDelta_step4_simd( vmi0b, vmi1b, vmj0b, vmj1b, std1, img_diff, img_bin);
+	// SigmaDelta_step1_simd(vmi0b, vmi1b, vmj0b, vmj1b, mean0, mean1, image);
+	// SigmaDelta_step2_simd(vmi0b, vmi1b, vmj0b, vmj1b, image, mean1, img_diff);
+	// SigmaDelta_step3_simd(vmi0b, vmi1b, vmj0b, vmj1b, std0, std1, img_diff);
+	// SigmaDelta_step4_simd( vmi0b, vmi1b, vmj0b, vmj1b, std1, img_diff, img_bin);
 	
+	SigmaDelta_step1_simd_opti(vmi0b, vmi1b, vmj0b, vmj1b, mean0, mean1, image);
+	SigmaDelta_step2_simd_opti(vmi0b, vmi1b, vmj0b, vmj1b, image, mean1, img_diff);
+	SigmaDelta_step3_simd_opti(vmi0b, vmi1b, vmj0b, vmj1b, std0, std1, img_diff);
+	SigmaDelta_step4_simd_opti( vmi0b, vmi1b, vmj0b, vmj1b, std1, img_diff, img_bin);
+
 	/*---------------------------------------------------*/
 
 	DEBUG(puts("================="));
@@ -347,10 +351,15 @@ void test_mouvement_SIMD_dataset(){
 	    // -- traitements -- //
 	    // ----------------- //
 
-		SigmaDelta_step1_simd(vmi0b, vmi1b, vmj0b, vmj1b, mean0, mean1, image);
-		SigmaDelta_step2_simd(vmi0b, vmi1b, vmj0b, vmj1b, image, mean1, img_diff);
-		SigmaDelta_step3_simd(vmi0b, vmi1b, vmj0b, vmj1b, std0, std1, img_diff);
-		SigmaDelta_step4_simd(vmi0b, vmi1b, vmj0b, vmj1b, std1, img_diff, img_bin);
+		// SigmaDelta_step1_simd(vmi0b, vmi1b, vmj0b, vmj1b, mean0, mean1, image);
+		// SigmaDelta_step2_simd(vmi0b, vmi1b, vmj0b, vmj1b, image, mean1, img_diff);
+		// SigmaDelta_step3_simd(vmi0b, vmi1b, vmj0b, vmj1b, std0, std1, img_diff);
+		// SigmaDelta_step4_simd( vmi0b, vmi1b, vmj0b, vmj1b, std1, img_diff, img_bin);
+		
+		SigmaDelta_step1_simd_opti(vmi0b, vmi1b, vmj0b, vmj1b, mean0, mean1, image);
+		SigmaDelta_step2_simd_opti(vmi0b, vmi1b, vmj0b, vmj1b, image, mean1, img_diff);
+		SigmaDelta_step3_simd_opti(vmi0b, vmi1b, vmj0b, vmj1b, std0, std1, img_diff);
+		SigmaDelta_step4_simd_opti( vmi0b, vmi1b, vmj0b, vmj1b, std1, img_diff, img_bin);
 
 		// --------------- //
 		// -- affichage -- //
@@ -399,8 +408,8 @@ void main_test_mouvement_SIMD(int argc, char *argv[]){
 	// test_mouvement_SIMD_car(true);
 
 	// test unitaire sur image du set
-	test_mouvement_SIMD_car(false);
+	// test_mouvement_SIMD_car(false);
 
 	// test global sur tout le set
-	// test_mouvement_SIMD_dataset();	
+	test_mouvement_SIMD_dataset();	
 }
