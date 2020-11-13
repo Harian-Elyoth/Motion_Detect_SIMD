@@ -178,10 +178,14 @@ void test_mouvement_SIMD_car(bool is_visual){
 	// SigmaDelta_step3_simd(vmi0b, vmi1b, vmj0b, vmj1b, std0, std1, img_diff);
 	// SigmaDelta_step4_simd( vmi0b, vmi1b, vmj0b, vmj1b, std1, img_diff, img_bin);
 	
-	SigmaDelta_step1_simd_opti(vmi0b, vmi1b, vmj0b, vmj1b, mean0, mean1, image);
-	SigmaDelta_step2_simd_opti(vmi0b, vmi1b, vmj0b, vmj1b, image, mean1, img_diff);
-	SigmaDelta_step3_simd_opti(vmi0b, vmi1b, vmj0b, vmj1b, std0, std1, img_diff);
-	SigmaDelta_step4_simd_opti( vmi0b, vmi1b, vmj0b, vmj1b, std1, img_diff, img_bin);
+	// SigmaDelta_step1_simd_opti(vmi0b, vmi1b, vmj0b, vmj1b, mean0, mean1, image);
+	// SigmaDelta_step2_simd_opti(vmi0b, vmi1b, vmj0b, vmj1b, image, mean1, img_diff);
+	// SigmaDelta_step3_simd_opti(vmi0b, vmi1b, vmj0b, vmj1b, std0, std1, img_diff);
+	// SigmaDelta_step4_simd_opti( vmi0b, vmi1b, vmj0b, vmj1b, std1, img_diff, img_bin);
+
+	// SigmaDelta_simd_full(vmi0b, vmi1b, vmj0b, vmj1b, image, mean0, std0, img_bin);
+
+	SigmaDelta_simd_full_opti(vmi0b, vmi1b, vmj0b, vmj1b, image, mean0, std0, img_bin);
 
 	/*---------------------------------------------------*/
 
@@ -356,10 +360,14 @@ void test_mouvement_SIMD_dataset(){
 		// SigmaDelta_step3_simd(vmi0b, vmi1b, vmj0b, vmj1b, std0, std1, img_diff);
 		// SigmaDelta_step4_simd( vmi0b, vmi1b, vmj0b, vmj1b, std1, img_diff, img_bin);
 		
-		SigmaDelta_step1_simd_opti(vmi0b, vmi1b, vmj0b, vmj1b, mean0, mean1, image);
-		SigmaDelta_step2_simd_opti(vmi0b, vmi1b, vmj0b, vmj1b, image, mean1, img_diff);
-		SigmaDelta_step3_simd_opti(vmi0b, vmi1b, vmj0b, vmj1b, std0, std1, img_diff);
-		SigmaDelta_step4_simd_opti( vmi0b, vmi1b, vmj0b, vmj1b, std1, img_diff, img_bin);
+		// SigmaDelta_step1_simd_opti(vmi0b, vmi1b, vmj0b, vmj1b, mean0, mean1, image);
+		// SigmaDelta_step2_simd_opti(vmi0b, vmi1b, vmj0b, vmj1b, image, mean1, img_diff);
+		// SigmaDelta_step3_simd_opti(vmi0b, vmi1b, vmj0b, vmj1b, std0, std1, img_diff);
+		// SigmaDelta_step4_simd_opti( vmi0b, vmi1b, vmj0b, vmj1b, std1, img_diff, img_bin);
+
+		// SigmaDelta_simd_full(vmi0b, vmi1b, vmj0b, vmj1b, image, mean0, std0, img_bin);
+
+		SigmaDelta_simd_full_opti(vmi0b, vmi1b, vmj0b, vmj1b, image, mean0, std0, img_bin);
 
 		// --------------- //
 		// -- affichage -- //
