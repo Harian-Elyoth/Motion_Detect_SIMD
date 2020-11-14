@@ -174,6 +174,55 @@ void SigmaDelta_step1_simd_opti(int vmi0b, int vmi1b, int vmj0b, int vmj1b, vuin
 
 			VEC_STORE_2D_EPI8(mean1_reg, i, j + 3, mean1);
 		}
+
+		// EPILOGUE
+		switch(r){
+
+			case 3:
+				mean0_reg = VEC_LOAD_2D_EPI8(i, vmj1b - 2, mean0);
+				image_reg = VEC_LOAD_2D_EPI8(i, vmj1b - 2, image);
+
+				cmplt = VEC_CMPLT_EPI8(mean0_reg, image_reg);
+				cmpgt = VEC_CMPGT_EPI8(mean0_reg, image_reg);	
+
+				reslt = VEC_AND_EPI8(cmplt, ones);
+				resgt = VEC_AND_EPI8(cmpgt, ones);
+				
+				mean1_reg = VEC_SUB_EPI8(VEC_ADD_EPI8(mean0_reg, reslt), resgt); 
+
+				VEC_STORE_2D_EPI8(mean1_reg, i, vmj1b - 2, mean1);
+
+			case 2:
+				mean0_reg = VEC_LOAD_2D_EPI8(i, vmj1b - 1, mean0);
+				image_reg = VEC_LOAD_2D_EPI8(i, vmj1b - 1, image);
+
+				cmplt = VEC_CMPLT_EPI8(mean0_reg, image_reg);
+				cmpgt = VEC_CMPGT_EPI8(mean0_reg, image_reg);	
+
+				reslt = VEC_AND_EPI8(cmplt, ones);
+				resgt = VEC_AND_EPI8(cmpgt, ones);
+				
+				mean1_reg = VEC_SUB_EPI8(VEC_ADD_EPI8(mean0_reg, reslt), resgt); 
+
+				VEC_STORE_2D_EPI8(mean1_reg, i, vmj1b - 1, mean1);
+
+			case 1:
+				mean0_reg = VEC_LOAD_2D_EPI8(i, vmj1b - 0, mean0);
+				image_reg = VEC_LOAD_2D_EPI8(i, vmj1b - 0, image);
+
+				cmplt = VEC_CMPLT_EPI8(mean0_reg, image_reg);
+				cmpgt = VEC_CMPGT_EPI8(mean0_reg, image_reg);	
+
+				reslt = VEC_AND_EPI8(cmplt, ones);
+				resgt = VEC_AND_EPI8(cmpgt, ones);
+				
+				mean1_reg = VEC_SUB_EPI8(VEC_ADD_EPI8(mean0_reg, reslt), resgt); 
+
+				VEC_STORE_2D_EPI8(mean1_reg, i, vmj1b - 0, mean1);
+
+			default:
+				break;
+		}
 	}
 }
 
@@ -238,6 +287,37 @@ void SigmaDelta_step2_simd_opti(int vmi0b, int vmi1b, int vmj0b, int vmj1b, vuin
 			abs_reg = VEC_ABS_EPI8(VEC_SUB_EPI8(mean1_reg, image_reg));
 
 			VEC_STORE_2D_EPI8(abs_reg, i, j + 3, img_diff);
+		}
+
+		// EPILOGUE
+		switch(r){
+
+			case 3:
+				mean1_reg = VEC_LOAD_2D_EPI8(i, vmj1b - 2, mean1);
+				image_reg = VEC_LOAD_2D_EPI8(i, vmj1b - 2, image);
+
+				abs_reg = VEC_ABS_EPI8(VEC_SUB_EPI8(mean1_reg, image_reg));
+
+				VEC_STORE_2D_EPI8(abs_reg, i, vmj1b - 2, img_diff);
+
+			case 2:
+				mean1_reg = VEC_LOAD_2D_EPI8(i, vmj1b - 1, mean1);
+				image_reg = VEC_LOAD_2D_EPI8(i, vmj1b - 1, image);
+
+				abs_reg = VEC_ABS_EPI8(VEC_SUB_EPI8(mean1_reg, image_reg));
+
+				VEC_STORE_2D_EPI8(abs_reg, i, vmj1b - 1, img_diff);
+
+			case 1:
+				mean1_reg = VEC_LOAD_2D_EPI8(i, vmj1b - 0, mean1);
+				image_reg = VEC_LOAD_2D_EPI8(i, vmj1b - 0, image);
+
+				abs_reg = VEC_ABS_EPI8(VEC_SUB_EPI8(mean1_reg, image_reg));
+
+				VEC_STORE_2D_EPI8(abs_reg, i, vmj1b - 0, img_diff);
+
+			default:
+				break;
 		}
 	}
 }
@@ -400,6 +480,85 @@ void SigmaDelta_step3_simd_opti(int vmi0b, int vmi1b, int vmj0b, int vmj1b, vuin
 
 			VEC_STORE_2D_EPI8(std1_reg, i, j + 3, std1);
 		}
+
+		// EPILOGUE
+		switch(r){
+
+			case 3:
+				N_img_diff_reg = VEC_LOAD_2D_EPI8(i, vmj1b - 2, img_diff);
+
+				// simul multiplication
+				for(int k = 0; k < N; ++k)
+				{
+					N_img_diff_reg = VEC_ADD_EPI8(N_img_diff_reg, N_reg);
+				}
+
+				std0_reg = VEC_LOAD_2D_EPI8(i, vmj1b - 2, std0);
+
+				cmplt = VEC_CMPLT_EPI8(std0_reg, N_img_diff_reg);
+				cmpgt = VEC_CMPGT_EPI8(std0_reg, N_img_diff_reg);
+
+				reslt = VEC_AND_EPI8(cmplt, ones);
+				resgt = VEC_AND_EPI8(cmpgt, ones);
+
+				std1_reg = VEC_SUB_EPI8(VEC_ADD_EPI8(std1_reg, reslt), resgt); 
+
+				// clamp to [Vmin,Vmax]
+				std1_reg = VEC_MAX_EPI8(VEC_MIN_EPI8(std1_reg, VMAX_reg), VMIN_reg);
+
+				VEC_STORE_2D_EPI8(std1_reg, i, vmj1b - 2, std1);
+
+			case 2:
+				N_img_diff_reg = VEC_LOAD_2D_EPI8(i, vmj1b - 1, img_diff);
+
+				// simul multiplication
+				for(int k = 0; k < N; ++k)
+				{
+					N_img_diff_reg = VEC_ADD_EPI8(N_img_diff_reg, N_reg);
+				}
+
+				std0_reg = VEC_LOAD_2D_EPI8(i, vmj1b - 1, std0);
+
+				cmplt = VEC_CMPLT_EPI8(std0_reg, N_img_diff_reg);
+				cmpgt = VEC_CMPGT_EPI8(std0_reg, N_img_diff_reg);
+
+				reslt = VEC_AND_EPI8(cmplt, ones);
+				resgt = VEC_AND_EPI8(cmpgt, ones);
+
+				std1_reg = VEC_SUB_EPI8(VEC_ADD_EPI8(std1_reg, reslt), resgt); 
+
+				// clamp to [Vmin,Vmax]
+				std1_reg = VEC_MAX_EPI8(VEC_MIN_EPI8(std1_reg, VMAX_reg), VMIN_reg);
+
+				VEC_STORE_2D_EPI8(std1_reg, i, vmj1b - 1, std1);
+
+			case 1:
+				N_img_diff_reg = VEC_LOAD_2D_EPI8(i, vmj1b - 0, img_diff);
+
+				// simul multiplication
+				for(int k = 0; k < N; ++k)
+				{
+					N_img_diff_reg = VEC_ADD_EPI8(N_img_diff_reg, N_reg);
+				}
+
+				std0_reg = VEC_LOAD_2D_EPI8(i, vmj1b - 0, std0);
+
+				cmplt = VEC_CMPLT_EPI8(std0_reg, N_img_diff_reg);
+				cmpgt = VEC_CMPGT_EPI8(std0_reg, N_img_diff_reg);
+
+				reslt = VEC_AND_EPI8(cmplt, ones);
+				resgt = VEC_AND_EPI8(cmpgt, ones);
+
+				std1_reg = VEC_SUB_EPI8(VEC_ADD_EPI8(std1_reg, reslt), resgt); 
+
+				// clamp to [Vmin,Vmax]
+				std1_reg = VEC_MAX_EPI8(VEC_MIN_EPI8(std1_reg, VMAX_reg), VMIN_reg);
+
+				VEC_STORE_2D_EPI8(std1_reg, i, vmj1b - 0, std1);
+
+			default:
+				break;
+		}
 	}
 }	
 
@@ -480,6 +639,43 @@ void SigmaDelta_step4_simd_opti(int vmi0b, int vmi1b, int vmj0b, int vmj1b, vuin
 			img_bin_reg = VEC_AND_EPI8(cmpgt, ones);
 
 			VEC_STORE_2D_EPI8(img_bin_reg, i, j + 3, img_bin);
+		}
+
+		// EPILOGUE
+		switch(r){
+
+			case 3:
+				std1_reg 		= VEC_LOAD_2D_EPI8(i, vmj1b - 2, std1);
+				img_diff_reg 	= VEC_LOAD_2D_EPI8(i, vmj1b - 2, img_diff);
+
+				cmpgt = VEC_CMPLT_EPI8(std1_reg, img_diff_reg);
+
+				img_bin_reg = VEC_AND_EPI8(cmpgt, ones);
+
+				VEC_STORE_2D_EPI8(img_bin_reg, i, vmj1b - 2, img_bin);
+
+			case 2:
+				std1_reg 		= VEC_LOAD_2D_EPI8(i, vmj1b - 1, std1);
+				img_diff_reg 	= VEC_LOAD_2D_EPI8(i, vmj1b - 1, img_diff);
+
+				cmpgt = VEC_CMPLT_EPI8(std1_reg, img_diff_reg);
+
+				img_bin_reg = VEC_AND_EPI8(cmpgt, ones);
+
+				VEC_STORE_2D_EPI8(img_bin_reg, i, vmj1b - 1, img_bin);
+
+			case 1:
+				std1_reg 		= VEC_LOAD_2D_EPI8(i, vmj1b - 0, std1);
+				img_diff_reg 	= VEC_LOAD_2D_EPI8(i, vmj1b - 0, img_diff);
+
+				cmpgt = VEC_CMPLT_EPI8(std1_reg, img_diff_reg);
+
+				img_bin_reg = VEC_AND_EPI8(cmpgt, ones);
+
+				VEC_STORE_2D_EPI8(img_bin_reg, i, vmj1b - 0, img_bin);
+
+			default:
+				break;
 		}
 	}
 }
@@ -790,6 +986,142 @@ void SigmaDelta_simd_full_opti(int vmi0b, int vmi1b, int vmj0b, int vmj1b,  vuin
 			img_bin_reg = VEC_AND_EPI8(cmpgt, ones);
 
 			VEC_STORE_2D_EPI8(img_bin_reg, i, j + 3, img_bin);
+		}
+
+		// EPILOGUE
+		switch(r){
+
+			case 3:
+				// STEP 1
+				mean0_reg = VEC_LOAD_2D_EPI8(i, vmj1b - 2, mean0);
+				image_reg = VEC_LOAD_2D_EPI8(i, vmj1b - 2, image);
+
+				cmplt = VEC_CMPLT_EPI8(mean0_reg, image_reg);
+				cmpgt = VEC_CMPGT_EPI8(mean0_reg, image_reg);	
+
+				reslt = VEC_AND_EPI8(cmplt, ones);
+				resgt = VEC_AND_EPI8(cmpgt, ones);
+				
+				mean1_reg = VEC_SUB_EPI8(VEC_ADD_EPI8(mean0_reg, reslt), resgt); 
+
+				// STEP 2
+				img_diff_reg = VEC_ABS_EPI8(VEC_SUB_EPI8(mean1_reg, image_reg));
+
+				// STEP 3
+				// simul multiplication
+				for(int k = 0; k < N; ++k)
+				{
+					N_img_diff_reg = VEC_ADD_EPI8(img_diff_reg, N_reg);
+				}
+
+				std0_reg = VEC_LOAD_2D_EPI8(i, vmj1b - 2, std0);
+
+				cmplt = VEC_CMPLT_EPI8(std0_reg, N_img_diff_reg);
+				cmpgt = VEC_CMPGT_EPI8(std0_reg, N_img_diff_reg);
+
+				reslt = VEC_AND_EPI8(cmplt, ones);
+				resgt = VEC_AND_EPI8(cmpgt, ones);
+
+				std1_reg = VEC_SUB_EPI8(VEC_ADD_EPI8(std1_reg, reslt), resgt); 
+
+				// clamp to [Vmin,Vmax]
+				std1_reg = VEC_MAX_EPI8(VEC_MIN_EPI8(std1_reg, VMAX_reg), VMIN_reg);
+
+				// STEP 4
+				cmpgt = VEC_CMPLT_EPI8(std1_reg, img_diff_reg);
+
+				img_bin_reg = VEC_AND_EPI8(cmpgt, ones);
+
+				VEC_STORE_2D_EPI8(img_bin_reg, i, vmj1b - 2, img_bin);
+
+			case 2:
+				// STEP 1
+				mean0_reg = VEC_LOAD_2D_EPI8(i, vmj1b - 1, mean0);
+				image_reg = VEC_LOAD_2D_EPI8(i, vmj1b - 1, image);
+
+				cmplt = VEC_CMPLT_EPI8(mean0_reg, image_reg);
+				cmpgt = VEC_CMPGT_EPI8(mean0_reg, image_reg);	
+
+				reslt = VEC_AND_EPI8(cmplt, ones);
+				resgt = VEC_AND_EPI8(cmpgt, ones);
+				
+				mean1_reg = VEC_SUB_EPI8(VEC_ADD_EPI8(mean0_reg, reslt), resgt); 
+
+				// STEP 2
+				img_diff_reg = VEC_ABS_EPI8(VEC_SUB_EPI8(mean1_reg, image_reg));
+
+				// STEP 3
+				// simul multiplication
+				for(int k = 0; k < N; ++k)
+				{
+					N_img_diff_reg = VEC_ADD_EPI8(img_diff_reg, N_reg);
+				}
+
+				std0_reg = VEC_LOAD_2D_EPI8(i, vmj1b - 1, std0);
+
+				cmplt = VEC_CMPLT_EPI8(std0_reg, N_img_diff_reg);
+				cmpgt = VEC_CMPGT_EPI8(std0_reg, N_img_diff_reg);
+
+				reslt = VEC_AND_EPI8(cmplt, ones);
+				resgt = VEC_AND_EPI8(cmpgt, ones);
+
+				std1_reg = VEC_SUB_EPI8(VEC_ADD_EPI8(std1_reg, reslt), resgt); 
+
+				// clamp to [Vmin,Vmax]
+				std1_reg = VEC_MAX_EPI8(VEC_MIN_EPI8(std1_reg, VMAX_reg), VMIN_reg);
+
+				// STEP 4
+				cmpgt = VEC_CMPLT_EPI8(std1_reg, img_diff_reg);
+
+				img_bin_reg = VEC_AND_EPI8(cmpgt, ones);
+
+				VEC_STORE_2D_EPI8(img_bin_reg, i, vmj1b - 1, img_bin);
+
+			case 1:
+				// STEP 1
+				mean0_reg = VEC_LOAD_2D_EPI8(i, vmj1b - 0, mean0);
+				image_reg = VEC_LOAD_2D_EPI8(i, vmj1b - 0, image);
+
+				cmplt = VEC_CMPLT_EPI8(mean0_reg, image_reg);
+				cmpgt = VEC_CMPGT_EPI8(mean0_reg, image_reg);	
+
+				reslt = VEC_AND_EPI8(cmplt, ones);
+				resgt = VEC_AND_EPI8(cmpgt, ones);
+				
+				mean1_reg = VEC_SUB_EPI8(VEC_ADD_EPI8(mean0_reg, reslt), resgt); 
+
+				// STEP 2
+				img_diff_reg = VEC_ABS_EPI8(VEC_SUB_EPI8(mean1_reg, image_reg));
+
+				// STEP 3
+				// simul multiplication
+				for(int k = 0; k < N; ++k)
+				{
+					N_img_diff_reg = VEC_ADD_EPI8(img_diff_reg, N_reg);
+				}
+
+				std0_reg = VEC_LOAD_2D_EPI8(i, vmj1b - 0, std0);
+
+				cmplt = VEC_CMPLT_EPI8(std0_reg, N_img_diff_reg);
+				cmpgt = VEC_CMPGT_EPI8(std0_reg, N_img_diff_reg);
+
+				reslt = VEC_AND_EPI8(cmplt, ones);
+				resgt = VEC_AND_EPI8(cmpgt, ones);
+
+				std1_reg = VEC_SUB_EPI8(VEC_ADD_EPI8(std1_reg, reslt), resgt); 
+
+				// clamp to [Vmin,Vmax]
+				std1_reg = VEC_MAX_EPI8(VEC_MIN_EPI8(std1_reg, VMAX_reg), VMIN_reg);
+
+				// STEP 4
+				cmpgt = VEC_CMPLT_EPI8(std1_reg, img_diff_reg);
+
+				img_bin_reg = VEC_AND_EPI8(cmpgt, ones);
+
+				VEC_STORE_2D_EPI8(img_bin_reg, i, vmj1b - 0, img_bin);
+
+			default:
+				break;
 		}
 	}
 }

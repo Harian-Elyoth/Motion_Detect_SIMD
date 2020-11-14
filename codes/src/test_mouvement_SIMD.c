@@ -29,7 +29,7 @@ void test_mouvement_SIMD_car(bool is_visual){
 
 	// BORD
 	// 1 for 3x3 
-	int b = 1; 
+	int b = 2; 
 
 	// 2 for 5x5
 	//int b = 2;
@@ -126,12 +126,12 @@ void test_mouvement_SIMD_car(bool is_visual){
 		MLoadPGM_ui8matrix("pgm_imgs/my_pgm2.pgm", mi0b, mi1b, mj0b, mj1b, img_temp);
 
 		DEBUG(printf("Before duplicate_border : \n")); DEBUG(puts(""));
-		DEBUG(display_ui8matrix(img_temp, mi0b, mi1b, mj0b, mj1b, "%d ", "img_temp : ")); DEBUG(puts(""));
+		// DEBUG(display_ui8matrix(img_temp, mi0b, mi1b, mj0b, mj1b, "%03d ", "img_temp : ")); DEBUG(puts(""));
 
 		duplicate_border(mi0, mi1, mj0, mj1, b, img_temp);
 
 		DEBUG(printf("After duplicate_vborder : \n")); DEBUG(puts(""));
-		DEBUG(display_ui8matrix(img_temp, mi0b, mi1b, mj0b, mj1b, "%d ", "img_temp : ")); DEBUG(puts(""));
+		// DEBUG(display_ui8matrix(img_temp, mi0b, mi1b, mj0b, mj1b, "%03d ", "img_temp : ")); DEBUG(puts(""));
     }
     else
     {
@@ -178,7 +178,13 @@ void test_mouvement_SIMD_car(bool is_visual){
 	// SigmaDelta_step3_simd(vmi0b, vmi1b, vmj0b, vmj1b, std0, std1, img_diff);
 	// SigmaDelta_step4_simd( vmi0b, vmi1b, vmj0b, vmj1b, std1, img_diff, img_bin);
 	
+	// DEBUG(display_vui8matrix(image, vmi0b, vmi1b, vmj0b, vmj1b, "%03d ", "image : ")); DEBUG(puts(""));
+	// DEBUG(display_vui8matrix(mean0, vmi0b, vmi1b, vmj0b, vmj1b, "%03d ", "mean0 : ")); DEBUG(puts(""));
+
 	// SigmaDelta_step1_simd_opti(vmi0b, vmi1b, vmj0b, vmj1b, mean0, mean1, image);
+
+	// DEBUG(display_vui8matrix(mean1, vmi0b, vmi1b, vmj0b, vmj1b, "%03d ", "mean1 : ")); DEBUG(puts(""));
+
 	// SigmaDelta_step2_simd_opti(vmi0b, vmi1b, vmj0b, vmj1b, image, mean1, img_diff);
 	// SigmaDelta_step3_simd_opti(vmi0b, vmi1b, vmj0b, vmj1b, std0, std1, img_diff);
 	// SigmaDelta_step4_simd_opti( vmi0b, vmi1b, vmj0b, vmj1b, std1, img_diff, img_bin);
@@ -416,8 +422,8 @@ void main_test_mouvement_SIMD(int argc, char *argv[]){
 	// test_mouvement_SIMD_car(true);
 
 	// test unitaire sur image du set
-	// test_mouvement_SIMD_car(false);
+	test_mouvement_SIMD_car(false);
 
 	// test global sur tout le set
-	test_mouvement_SIMD_dataset();	
+	// test_mouvement_SIMD_dataset();	
 }
