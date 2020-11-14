@@ -44,7 +44,7 @@ void erosion_3_opti(uint8 ** X, uint8 ** Y, int mi0, int mi1, int mj0, int mj1){
 
     int k = 3;
 
-    int r;
+    int r = mj1 % k;
 
     for(i = mi0 ; i <= mi1 ; i++){
         //printf("i : %d\n", i);
@@ -54,9 +54,8 @@ void erosion_3_opti(uint8 ** X, uint8 ** Y, int mi0, int mi1, int mj0, int mj1){
         b0 = X[i + 0][j - 1]; b1 = X[i + 0][j + 0];
         c0 = X[i + 1][j - 1]; c1 = X[i + 1][j + 0];
           
-        r = mj1 % k;
 
-        for(j = mj0 ; j <= mj1 - r ; j = j + k){
+        for(j = mj0 ; j <= mj1 - r - 1; j = j + k){
             //printf("j : %d\n", j);
             //Detection d'un zero sur le kernel autour du IJ
             //Si il y a un zero, dans le kernel alors le Yij prends 0, sinon il prends 1
@@ -89,40 +88,41 @@ void erosion_3_opti(uint8 ** X, uint8 ** Y, int mi0, int mi1, int mj0, int mj1){
             c0 = c3; c1 = c4;
 
         }
-        switch(r){
-            case 2 :
 
-                a3 = X[i - 1][j + 2];
-                b3 = X[i + 0][j + 2];
-                c3 = X[i + 1][j + 2];
-
+        switch(r) {
+            case 1 :
                 a2 = X[i - 1][j + 1];
                 b2 = X[i + 0][j + 1];
                 c2 = X[i + 1][j + 1];
 
-                
-                r1 = a1 && b1 && c1;
+                r2 = a2 && b2 && c2;
+
+                s0 = r0 && r1 && r2;
+
+                Y[i][mj1] = s0;
+                break;
+
+            case 2 :
+
+                a2 = X[i - 1][j + 1]; a3 = X[i - 1][j + 2];
+                b2 = X[i + 0][j + 1]; b3 = X[i + 0][j + 2]; 
+                c2 = X[i + 1][j + 1]; c3 = X[i + 1][j + 2];
+
                 r2 = a2 && b2 && c2;
                 r3 = a3 && b3 && c3;
 
-                
+                s0 = r0 && r1 && r2;
                 s1 = r1 && r2 && r3;
 
-                Y[i][mj1 - r + 1] = s0;
 
-                r--;
-            case 1 :
+                Y[i][mj1 - 1] = s0;
+                Y[i][mj1] = s1;
 
-                r0 = a0 && b0 && c0;
-                s0 = r0 && r1 && r2;
-
-                Y[i][mj1 - r + 1] = s0;
-                break;
-            
             default :
-                printf("ERROR r VALUE in Morpho.c line 299");
-                exit(1);
+                break;
+
         }
+
     }
 }
 
@@ -175,7 +175,7 @@ void erosion_5_opti(uint8 ** X, uint8 ** Y, int mi0, int mi1, int mj0, int mj1){
         d0 = X[i + 1][j - 2]; d1 = X[i + 1][j - 1]; d2 = X[i + 1][j + 0]; d3 = X[i + 1][j + 1];
         e0 = X[i + 2][j - 2]; e1 = X[i + 2][j - 1]; e2 = X[i + 2][j + 0]; e3 = X[i + 2][j + 1];
 
-        for(j = mj0 ; j <= mj1 - k; j = j + 5){
+        for(j = mj0 ; j <= mj1 - r - 1; j = j + 5){
 
             a4 = X[i - 2][j + 2]; a5 = X[i - 2][j + 3]; a6 = X[i - 2][j + 4]; a7 = X[i - 2][j + 5]; a8 = X[i - 2][j + 6];
             b4 = X[i - 1][j + 2]; b5 = X[i - 1][j + 3]; b6 = X[i - 1][j + 4]; b7 = X[i - 1][j + 5]; b8 = X[i - 1][j + 6];
@@ -226,62 +226,127 @@ void erosion_5_opti(uint8 ** X, uint8 ** Y, int mi0, int mi1, int mj0, int mj1){
             e0 = e5; e1 = e6; e2 = e7; e3 = e8;
         }
 
-        switch(r){
-            case 4 :
+               switch(r) {
+           case 1 :
 
-                a4 = X[i - 2][j + 2]; a5 = X[i - 2][j + 3]; a6 = X[i - 2][j + 4]; a7 = X[i - 2][j + 5]; 
-                b4 = X[i - 1][j + 2]; b5 = X[i - 1][j + 3]; b6 = X[i - 1][j + 4]; b7 = X[i - 1][j + 5]; 
-                c4 = X[i + 0][j + 2]; c5 = X[i + 0][j + 3]; c6 = X[i + 0][j + 4]; c7 = X[i + 0][j + 5]; 
-                d4 = X[i + 1][j + 2]; d5 = X[i + 1][j + 3]; d6 = X[i + 1][j + 4]; d7 = X[i + 1][j + 5]; 
-                e4 = X[i + 2][j + 2]; e5 = X[i + 2][j + 3]; e6 = X[i + 2][j + 4]; e7 = X[i + 2][j + 5]; 
+                a4 = X[i - 2][j + 2];
+                b4 = X[i - 1][j + 2];
+                c4 = X[i + 0][j + 2];
+                d4 = X[i + 1][j + 2];
+                e4 = X[i + 2][j + 2];
 
-                r3 = a3 && b3 && c3 && d3 && e3;
+                r4 = a4 && b4 && c4 && d4 && e4;
+
+                s0 = r0 && r1 && r2 && r3 && r4;
+
+                Y[i][mj1] = s0;
+
+                break;
+
+           case 2 :
+
+                a5 = X[i - 2][j + 3];
+                b5 = X[i - 1][j + 3];
+                c5 = X[i + 0][j + 3];
+                d5 = X[i + 1][j + 3];
+                e5 = X[i + 2][j + 3];
+
+                a4 = X[i - 2][j + 2];
+                b4 = X[i - 1][j + 2];
+                c4 = X[i + 0][j + 2];
+                d4 = X[i + 1][j + 2];
+                e4 = X[i + 2][j + 2];
+
+                r4 = a4 && b4 && c4 && d4 && e4;
+                r5 = a5 && b5 && c5 && d5 && e5;
+
+                s0 = r0 && r1 && r2 && r3 && r4;
+                s1 = r1 && r2 && r3 && r4 && r5;
+
+                Y[i][mj1 - 1] = s0;
+                Y[i][mj1] = s1;
+
+                break;
+
+           case 3 :
+
+                a5 = X[i - 2][j + 3];
+                b5 = X[i - 1][j + 3];
+                c5 = X[i + 0][j + 3];
+                d5 = X[i + 1][j + 3];
+                e5 = X[i + 2][j + 3];
+
+                a4 = X[i - 2][j + 2];
+                b4 = X[i - 1][j + 2];
+                c4 = X[i + 0][j + 2];
+                d4 = X[i + 1][j + 2];
+                e4 = X[i + 2][j + 2];
+
+                a6 = X[i - 2][j + 4];
+                b6 = X[i - 1][j + 4];
+                c6 = X[i + 0][j + 4];
+                d6 = X[i + 1][j + 4];
+                e6 = X[i + 2][j + 4];
+
+                r4 = a4 && b4 && c4 && d4 && e4;
+                r5 = a5 && b5 && c5 && d5 && e5;
+                r6 = a6 && b6 && c6 && d6 && e6;
+
+                s0 = r0 && r1 && r2 && r3 && r4;
+                s1 = r1 && r2 && r3 && r4 && r5;
+                s2 = r2 && r3 && r4 && r5 && r6;
+
+                Y[i][mj1 - 2] = s0;
+                Y[i][mj1 - 1] = s1;
+                Y[i][mj1] = s3;
+
+                break;
+                
+           case 4 :
+
+                a5 = X[i - 2][j + 3];
+                b5 = X[i - 1][j + 3];
+                c5 = X[i + 0][j + 3];
+                d5 = X[i + 1][j + 3];
+                e5 = X[i + 2][j + 3];
+
+                a4 = X[i - 2][j + 2];
+                b4 = X[i - 1][j + 2];
+                c4 = X[i + 0][j + 2];
+                d4 = X[i + 1][j + 2];
+                e4 = X[i + 2][j + 2];
+
+                a6 = X[i - 2][j + 4];
+                b6 = X[i - 1][j + 4];
+                c6 = X[i + 0][j + 4];
+                d6 = X[i + 1][j + 4];
+                e6 = X[i + 2][j + 4];
+
+                a7 = X[i - 2][j + 5];
+                b7 = X[i - 1][j + 5];
+                c7 = X[i + 0][j + 5];
+                d7 = X[i + 1][j + 5];
+                e7 = X[i + 2][j + 5];
+
                 r4 = a4 && b4 && c4 && d4 && e4;
                 r5 = a5 && b5 && c5 && d5 && e5;
                 r6 = a6 && b6 && c6 && d6 && e6;
                 r7 = a7 && b7 && c7 && d7 && e7;
 
 
-                s3 = r3 && r4 && r5 && r6 && r7;
-
-                Y[i][mj1 - r + 1] = s3;
-
-                r--;
-
-            case 3 :
-                
-                r2 = a2 && b2 && c2 && d2 && e2;
-
-                s2 = r2 && r3 && r4 && r5 && r6;
-
-                Y[i][mj1 - r + 1] = s2;
-
-                r--;
-
-            case 2 :
-
-                r1 = a1 && b1 && c1 && d1 && e1;
-
-                s1 = r1 && r2 && r3 && r4 && r5;
-
-                Y[i][mj1 - r + 1] = s0;
-
-                r--;
-
-            case 1 :
-
-                r0 = a0 && b0 && c0 && d0 && e0;
-
                 s0 = r0 && r1 && r2 && r3 && r4;
+                s1 = r1 && r2 && r3 && r4 && r5;
+                s2 = r2 && r3 && r4 && r5 && r6;  
+                s3 = r3 && r4 && r5 && r6 && r7;
+              
+                Y[i][mj1 - 3] = s0;
+                Y[i][mj1 - 2] = s1;
+                Y[i][mj1 - 1] = s2;
+                Y[i][mj1 - 0] = s3;
 
-                Y[i][mj1 - r + 1] = s0;
-                break;
-            
             default :
-                printf("ERROR r VALUE in Morpho.c line 230");
-                exit(1);
-
-        }
+                break;
+       }
         
     }
 }
@@ -319,7 +384,7 @@ void dilatation_3_opti(uint8 ** X, uint8 ** Y, int mi0, int mi1, int mj0, int mj
 
     int k = 3;
 
-    int r;
+    int r = mj1 % k;
 
     for(i = mi0 ; i <= mi1 ; i++){
         
@@ -329,9 +394,9 @@ void dilatation_3_opti(uint8 ** X, uint8 ** Y, int mi0, int mi1, int mj0, int mj
         b0 = X[i + 0][j - 1]; b1 = X[i + 0][j + 0];
         c0 = X[i + 1][j - 1]; c1 = X[i + 1][j + 0];
 
-        int r = mj1 % k;
+        
 
-        for(j = mj0 ; j <= mj1 - r ; j = j + 3){
+        for(j = mj0 ; j <= mj1 - r - 1; j = j + 3){
 
             a2 = X[i - 1][j + 1]; a3 = X[i - 1][j + 2]; a4 = X[i - 1][j + 3];
             b2 = X[i + 0][j + 1]; b3 = X[i + 0][j + 2]; b4 = X[i + 0][j + 3];
@@ -356,44 +421,42 @@ void dilatation_3_opti(uint8 ** X, uint8 ** Y, int mi0, int mi1, int mj0, int mj
             c0 = c3; c1 = c4;
 
         }
-        switch(r){
-            case 2 :
-
-                a3 = X[i - 1][j + 2];
-                b3 = X[i + 0][j + 2];
-                c3 = X[i + 1][j + 2];
-
+        switch(r) {
+            case 1 :
                 a2 = X[i - 1][j + 1];
                 b2 = X[i + 0][j + 1];
                 c2 = X[i + 1][j + 1];
 
-                
-                r1 = a1 || b1 || c1;
+                r2 = a2 || b2 || c2;
+
+                s0 = r0 || r1 || r2;
+
+                Y[i][mj1] = s0;
+                break;
+
+            case 2 :
+
+                a2 = X[i - 1][j + 1]; a3 = X[i - 1][j + 2];
+                b2 = X[i + 0][j + 1]; b3 = X[i + 0][j + 2]; 
+                c2 = X[i + 1][j + 1]; c3 = X[i + 1][j + 2];
+
                 r2 = a2 || b2 || c2;
                 r3 = a3 || b3 || c3;
 
-                
+                s0 = r0 || r1 || r2;
                 s1 = r1 || r2 || r3;
 
-                Y[i][mj1 - r + 1] = s0;
 
-                r--;
-            case 1 :
+                Y[i][mj1 - 1] = s0;
+                Y[i][mj1] = s1;
 
-                r0 = a0 || b0 || c0;
-                s0 = r0 || r1 || r2;
-
-                Y[i][mj1 - r + 1] = s0;
-                break;
-            
             default :
-                printf("ERROR r VALUE in Morpho.c line 299");
-                exit(1);
-
+                break;
+                
         }
 
     }
-    //epilogue :
+
 
 }
 
@@ -446,7 +509,7 @@ void dilatation_5_opti(uint8 ** X, uint8 ** Y, int mi0, int mi1, int mj0, int mj
         d0 = X[i + 1][j - 2]; d1 = X[i + 1][j - 1]; d2 = X[i + 1][j + 0]; d3 = X[i + 1][j + 1];
         e0 = X[i + 2][j - 2]; e1 = X[i + 2][j - 1]; e2 = X[i + 2][j + 0]; e3 = X[i + 2][j + 1];
 
-        for(j = mj0 ; j <= mj1 - r; j = j + 5){
+        for(j = mj0 ; j <= mj1 - r - 1; j = j + 5){
 
             a4 = X[i - 2][j + 2]; a5 = X[i - 2][j + 3]; a6 = X[i - 2][j + 4]; a7 = X[i - 2][j + 5]; a8 = X[i - 2][j + 6];
             b4 = X[i - 1][j + 2]; b5 = X[i - 1][j + 3]; b6 = X[i - 1][j + 4]; b7 = X[i - 1][j + 5]; b8 = X[i - 1][j + 6];
@@ -482,62 +545,128 @@ void dilatation_5_opti(uint8 ** X, uint8 ** Y, int mi0, int mi1, int mj0, int mj
             d0 = d5; d1 = d6; d2 = d7; d3 = d8;
             e0 = e5; e1 = e6; e2 = e7; e3 = e8;
         }
-        switch(r){
-            case 4 :
 
-                a4 = X[i - 2][j + 2]; a5 = X[i - 2][j + 3]; a6 = X[i - 2][j + 4]; a7 = X[i - 2][j + 5]; 
-                b4 = X[i - 1][j + 2]; b5 = X[i - 1][j + 3]; b6 = X[i - 1][j + 4]; b7 = X[i - 1][j + 5]; 
-                c4 = X[i + 0][j + 2]; c5 = X[i + 0][j + 3]; c6 = X[i + 0][j + 4]; c7 = X[i + 0][j + 5]; 
-                d4 = X[i + 1][j + 2]; d5 = X[i + 1][j + 3]; d6 = X[i + 1][j + 4]; d7 = X[i + 1][j + 5]; 
-                e4 = X[i + 2][j + 2]; e5 = X[i + 2][j + 3]; e6 = X[i + 2][j + 4]; e7 = X[i + 2][j + 5]; 
+       switch(r) {
+           case 1 :
 
-                r3 = a3 || b3 || c3 || d3 || e3;
+                a4 = X[i - 2][j + 2];
+                b4 = X[i - 1][j + 2];
+                c4 = X[i + 0][j + 2];
+                d4 = X[i + 1][j + 2];
+                e4 = X[i + 2][j + 2];
+
+                r4 = a4 || b4 || c4 || d4 || e4;
+
+                s0 = r0 || r1 || r2 || r3 || r4;
+
+                Y[i][mj1] = s0;
+
+                break;
+
+           case 2 :
+
+                a5 = X[i - 2][j + 3];
+                b5 = X[i - 1][j + 3];
+                c5 = X[i + 0][j + 3];
+                d5 = X[i + 1][j + 3];
+                e5 = X[i + 2][j + 3];
+
+                a4 = X[i - 2][j + 2];
+                b4 = X[i - 1][j + 2];
+                c4 = X[i + 0][j + 2];
+                d4 = X[i + 1][j + 2];
+                e4 = X[i + 2][j + 2];
+
+                r4 = a4 || b4 || c4 || d4 || e4;
+                r5 = a5 || b5 || c5 || d5 || e5;
+
+                s0 = r0 || r1 || r2 || r3 || r4;
+                s1 = r1 || r2 || r3 || r4 || r5;
+
+                Y[i][mj1 - 1] = s0;
+                Y[i][mj1] = s1;
+
+                break;
+
+           case 3 :
+
+                a5 = X[i - 2][j + 3];
+                b5 = X[i - 1][j + 3];
+                c5 = X[i + 0][j + 3];
+                d5 = X[i + 1][j + 3];
+                e5 = X[i + 2][j + 3];
+
+                a4 = X[i - 2][j + 2];
+                b4 = X[i - 1][j + 2];
+                c4 = X[i + 0][j + 2];
+                d4 = X[i + 1][j + 2];
+                e4 = X[i + 2][j + 2];
+
+                a6 = X[i - 2][j + 4];
+                b6 = X[i - 1][j + 4];
+                c6 = X[i + 0][j + 4];
+                d6 = X[i + 1][j + 4];
+                e6 = X[i + 2][j + 4];
+
+                r4 = a4 || b4 || c4 || d4 || e4;
+                r5 = a5 || b5 || c5 || d5 || e5;
+                r6 = a6 || b6 || c6 || d6 || e6;
+
+                s0 = r0 || r1 || r2 || r3 || r4;
+                s1 = r1 || r2 || r3 || r4 || r5;
+                s2 = r2 || r3 || r4 || r5 || r6;
+
+                Y[i][mj1 - 2] = s0;
+                Y[i][mj1 - 1] = s1;
+                Y[i][mj1] = s3;
+
+                break;
+                
+           case 4 :
+
+                a5 = X[i - 2][j + 3];
+                b5 = X[i - 1][j + 3];
+                c5 = X[i + 0][j + 3];
+                d5 = X[i + 1][j + 3];
+                e5 = X[i + 2][j + 3];
+
+                a4 = X[i - 2][j + 2];
+                b4 = X[i - 1][j + 2];
+                c4 = X[i + 0][j + 2];
+                d4 = X[i + 1][j + 2];
+                e4 = X[i + 2][j + 2];
+
+                a6 = X[i - 2][j + 4];
+                b6 = X[i - 1][j + 4];
+                c6 = X[i + 0][j + 4];
+                d6 = X[i + 1][j + 4];
+                e6 = X[i + 2][j + 4];
+
+                a7 = X[i - 2][j + 5];
+                b7 = X[i - 1][j + 5];
+                c7 = X[i + 0][j + 5];
+                d7 = X[i + 1][j + 5];
+                e7 = X[i + 2][j + 5];
+
                 r4 = a4 || b4 || c4 || d4 || e4;
                 r5 = a5 || b5 || c5 || d5 || e5;
                 r6 = a6 || b6 || c6 || d6 || e6;
                 r7 = a7 || b7 || c7 || d7 || e7;
 
 
-                s3 = r3 || r4 || r5 || r6 || r7;
-
-                Y[i][mj1 - r + 1] = s3;
-
-                r--;
-
-            case 3 :
-                
-                r2 = a2 || b2 || c2 || d2 || e2;
-
-                s2 = r2 || r3 || r4 || r5 || r6;
-
-                Y[i][mj1 - r + 1] = s2;
-
-                r--;
-
-            case 2 :
-
-                r1 = a1 || b1 || c1 || d1 || e1;
-
+                s0 = r0 || r1 || r2 || r3 || r4;
                 s1 = r1 || r2 || r3 || r4 || r5;
+                s2 = r2 || r3 || r4 || r5 || r6;  
+                s3 = r3 || r4 || r5 || r6 || r7;
+              
+                Y[i][mj1 - 3] = s0;
+                Y[i][mj1 - 2] = s1;
+                Y[i][mj1 - 1] = s2;
+                Y[i][mj1 - 0] = s3;
 
-                Y[i][mj1 - r + 1] = s0;
-
-                r--;
-
-            case 1 :
-
-                r0 = a0 && b0 && c0 && d0 && e0;
-
-                s0 = r0 && r1 && r2 && r3 && r4;
-
-                Y[i][mj1 - r + 1] = s0;
-                break;
-            
             default :
-                printf("ERROR r VALUE in Morpho.c line 484");
-                exit(1);
-
-        }
+                break;
+       }
     }
 }
 

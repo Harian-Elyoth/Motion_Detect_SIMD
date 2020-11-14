@@ -214,7 +214,7 @@ void test_mouvement_morpho_dataset(){
 		SigmaDelta_step4(mi0b, mi1b, mj0b, mj1b, std1, img_diff, img_bin);
 
 		// MORPHOLOGIE
-		morpho_5(img_bin, img_filtered, mi0, mi1, mj0, mj1); 
+		morpho_5_opti(img_bin, img_filtered, mi0, mi1, mj0, mj1); 
 
 		// built pgm filename out
 		char filename_out[25] = "";

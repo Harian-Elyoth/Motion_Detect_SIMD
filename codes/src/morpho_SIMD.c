@@ -80,7 +80,7 @@ void erosion_3_SIMD_opti(vuint8 ** vX, vuint8 ** vY, int vmi0, int vmi1, int vmj
 
     int k = 3;
 
-    int r = vmi1 % k;
+    int r;
 
     int bord = 1;
     
@@ -107,7 +107,9 @@ void erosion_3_SIMD_opti(vuint8 ** vX, vuint8 ** vY, int vmi0, int vmi1, int vmj
         bb2 = VEC_LOAD_2D_EPI8(i, j + 1, vX);
         bb2 = VEC_RIGHT1_EPI8(b1, bb2);
 
-        for(i = vmi0 ; i <= vmi1 - r; i = i + 3){
+        r = vmi1 % k;
+
+        for(i = vmi0 ; i <= vmi1 - r - 1; i = i + k){
 
 
             c1 = VEC_LOAD_2D_EPI8(i + 1, j, vX);
@@ -141,6 +143,44 @@ void erosion_3_SIMD_opti(vuint8 ** vX, vuint8 ** vY, int vmi0, int vmi1, int vmj
             bb0 = ee0; b1 = e1; bb2 = ee2;
 
         }
+
+        switch(r) {
+            case 1 :
+                c1 = VEC_LOAD_2D_EPI8(i + 1, j, vX);
+                cc0 = VEC_LOAD_2D_EPI8(i + 1, j - 1, vX);
+                cc0 = VEC_LEFT1_EPI8(cc0, c1);
+                cc2 = VEC_LOAD_2D_EPI8(i + 1, j + 1, vX);
+                cc2 = VEC_RIGHT1_EPI8(c1, cc2);
+
+                y0 = VEC_AND_9_EPI8(aa0, a1, aa2, bb0, b1, bb2, cc0, c1, cc2);
+                VEC_STORE_2D_EPI8(y0, vmi1, j, vY);
+                break;
+
+            case 2 :
+
+                c1 = VEC_LOAD_2D_EPI8(i + 1, j, vX);
+                cc0 = VEC_LOAD_2D_EPI8(i + 1, j - 1, vX);
+                cc0 = VEC_LEFT1_EPI8(cc0, c1);
+                cc2 = VEC_LOAD_2D_EPI8(i + 1, j + 1, vX);
+                cc2 = VEC_RIGHT1_EPI8(c1, cc2);
+
+                d1 = VEC_LOAD_2D_EPI8(i + 2, j, vX);
+                dd0 = VEC_LOAD_2D_EPI8(i + 2, j - 1, vX);
+                dd0 = VEC_LEFT1_EPI8(dd0, d1);
+                dd2 = VEC_LOAD_2D_EPI8(i + 2, j + 1, vX);
+                dd2 = VEC_RIGHT1_EPI8(d1, dd2);
+
+                y0 = VEC_AND_9_EPI8(aa0, a1, aa2, bb0, b1, bb2, cc0, c1, cc2);
+                y1 = VEC_AND_9_EPI8(bb0, b1, bb2, cc0, c1, cc2, dd0, d1, dd2);
+
+                VEC_STORE_2D_EPI8(y0, vmi1 - 1, j, vY);
+                VEC_STORE_2D_EPI8(y1, vmi1, j, vY);
+                break;
+
+            default :
+                break;
+        }
+
     }
 }
 void erosion_5_SIMD(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0, int vmj1) {
@@ -310,9 +350,8 @@ void erosion_5_SIMD_opti(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0
         dd3 = VEC_RIGHT1_EPI8(d2, dd4);
         dd4 = VEC_RIGHT2_EPI8(d2, dd4);
 
-        printf("%deme colonne !\n", j);
-        for(i = vmi0 ; i <= vmi1 - r; i = i + 5){
-            printf("i = %d\n", i);
+        for(i = vmi0 ; i <= vmi1 - r - 1; i = i + k){
+            
             e2 = VEC_LOAD_2D_EPI8(i + 2, j, vX);
             ee0 = VEC_LOAD_2D_EPI8(i + 2, j - 1, vX);
             ee1 = VEC_LEFT1_EPI8(ee0, e2);
@@ -372,6 +411,130 @@ void erosion_5_SIMD_opti(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0
             cc0 = hh0; cc1 = hh1; c2 = h2; cc3 = hh3; cc4 = hh4;
             dd0 = ii0; dd1 = ii1; d2 = i2; dd3 = ii3; dd4 = ii4;
             
+        }
+        switch(r) {
+            case 1 :
+                e2 = VEC_LOAD_2D_EPI8(i + 2, j, vX);
+                ee0 = VEC_LOAD_2D_EPI8(i + 2, j - 1, vX);
+                ee1 = VEC_LEFT1_EPI8(ee0, e2);
+                ee0 = VEC_LEFT2_EPI8(ee0, e2);
+                ee4 = VEC_LOAD_2D_EPI8(i + 2, j + 1, vX);
+                ee3 = VEC_RIGHT1_EPI8(e2, ee4);
+                ee4 = VEC_RIGHT2_EPI8(e2, ee4);
+
+                y0 = VEC_AND_25_EPI8(aa0, aa1, a2, aa3, aa4, bb0, bb1, b2, bb3, bb4, cc0, cc1, c2, cc3, cc4, dd0, dd1, d2, dd3, dd4, ee0, ee1, e2, ee3, ee4);
+
+                VEC_STORE_2D_EPI8(y0, vmi1, j, vY);
+                break;
+
+            case 2 :
+
+                e2 = VEC_LOAD_2D_EPI8(i + 2, j, vX);
+                ee0 = VEC_LOAD_2D_EPI8(i + 2, j - 1, vX);
+                ee1 = VEC_LEFT1_EPI8(ee0, e2);
+                ee0 = VEC_LEFT2_EPI8(ee0, e2);
+                ee4 = VEC_LOAD_2D_EPI8(i + 2, j + 1, vX);
+                ee3 = VEC_RIGHT1_EPI8(e2, ee4);
+                ee4 = VEC_RIGHT2_EPI8(e2, ee4);
+
+                f2 = VEC_LOAD_2D_EPI8(i + 3, j, vX);
+                ff0 = VEC_LOAD_2D_EPI8(i + 3, j - 1, vX);
+                ff1 = VEC_LEFT1_EPI8(ff0, f2);
+                ff0 = VEC_LEFT2_EPI8(ff0, f2);
+                ff4 = VEC_LOAD_2D_EPI8(i + 3, j + 1, vX);
+                ff3 = VEC_RIGHT1_EPI8(f2, ff4);
+                ff4 = VEC_RIGHT2_EPI8(f2, ff4);
+
+                y0 = VEC_AND_25_EPI8(aa0, aa1, a2, aa3, aa4, bb0, bb1, b2, bb3, bb4, cc0, cc1, c2, cc3, cc4, dd0, dd1, d2, dd3, dd4, ee0, ee1, e2, ee3, ee4);
+                y1 = VEC_AND_25_EPI8(bb0, bb1, b2, bb3, bb4, cc0, cc1, c2, cc3, cc4, dd0, dd1, d2, dd3, dd4, ee0, ee1, e2, ee3, ee4, ff0, ff1, f2, ff3, ff4);
+
+                VEC_STORE_2D_EPI8(y0, vmi1 - 1, j, vY);
+                VEC_STORE_2D_EPI8(y1, vmi1, j, vY);
+                break;
+            
+            case 3 :
+
+                e2 = VEC_LOAD_2D_EPI8(i + 2, j, vX);
+                ee0 = VEC_LOAD_2D_EPI8(i + 2, j - 1, vX);
+                ee1 = VEC_LEFT1_EPI8(ee0, e2);
+                ee0 = VEC_LEFT2_EPI8(ee0, e2);
+                ee4 = VEC_LOAD_2D_EPI8(i + 2, j + 1, vX);
+                ee3 = VEC_RIGHT1_EPI8(e2, ee4);
+                ee4 = VEC_RIGHT2_EPI8(e2, ee4);
+
+                f2 = VEC_LOAD_2D_EPI8(i + 3, j, vX);
+                ff0 = VEC_LOAD_2D_EPI8(i + 3, j - 1, vX);
+                ff1 = VEC_LEFT1_EPI8(ff0, f2);
+                ff0 = VEC_LEFT2_EPI8(ff0, f2);
+                ff4 = VEC_LOAD_2D_EPI8(i + 3, j + 1, vX);
+                ff3 = VEC_RIGHT1_EPI8(f2, ff4);
+                ff4 = VEC_RIGHT2_EPI8(f2, ff4);
+
+                g2 = VEC_LOAD_2D_EPI8(i + 4, j, vX);
+                gg0 = VEC_LOAD_2D_EPI8(i + 4, j - 1, vX);
+                gg1 = VEC_LEFT1_EPI8(gg0, g2);
+                gg0 = VEC_LEFT2_EPI8(gg0, g2);
+                gg4 = VEC_LOAD_2D_EPI8(i + 4, j + 1, vX);
+                gg3 = VEC_RIGHT1_EPI8(g2, gg4);
+                gg4 = VEC_RIGHT2_EPI8(g2, gg4);
+
+                y0 = VEC_AND_25_EPI8(aa0, aa1, a2, aa3, aa4, bb0, bb1, b2, bb3, bb4, cc0, cc1, c2, cc3, cc4, dd0, dd1, d2, dd3, dd4, ee0, ee1, e2, ee3, ee4);
+                y1 = VEC_AND_25_EPI8(bb0, bb1, b2, bb3, bb4, cc0, cc1, c2, cc3, cc4, dd0, dd1, d2, dd3, dd4, ee0, ee1, e2, ee3, ee4, ff0, ff1, f2, ff3, ff4);
+                y2 = VEC_AND_25_EPI8(cc0, cc1, c2, cc3, cc4, dd0, dd1, d2, dd3, dd4, ee0, ee1, e2, ee3, ee4, ff0, ff1, f2, ff3, ff4, gg0, gg1, g2, gg3, gg4);
+
+                VEC_STORE_2D_EPI8(y0, vmi1 - 2, j, vY);
+                VEC_STORE_2D_EPI8(y1, vmi1 - 1, j, vY);
+                VEC_STORE_2D_EPI8(y2, vmi1 - 0, j, vY);
+                break;
+
+            case 4 :
+
+                e2 = VEC_LOAD_2D_EPI8(i + 2, j, vX);
+                ee0 = VEC_LOAD_2D_EPI8(i + 2, j - 1, vX);
+                ee1 = VEC_LEFT1_EPI8(ee0, e2);
+                ee0 = VEC_LEFT2_EPI8(ee0, e2);
+                ee4 = VEC_LOAD_2D_EPI8(i + 2, j + 1, vX);
+                ee3 = VEC_RIGHT1_EPI8(e2, ee4);
+                ee4 = VEC_RIGHT2_EPI8(e2, ee4);
+
+                f2 = VEC_LOAD_2D_EPI8(i + 3, j, vX);
+                ff0 = VEC_LOAD_2D_EPI8(i + 3, j - 1, vX);
+                ff1 = VEC_LEFT1_EPI8(ff0, f2);
+                ff0 = VEC_LEFT2_EPI8(ff0, f2);
+                ff4 = VEC_LOAD_2D_EPI8(i + 3, j + 1, vX);
+                ff3 = VEC_RIGHT1_EPI8(f2, ff4);
+                ff4 = VEC_RIGHT2_EPI8(f2, ff4);
+
+                g2 = VEC_LOAD_2D_EPI8(i + 4, j, vX);
+                gg0 = VEC_LOAD_2D_EPI8(i + 4, j - 1, vX);
+                gg1 = VEC_LEFT1_EPI8(gg0, g2);
+                gg0 = VEC_LEFT2_EPI8(gg0, g2);
+                gg4 = VEC_LOAD_2D_EPI8(i + 4, j + 1, vX);
+                gg3 = VEC_RIGHT1_EPI8(g2, gg4);
+                gg4 = VEC_RIGHT2_EPI8(g2, gg4);
+            
+                h2 = VEC_LOAD_2D_EPI8(i + 5, j, vX);
+                hh0 = VEC_LOAD_2D_EPI8(i + 5, j - 1, vX);
+                hh1 = VEC_LEFT1_EPI8(hh0, h2);
+                hh0 = VEC_LEFT2_EPI8(hh0, h2);
+                hh4 = VEC_LOAD_2D_EPI8(i + 5, j + 1, vX);
+                hh3 = VEC_RIGHT1_EPI8(h2, hh4);
+                hh4 = VEC_RIGHT2_EPI8(h2, hh4);
+
+                y0 = VEC_AND_25_EPI8(aa0, aa1, a2, aa3, aa4, bb0, bb1, b2, bb3, bb4, cc0, cc1, c2, cc3, cc4, dd0, dd1, d2, dd3, dd4, ee0, ee1, e2, ee3, ee4);
+                y1 = VEC_AND_25_EPI8(bb0, bb1, b2, bb3, bb4, cc0, cc1, c2, cc3, cc4, dd0, dd1, d2, dd3, dd4, ee0, ee1, e2, ee3, ee4, ff0, ff1, f2, ff3, ff4);
+                y2 = VEC_AND_25_EPI8(cc0, cc1, c2, cc3, cc4, dd0, dd1, d2, dd3, dd4, ee0, ee1, e2, ee3, ee4, ff0, ff1, f2, ff3, ff4, gg0, gg1, g2, gg3, gg4);
+                y3 = VEC_AND_25_EPI8(dd0, dd1, d2, dd3, dd4, ee0, ee1, e2, ee3, ee4, ff0, ff1, f2, ff3, ff4, gg0, gg1, g2, gg3, gg4, hh0, hh1, h2, hh3, hh4);
+
+                VEC_STORE_2D_EPI8(y0, vmi1 - 3, j, vY);
+                VEC_STORE_2D_EPI8(y1, vmi1 - 2, j, vY);
+                VEC_STORE_2D_EPI8(y2, vmi1 - 1, j, vY);
+                VEC_STORE_2D_EPI8(y3, vmi1 - 0, j, vY);
+
+                break;
+
+            default :
+                break;
         }
     }
 }
@@ -474,7 +637,7 @@ void dilatation_3_SIMD_opti(vuint8 ** vX, vuint8 ** vY, int vmi0, int vmi1, int 
         bb2 = VEC_LOAD_2D_EPI8(i, j + 1, vX);
         bb2 = VEC_RIGHT1_EPI8(b1, bb2);
 
-        for(i = vmi0 ; i <= vmi1 - r; i = i + 3){
+        for(i = vmi0 ; i <= vmi1 - r - 1; i = i + 3){
 
 
             c1 = VEC_LOAD_2D_EPI8(i + 1, j, vX);
@@ -507,6 +670,42 @@ void dilatation_3_SIMD_opti(vuint8 ** vX, vuint8 ** vY, int vmi0, int vmi1, int 
             aa0 = dd0; a1 = d1; aa2 = dd2;
             bb0 = ee0; b1 = e1; bb2 = ee2;
 
+        }
+        switch(r) {
+            case 1 :
+
+                c1 = VEC_LOAD_2D_EPI8(i + 1, j, vX);
+                cc0 = VEC_LOAD_2D_EPI8(i + 1, j - 1, vX);
+                cc0 = VEC_LEFT1_EPI8(cc0, c1);
+                cc2 = VEC_LOAD_2D_EPI8(i + 1, j + 1, vX);
+                cc2 = VEC_RIGHT1_EPI8(c1, cc2);
+
+                y0 = VEC_OR_9_EPI8(aa0, a1, aa2, bb0, b1, bb2, cc0, c1, cc2);
+                VEC_STORE_2D_EPI8(y0, vmi1, j, vY);
+                break;
+
+            case 2 :
+
+                c1 = VEC_LOAD_2D_EPI8(i + 1, j, vX);
+                cc0 = VEC_LOAD_2D_EPI8(i + 1, j - 1, vX);
+                cc0 = VEC_LEFT1_EPI8(cc0, c1);
+                cc2 = VEC_LOAD_2D_EPI8(i + 1, j + 1, vX);
+                cc2 = VEC_RIGHT1_EPI8(c1, cc2);
+
+                d1 = VEC_LOAD_2D_EPI8(i + 2, j, vX);
+                dd0 = VEC_LOAD_2D_EPI8(i + 2, j - 1, vX);
+                dd0 = VEC_LEFT1_EPI8(dd0, d1);
+                dd2 = VEC_LOAD_2D_EPI8(i + 2, j + 1, vX);
+                dd2 = VEC_RIGHT1_EPI8(d1, dd2);
+
+                y0 = VEC_OR_9_EPI8(aa0, a1, aa2, bb0, b1, bb2, cc0, c1, cc2);
+                y1 = VEC_OR_9_EPI8(bb0, b1, bb2, cc0, c1, cc2, dd0, d1, dd2);
+
+                VEC_STORE_2D_EPI8(y0, vmi1 - 1, j, vY);
+                VEC_STORE_2D_EPI8(y1, vmi1, j, vY);
+
+            default :
+                break;
         }
     }
 }
@@ -676,7 +875,7 @@ void dilatation_5_SIMD_opti(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int v
         dd4 = VEC_RIGHT2_EPI8(d2, dd4);
 
 
-        for(i = vmi0 ; i <= vmi1 - r ; i = i + 5){
+        for(i = vmi0 ; i <= vmi1 - r - 1; i = i + k){
 
             e2 = VEC_LOAD_2D_EPI8(i + 2, j, vX);
             ee0 = VEC_LOAD_2D_EPI8(i + 2, j - 1, vX);
@@ -738,6 +937,132 @@ void dilatation_5_SIMD_opti(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int v
             dd0 = ii0; dd1 = ii1; d2 = i2; dd3 = ii3; dd4 = ii4;
             
         }
+
+        switch(r) {
+            case 1 :
+                e2 = VEC_LOAD_2D_EPI8(i + 2, j, vX);
+                ee0 = VEC_LOAD_2D_EPI8(i + 2, j - 1, vX);
+                ee1 = VEC_LEFT1_EPI8(ee0, e2);
+                ee0 = VEC_LEFT2_EPI8(ee0, e2);
+                ee4 = VEC_LOAD_2D_EPI8(i + 2, j + 1, vX);
+                ee3 = VEC_RIGHT1_EPI8(e2, ee4);
+                ee4 = VEC_RIGHT2_EPI8(e2, ee4);
+
+                y0 = VEC_OR_25_EPI8(aa0, aa1, a2, aa3, aa4, bb0, bb1, b2, bb3, bb4, cc0, cc1, c2, cc3, cc4, dd0, dd1, d2, dd3, dd4, ee0, ee1, e2, ee3, ee4);
+
+                VEC_STORE_2D_EPI8(y0, vmi1, j, vY);
+                break;
+
+            case 2 :
+
+                e2 = VEC_LOAD_2D_EPI8(i + 2, j, vX);
+                ee0 = VEC_LOAD_2D_EPI8(i + 2, j - 1, vX);
+                ee1 = VEC_LEFT1_EPI8(ee0, e2);
+                ee0 = VEC_LEFT2_EPI8(ee0, e2);
+                ee4 = VEC_LOAD_2D_EPI8(i + 2, j + 1, vX);
+                ee3 = VEC_RIGHT1_EPI8(e2, ee4);
+                ee4 = VEC_RIGHT2_EPI8(e2, ee4);
+
+                f2 = VEC_LOAD_2D_EPI8(i + 3, j, vX);
+                ff0 = VEC_LOAD_2D_EPI8(i + 3, j - 1, vX);
+                ff1 = VEC_LEFT1_EPI8(ff0, f2);
+                ff0 = VEC_LEFT2_EPI8(ff0, f2);
+                ff4 = VEC_LOAD_2D_EPI8(i + 3, j + 1, vX);
+                ff3 = VEC_RIGHT1_EPI8(f2, ff4);
+                ff4 = VEC_RIGHT2_EPI8(f2, ff4);
+
+                y0 = VEC_OR_25_EPI8(aa0, aa1, a2, aa3, aa4, bb0, bb1, b2, bb3, bb4, cc0, cc1, c2, cc3, cc4, dd0, dd1, d2, dd3, dd4, ee0, ee1, e2, ee3, ee4);
+                y1 = VEC_OR_25_EPI8(bb0, bb1, b2, bb3, bb4, cc0, cc1, c2, cc3, cc4, dd0, dd1, d2, dd3, dd4, ee0, ee1, e2, ee3, ee4, ff0, ff1, f2, ff3, ff4);
+
+                VEC_STORE_2D_EPI8(y0, vmi1 - 1, j, vY);
+                VEC_STORE_2D_EPI8(y1, vmi1, j, vY);
+                break;
+            
+            case 3 :
+
+                e2 = VEC_LOAD_2D_EPI8(i + 2, j, vX);
+                ee0 = VEC_LOAD_2D_EPI8(i + 2, j - 1, vX);
+                ee1 = VEC_LEFT1_EPI8(ee0, e2);
+                ee0 = VEC_LEFT2_EPI8(ee0, e2);
+                ee4 = VEC_LOAD_2D_EPI8(i + 2, j + 1, vX);
+                ee3 = VEC_RIGHT1_EPI8(e2, ee4);
+                ee4 = VEC_RIGHT2_EPI8(e2, ee4);
+
+                f2 = VEC_LOAD_2D_EPI8(i + 3, j, vX);
+                ff0 = VEC_LOAD_2D_EPI8(i + 3, j - 1, vX);
+                ff1 = VEC_LEFT1_EPI8(ff0, f2);
+                ff0 = VEC_LEFT2_EPI8(ff0, f2);
+                ff4 = VEC_LOAD_2D_EPI8(i + 3, j + 1, vX);
+                ff3 = VEC_RIGHT1_EPI8(f2, ff4);
+                ff4 = VEC_RIGHT2_EPI8(f2, ff4);
+
+                g2 = VEC_LOAD_2D_EPI8(i + 4, j, vX);
+                gg0 = VEC_LOAD_2D_EPI8(i + 4, j - 1, vX);
+                gg1 = VEC_LEFT1_EPI8(gg0, g2);
+                gg0 = VEC_LEFT2_EPI8(gg0, g2);
+                gg4 = VEC_LOAD_2D_EPI8(i + 4, j + 1, vX);
+                gg3 = VEC_RIGHT1_EPI8(g2, gg4);
+                gg4 = VEC_RIGHT2_EPI8(g2, gg4);
+
+                y0 = VEC_OR_25_EPI8(aa0, aa1, a2, aa3, aa4, bb0, bb1, b2, bb3, bb4, cc0, cc1, c2, cc3, cc4, dd0, dd1, d2, dd3, dd4, ee0, ee1, e2, ee3, ee4);
+                y1 = VEC_OR_25_EPI8(bb0, bb1, b2, bb3, bb4, cc0, cc1, c2, cc3, cc4, dd0, dd1, d2, dd3, dd4, ee0, ee1, e2, ee3, ee4, ff0, ff1, f2, ff3, ff4);
+                y2 = VEC_OR_25_EPI8(cc0, cc1, c2, cc3, cc4, dd0, dd1, d2, dd3, dd4, ee0, ee1, e2, ee3, ee4, ff0, ff1, f2, ff3, ff4, gg0, gg1, g2, gg3, gg4);
+
+                VEC_STORE_2D_EPI8(y0, vmi1 - 2, j, vY);
+                VEC_STORE_2D_EPI8(y1, vmi1 - 1, j, vY);
+                VEC_STORE_2D_EPI8(y2, vmi1 - 0, j, vY);
+                break;
+
+            case 4 :
+
+                e2 = VEC_LOAD_2D_EPI8(i + 2, j, vX);
+                ee0 = VEC_LOAD_2D_EPI8(i + 2, j - 1, vX);
+                ee1 = VEC_LEFT1_EPI8(ee0, e2);
+                ee0 = VEC_LEFT2_EPI8(ee0, e2);
+                ee4 = VEC_LOAD_2D_EPI8(i + 2, j + 1, vX);
+                ee3 = VEC_RIGHT1_EPI8(e2, ee4);
+                ee4 = VEC_RIGHT2_EPI8(e2, ee4);
+
+                f2 = VEC_LOAD_2D_EPI8(i + 3, j, vX);
+                ff0 = VEC_LOAD_2D_EPI8(i + 3, j - 1, vX);
+                ff1 = VEC_LEFT1_EPI8(ff0, f2);
+                ff0 = VEC_LEFT2_EPI8(ff0, f2);
+                ff4 = VEC_LOAD_2D_EPI8(i + 3, j + 1, vX);
+                ff3 = VEC_RIGHT1_EPI8(f2, ff4);
+                ff4 = VEC_RIGHT2_EPI8(f2, ff4);
+
+                g2 = VEC_LOAD_2D_EPI8(i + 4, j, vX);
+                gg0 = VEC_LOAD_2D_EPI8(i + 4, j - 1, vX);
+                gg1 = VEC_LEFT1_EPI8(gg0, g2);
+                gg0 = VEC_LEFT2_EPI8(gg0, g2);
+                gg4 = VEC_LOAD_2D_EPI8(i + 4, j + 1, vX);
+                gg3 = VEC_RIGHT1_EPI8(g2, gg4);
+                gg4 = VEC_RIGHT2_EPI8(g2, gg4);
+            
+                h2 = VEC_LOAD_2D_EPI8(i + 5, j, vX);
+                hh0 = VEC_LOAD_2D_EPI8(i + 5, j - 1, vX);
+                hh1 = VEC_LEFT1_EPI8(hh0, h2);
+                hh0 = VEC_LEFT2_EPI8(hh0, h2);
+                hh4 = VEC_LOAD_2D_EPI8(i + 5, j + 1, vX);
+                hh3 = VEC_RIGHT1_EPI8(h2, hh4);
+                hh4 = VEC_RIGHT2_EPI8(h2, hh4);
+
+                y0 = VEC_OR_25_EPI8(aa0, aa1, a2, aa3, aa4, bb0, bb1, b2, bb3, bb4, cc0, cc1, c2, cc3, cc4, dd0, dd1, d2, dd3, dd4, ee0, ee1, e2, ee3, ee4);
+                y1 = VEC_OR_25_EPI8(bb0, bb1, b2, bb3, bb4, cc0, cc1, c2, cc3, cc4, dd0, dd1, d2, dd3, dd4, ee0, ee1, e2, ee3, ee4, ff0, ff1, f2, ff3, ff4);
+                y2 = VEC_OR_25_EPI8(cc0, cc1, c2, cc3, cc4, dd0, dd1, d2, dd3, dd4, ee0, ee1, e2, ee3, ee4, ff0, ff1, f2, ff3, ff4, gg0, gg1, g2, gg3, gg4);
+                y3 = VEC_OR_25_EPI8(dd0, dd1, d2, dd3, dd4, ee0, ee1, e2, ee3, ee4, ff0, ff1, f2, ff3, ff4, gg0, gg1, g2, gg3, gg4, hh0, hh1, h2, hh3, hh4);
+
+                VEC_STORE_2D_EPI8(y0, vmi1 - 3, j, vY);
+                VEC_STORE_2D_EPI8(y1, vmi1 - 2, j, vY);
+                VEC_STORE_2D_EPI8(y2, vmi1 - 1, j, vY);
+                VEC_STORE_2D_EPI8(y3, vmi1 - 0, j, vY);
+
+                break;
+
+            default :
+                break;
+        }
+
     }
 }
 

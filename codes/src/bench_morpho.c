@@ -303,47 +303,6 @@ void bench_morpho_5_opti(){
 
 void gen_img_bin_bench(int type, int kernel_size){
     
-    // int seuil;
-    // if(type){
-    //    seuil = 80; 
-    // }
-    // else {
-    //     seuil = 20;
-    // }
-    // if(kernel_size == 3){
-    //     b_bench = 1;
-    // }
-    // else if(kernel_size == 5){
-    //     b_bench = 2;
-    // }
-    // else {
-    //     fprintf(stderr, "Error wrong kernel_size must be 3 or 5 and it's %d\n", kernel_size);
-    //     exit(1);
-    // }
-    // // indices matrices
-	// mi0_bench = 0; mi1_bench = HEIGHT -1;
-	// mj0_bench = 0; mj1_bench = WIDTH -1;
-	
-	// // indices matrices avec bord
-	// mi0b_bench = mi0_bench-b_bench; mi1b_bench = mi1_bench+b_bench;
-	// mj0b_bench = mj0_bench-b_bench; mj1b_bench = mj1_bench+b_bench;
-
-    // img_bin_bench = ui8matrix(mi0b_bench, mi1b_bench, mj0b_bench, mj1b_bench);
-
-	// // image filtrée
-	// img_filtered_bench = ui8matrix(mi0b_bench, mi1b_bench, mj0b_bench, mj1b_bench);
-
-    // srand(time(NULL));
-    // for(int i = mi0_bench ; i <= mi1_bench ; i++){
-    //     for(int j = mj0_bench ; j <= mj1_bench ; j++){
-    //         if(rand() % 100 < seuil){
-    //             img_bin_bench[i][j] = 1;
-    //         }
-    //         else {
-    //             img_bin_bench[i][j] = 0;
-    //         }
-    //     }
-    // }
 
     if (kernel_size == 3)
     {

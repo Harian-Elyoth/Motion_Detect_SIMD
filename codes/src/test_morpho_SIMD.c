@@ -264,15 +264,15 @@ void gen_vimg_bin_test_SIMD(int type, int kernel_size){
 
 void main_test_morpho_SIMD(int argc, char *argv[])
 {
-    //test_erosion_3_SIMD_opti();
-    //test_erosion_5_SIMD_opti();
-    //test_dilatation_3_SIMD_opti();
-    //test_dilatation_5_SIMD_opti();
-    test_erosion_3_SIMD();
+    test_erosion_3_SIMD_opti();
+    test_erosion_5_SIMD_opti();
+    test_dilatation_3_SIMD_opti();
+    test_dilatation_5_SIMD_opti();
+    //test_erosion_3_SIMD();
     //test_erosion_5_SIMD();
     //test_dilatation_3_SIMD();
     //test_dilatation_5_SIMD();
-    //test_morpho_3_SIMD();
-    //test_morpho_5_SIMD();
+    test_morpho_3_SIMD_opti();
+    test_morpho_5_SIMD_opti();
 
 }
