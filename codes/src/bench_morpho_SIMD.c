@@ -16,14 +16,11 @@ void bench_erosion_3_SIMD(){
 	char * format = "%d ";
     double cycles;
     double time;
-    clock_t start, finish;
     double debit;
     
-    start = clock();
     //On recupère vimg_bin de mouvement et on applique une erosion_3 dessus
     CHRONO(erosion_3_SIMD(vimg_bin_bench, vimg_filtered_bench , vmi0_bench, vmi1_bench, vmj0_bench, vmj1_bench), cycles);
-    finish = clock();
-    time = (double)(finish - start)/CLOCKS_PER_SEC;
+    time = (double)cycles/CLOCKS_PER_SEC;
     debit = (WIDTH_BENCH * HEIGHT_BENCH) / time;
     BENCH(printf("Bench erosion 3 SIMD :\n"));
     BENCH(printf("temps (ms) \t    = %0.6f", time)); BENCH(puts(""));
@@ -43,14 +40,12 @@ void bench_erosion_5_SIMD(){
 	char * format = "%d ";
     double cycles;
     double time;
-    clock_t start, finish;
     double debit;
     
-    start = clock();
+
     //On recupère vimg_bin de mouvement et on applique une erosion_3 dessus
     CHRONO(erosion_5_SIMD(vimg_bin_bench, vimg_filtered_bench , vmi0_bench, vmi1_bench, vmj0_bench, vmj1_bench), cycles);
-    finish = clock();
-    time = (double)(finish - start)/CLOCKS_PER_SEC;
+    time = (double)cycles/CLOCKS_PER_SEC;
     debit = (WIDTH_BENCH * HEIGHT_BENCH) / time;
     BENCH(printf("Bench erosion 5 SIMD:\n"));
     BENCH(printf("temps (ms) \t    = %0.6f", time)); BENCH(puts(""));
@@ -70,14 +65,12 @@ void bench_dilatation_3_SIMD(){
 	char * format = "%d ";
     double cycles;
     double time;
-    clock_t start, finish;
     double debit;
     
-    start = clock();
+
     //On recupère vimg_bin de mouvement et on applique une erosion_3 dessus
     CHRONO(dilatation_3_SIMD(vimg_bin_bench, vimg_filtered_bench , vmi0_bench, vmi1_bench, vmj0_bench, vmj1_bench), cycles);
-    finish = clock();
-    time = (double)(finish - start)/CLOCKS_PER_SEC;
+    time = (double)cycles/CLOCKS_PER_SEC;
     debit = (WIDTH_BENCH * HEIGHT_BENCH) / time;
     BENCH(printf("Bench dilatation 3 SIMD:\n"));
     BENCH(printf("temps (ms) \t    = %0.6f", time)); BENCH(puts(""));
@@ -97,14 +90,13 @@ void bench_dilatation_5_SIMD(){
 	char * format = "%d ";
     double cycles;
     double time;
-    clock_t start, finish;
+
     double debit;
     
-    start = clock();
+
     //On recupère vimg_bin de mouvement et on applique une erosion_3 dessus
     CHRONO(dilatation_5_SIMD(vimg_bin_bench, vimg_filtered_bench , vmi0_bench, vmi1_bench, vmj0_bench, vmj1_bench), cycles);
-    finish = clock();
-    time = (double)(finish - start)/CLOCKS_PER_SEC;
+    time = (double)cycles/CLOCKS_PER_SEC;
     debit = (WIDTH_BENCH * HEIGHT_BENCH) / time;
     BENCH(printf("Bench dilatation 5 SIMD:\n"));
     BENCH(printf("temps (ms) \t    = %0.6f", time)); BENCH(puts(""));
@@ -123,14 +115,12 @@ void bench_morpho_3_SIMD(){
 	char * format = "%d ";
     double cycles;
     double time;
-    clock_t start, finish;
     double debit;
     
-    start = clock();
+
     //On recupère vimg_bin de mouvement et on applique une erosion_3 dessus
     CHRONO(morpho_3_SIMD(vimg_bin_bench, vimg_filtered_bench , vmi0_bench, vmi1_bench, vmj0_bench, vmj1_bench), cycles);
-    finish = clock();
-    time = (double)(finish - start)/CLOCKS_PER_SEC;
+    time = (double)cycles/CLOCKS_PER_SEC;
     debit = (WIDTH_BENCH * HEIGHT_BENCH) / time;
     BENCH(printf("Bench morpho SIMD 3 :\n"));
     BENCH(printf("temps (ms) \t    = %0.6f", time)); BENCH(puts(""));
@@ -149,14 +139,12 @@ void bench_morpho_5_SIMD(){
 	char * format = "%d ";
     double cycles;
     double time;
-    clock_t start, finish;
+
     double debit;
     
-    start = clock();
     //On recupère vimg_bin de mouvement et on applique une erosion_3 dessus
     CHRONO(morpho_5_SIMD(vimg_bin_bench, vimg_filtered_bench , vmi0_bench, vmi1_bench, vmj0_bench, vmj1_bench), cycles);
-    finish = clock();
-    time = (double)(finish - start)/CLOCKS_PER_SEC;
+    time = (double)cycles/CLOCKS_PER_SEC;
     debit = (WIDTH_BENCH * HEIGHT_BENCH) / time;
     BENCH(printf("Bench morpho SIMD 5 :\n"));
     BENCH(printf("temps (ms) \t    = %0.6f", time)); BENCH(puts(""));
@@ -177,16 +165,13 @@ void bench_erosion_3_SIMD_opti(){
 	char * format = "%d ";
     double cycles;
     double time;
-    clock_t start, finish;
     double debit;
-    
-    start = clock();
+
     //On recupère vimg_bin de mouvement et on applique une erosion_3 dessus
     CHRONO(erosion_3_SIMD_opti(vimg_bin_bench, vimg_filtered_bench , vmi0_bench, vmi1_bench, vmj0_bench, vmj1_bench), cycles);
-    finish = clock();
-    time = (double)(finish - start)/CLOCKS_PER_SEC;
+    time = (double)cycles/CLOCKS_PER_SEC;
     debit = (WIDTH_BENCH * HEIGHT_BENCH) / time;
-    BENCH(printf("Bench erosion 3 SIMD :\n"));
+    BENCH(printf("Bench erosion 3 SIMD opti:\n"));
     BENCH(printf("temps (ms) \t    = %0.6f", time)); BENCH(puts(""));
     BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles/(WIDTH_BENCH * HEIGHT_BENCH))); BENCH(puts(""));
     BENCH(printf("debit (pixel/sec)   = %0.2f", debit)); BENCH(puts("")); BENCH(puts(""));
@@ -204,16 +189,14 @@ void bench_erosion_5_SIMD_opti(){
 	char * format = "%d ";
     double cycles;
     double time;
-    clock_t start, finish;
     double debit;
     
-    start = clock();
+
     //On recupère vimg_bin de mouvement et on applique une erosion_3 dessus
     CHRONO(erosion_5_SIMD_opti(vimg_bin_bench, vimg_filtered_bench , vmi0_bench, vmi1_bench, vmj0_bench, vmj1_bench), cycles);
-    finish = clock();
-    time = (double)(finish - start)/CLOCKS_PER_SEC;
+    time = (double)cycles/CLOCKS_PER_SEC;
     debit = (WIDTH_BENCH * HEIGHT_BENCH) / time;
-    BENCH(printf("Bench erosion 5 SIMD:\n"));
+    BENCH(printf("Bench erosion 5 SIMD opti:\n"));
     BENCH(printf("temps (ms) \t    = %0.6f", time)); BENCH(puts(""));
     BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles/(WIDTH_BENCH * HEIGHT_BENCH))); BENCH(puts(""));
     BENCH(printf("debit (pixel/sec)   = %0.2f", debit)); BENCH(puts("")); BENCH(puts(""));
@@ -231,16 +214,14 @@ void bench_dilatation_3_SIMD_opti(){
 	char * format = "%d ";
     double cycles;
     double time;
-    clock_t start, finish;
     double debit;
     
-    start = clock();
+    
     //On recupère vimg_bin de mouvement et on applique une erosion_3 dessus
     CHRONO(dilatation_3_SIMD_opti(vimg_bin_bench, vimg_filtered_bench , vmi0_bench, vmi1_bench, vmj0_bench, vmj1_bench), cycles);
-    finish = clock();
-    time = (double)(finish - start)/CLOCKS_PER_SEC;
+    time = (double)cycles/CLOCKS_PER_SEC;
     debit = (WIDTH_BENCH * HEIGHT_BENCH) / time;
-    BENCH(printf("Bench dilatation 3 SIMD:\n"));
+    BENCH(printf("Bench dilatation 3 SIMD opti:\n"));
     BENCH(printf("temps (ms) \t    = %0.6f", time)); BENCH(puts(""));
     BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles/(WIDTH_BENCH * HEIGHT_BENCH))); BENCH(puts(""));
     BENCH(printf("debit (pixel/sec)   = %0.2f", debit)); BENCH(puts("")); BENCH(puts(""));
@@ -258,16 +239,14 @@ void bench_dilatation_5_SIMD_opti(){
 	char * format = "%d ";
     double cycles;
     double time;
-    clock_t start, finish;
-    double debit;
     
-    start = clock();
+    double debit;
+
     //On recupère vimg_bin de mouvement et on applique une erosion_3 dessus
     CHRONO(dilatation_5_SIMD_opti(vimg_bin_bench, vimg_filtered_bench , vmi0_bench, vmi1_bench, vmj0_bench, vmj1_bench), cycles);
-    finish = clock();
-    time = (double)(finish - start)/CLOCKS_PER_SEC;
+    time = (double)cycles/CLOCKS_PER_SEC;
     debit = (WIDTH_BENCH * HEIGHT_BENCH) / time;
-    BENCH(printf("Bench dilatation 5 SIMD:\n"));
+    BENCH(printf("Bench dilatation 5 SIMD opti:\n"));
     BENCH(printf("temps (ms) \t    = %0.6f", time)); BENCH(puts(""));
     BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles/(WIDTH_BENCH * HEIGHT_BENCH))); BENCH(puts(""));
     BENCH(printf("debit (pixel/sec)   = %0.2f", debit)); BENCH(puts("")); BENCH(puts(""));
@@ -284,16 +263,14 @@ void bench_morpho_3_SIMD_opti(){
 	char * format = "%d ";
     double cycles;
     double time;
-    clock_t start, finish;
     double debit;
     
-    start = clock();
+
     //On recupère vimg_bin de mouvement et on applique une erosion_3 dessus
     CHRONO(morpho_3_SIMD_opti(vimg_bin_bench, vimg_filtered_bench , vmi0_bench, vmi1_bench, vmj0_bench, vmj1_bench), cycles);
-    finish = clock();
-    time = (double)(finish - start)/CLOCKS_PER_SEC;
+    time = (double)cycles/CLOCKS_PER_SEC;
     debit = (WIDTH_BENCH * HEIGHT_BENCH) / time;
-    BENCH(printf("Bench morpho SIMD 3 :\n"));
+    BENCH(printf("Bench morpho SIMD 3 opti:\n"));
     BENCH(printf("temps (ms) \t    = %0.6f", time)); BENCH(puts(""));
     BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles/(WIDTH_BENCH * HEIGHT_BENCH))); BENCH(puts(""));
     BENCH(printf("debit (pixel/sec)   = %0.2f", debit)); BENCH(puts("")); BENCH(puts(""));
@@ -310,16 +287,13 @@ void bench_morpho_5_SIMD_opti(){
 	char * format = "%d ";
     double cycles;
     double time;
-    clock_t start, finish;
     double debit;
     
-    start = clock();
     //On recupère vimg_bin de mouvement et on applique une erosion_3 dessus
     CHRONO(morpho_5_SIMD_opti(vimg_bin_bench, vimg_filtered_bench , vmi0_bench, vmi1_bench, vmj0_bench, vmj1_bench), cycles);
-    finish = clock();
-    time = (double)(finish - start)/CLOCKS_PER_SEC;
+    time = (double)cycles/CLOCKS_PER_SEC;
     debit = (WIDTH_BENCH * HEIGHT_BENCH) / time;
-    BENCH(printf("Bench morpho SIMD 5 :\n"));
+    BENCH(printf("Bench morpho SIMD 5 opti:\n"));
     BENCH(printf("temps (ms) \t    = %0.6f", time)); BENCH(puts(""));
     BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles/(WIDTH_BENCH * HEIGHT_BENCH))); BENCH(puts(""));
     BENCH(printf("debit (pixel/sec)   = %0.2f", debit)); BENCH(puts("")); BENCH(puts(""));
@@ -473,8 +447,9 @@ void main_bench_morpho_SIMD(int argc, char *argv[])
 
     //bench_erosion_3_SIMD_opti();
     //bench_dilatation_5();
-    bench_morpho_3_SIMD_opti();
     bench_morpho_3_SIMD();
+
+    bench_morpho_3_SIMD_opti();
     //bench_morpho_SIMD_5();
     
 }

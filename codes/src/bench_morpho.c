@@ -174,7 +174,7 @@ void bench_erosion_3_opti(){
     time = (double)(cycles/CLK_PROC);
     debit = (WIDTH  * HEIGHT ) / time;
 
-    BENCH(printf("Bench erosion 3 :\n"));
+    BENCH(printf("Bench erosion 3 opti:\n"));
     BENCH(printf("temps (ms) \t    = %0.6f", time * 1000)); BENCH(puts(""));
     BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles/(WIDTH  * HEIGHT ))); BENCH(puts(""));
     BENCH(printf("debit (pixel/sec)   = %0.2f", debit)); BENCH(puts("")); BENCH(puts(""));
@@ -199,7 +199,7 @@ void bench_erosion_5_opti(){
     time = (double)(cycles/CLK_PROC);
     debit = (WIDTH  * HEIGHT ) / time;
 
-    BENCH(printf("Bench erosion 5 :\n"));
+    BENCH(printf("Bench erosion 5 opti:\n"));
     BENCH(printf("temps (ms) \t    = %0.6f", time * 1000)); BENCH(puts(""));
     BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles/(WIDTH  * HEIGHT ))); BENCH(puts(""));
     BENCH(printf("debit (pixel/sec)   = %0.2f", debit)); BENCH(puts("")); BENCH(puts(""));
@@ -223,7 +223,7 @@ void bench_dilatation_3_opti(){
     time = (double)cycles/CLK_PROC;
     debit = (WIDTH  * HEIGHT ) / time;
 
-    BENCH(printf("Bench dilatation 3 :\n"));
+    BENCH(printf("Bench dilatation 3 opti:\n"));
     BENCH(printf("temps (ms) \t    = %0.6f", time * 1000)); BENCH(puts(""));
     BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles/(WIDTH  * HEIGHT ))); BENCH(puts(""));
     BENCH(printf("debit (pixel/sec)   = %0.2f", debit)); BENCH(puts("")); BENCH(puts(""));
@@ -247,7 +247,7 @@ void bench_dilatation_5_opti(){
     time = (double)cycles/CLK_PROC;
     debit = (WIDTH  * HEIGHT ) / time;
 
-    BENCH(printf("Bench erosion 3 :\n"));
+    BENCH(printf("Bench dilatation 5 opti:\n"));
     BENCH(printf("temps (ms) \t    = %0.6f", time * 1000)); BENCH(puts(""));
     BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles/(WIDTH  * HEIGHT ))); BENCH(puts(""));
     BENCH(printf("debit (pixel/sec)   = %0.2f", debit)); BENCH(puts("")); BENCH(puts(""));
@@ -271,7 +271,7 @@ void bench_morpho_3_opti(){
     time = (double)cycles/CLK_PROC;
     debit = (WIDTH  * HEIGHT ) / time;
 
-    BENCH(printf("Bench erosion 3 :\n"));
+    BENCH(printf("Bench morpho 3 opti:\n"));
     BENCH(printf("temps (ms) \t    = %0.6f", time * 1000)); BENCH(puts(""));
     BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles/(WIDTH  * HEIGHT ))); BENCH(puts(""));
     BENCH(printf("debit (pixel/sec)   = %0.2f", debit)); BENCH(puts("")); BENCH(puts(""));
@@ -295,7 +295,7 @@ void bench_morpho_5_opti(){
     time = (double)cycles/CLK_PROC;
     debit = (WIDTH  * HEIGHT ) / time;
 
-    BENCH(printf("Bench erosion 3 :\n"));
+    BENCH(printf("Bench morpho 5 opti :\n"));
     BENCH(printf("temps (ms) \t    = %0.6f", time * 1000)); BENCH(puts(""));
     BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles/(WIDTH  * HEIGHT ))); BENCH(puts(""));
     BENCH(printf("debit (pixel/sec)   = %0.2f", debit)); BENCH(puts("")); BENCH(puts(""));
@@ -399,7 +399,7 @@ void main_bench_morpho(int argc, char *argv[])
     // bench_dilatation_5();
 
     bench_morpho_3();
-    bench_morpho_5();
+    //bench_morpho_5();
 
     //bench_erosion_3_opti();
     //bench_dilatation_3_opti();
@@ -407,7 +407,7 @@ void main_bench_morpho(int argc, char *argv[])
     //bench_erosion_3_opti();
 
     //bench_dilatation_5();
-    //bench_morpho_3_opti();
+    bench_morpho_3_opti();
 
     
 }
