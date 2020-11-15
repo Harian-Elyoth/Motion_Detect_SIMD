@@ -210,7 +210,7 @@ void test_mouvement_SIMD_car(bool is_visual){
 	vui8matrix_to_ui8matrix(card, vmi0b, vmi1b, vmj0b, vmj1b, img_print, img_bin);
 
 	// convert binary img to pgm img
-	bin_to_pgm(mi0b, mi1b, mj0b, mj1b, img_print, "SD_out.pgm");
+	bin_to_pgm(mi0, mi1, mj0, mj1, img_print, "SD_out.pgm");
 
 	/*---------------------------------------------------*/
 
@@ -390,7 +390,7 @@ void test_mouvement_SIMD_dataset(){
 		snprintf(filename_out, 25, "SD_out_%d.pgm", i);
 
 		// convert binary img to pgm img
-		bin_to_pgm(mi0b, mi1b, mj0b, mj1b, img_print, filename_out);
+		bin_to_pgm(mi0, mi1, mj0, mj1, img_print, filename_out);
 
 		// free temp ui8matrix
 		free_ui8matrix(img_print, mi0b, mi1b, mj0b, mj1b);
