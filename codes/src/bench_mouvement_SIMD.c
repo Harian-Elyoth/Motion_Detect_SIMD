@@ -30,15 +30,18 @@ void bench_mouvement_SIMD_car(bool is_visual){
 
 	// calcul cpp
 	double cycles_total, cycles_step1, cycles_step2, cycles_step3, cycles_step4;
+	double cycles_total_opti, cycles_step1_opti, cycles_step2_opti, cycles_step3_opti, cycles_step4_opti;
+	double cycles_total_full, cycles_total_full_opti;
 
 	// calcul temps
 	double time_total, time_step1, time_step2, time_step3, time_step4;
+	double time_total_opti, time_step1_opti, time_step2_opti, time_step3_opti, time_step4_opti;
+	double time_total_full, time_total_full_opti;
 
 	// calcul debit
 	double debit_total, debit_step1, debit_step2, debit_step3, debit_step4;
-
-	// taille noyau de convolution	
-    int kernel_size = 3;
+	double debit_total_opti, debit_step1_opti, debit_step2_opti, debit_step3_opti, debit_step4_opti;
+	double debit_total_full, debit_total_full_opti;
 
 	puts("=========================================");
 	puts("=== benchmark mouvement unitaire SIMD ===");
@@ -52,7 +55,7 @@ void bench_mouvement_SIMD_car(bool is_visual){
 	//int b = 2;
 
 	// cardinalité des registres
-	int card = card_vuint8(); // 16
+	int card = card_vuint8(); // = 16 ici
 
 	// ------------------------- //
 	// -- calculs des indices -- //
@@ -94,10 +97,6 @@ void bench_mouvement_SIMD_car(bool is_visual){
 
 	/*---------------------------------------------------*/
 
-	DEBUG(puts("================================"));
-	DEBUG(puts("=== chargement et conversion ==="));
-	DEBUG(puts("================================"));
-
 	// ------------------------------ //
 	// -- chargement et conversion -- //
 	// ------------------------------ //
@@ -128,13 +127,7 @@ void bench_mouvement_SIMD_car(bool is_visual){
 
 		MLoadPGM_ui8matrix("pgm_imgs/my_pgm2.pgm", mi0b, mi1b, mj0b, mj1b, img_temp);
 
-		DEBUG(printf("Before duplicate_border : \n")); DEBUG(puts(""));
-		DEBUG(display_ui8matrix(img_temp, mi0b, mi1b, mj0b, mj1b, "%d ", "img_temp : ")); DEBUG(puts(""));
-
 		duplicate_border(mi0, mi1, mj0, mj1, b, img_temp);
-
-		DEBUG(printf("After duplicate_vborder : \n")); DEBUG(puts(""));
-		DEBUG(display_ui8matrix(img_temp, mi0b, mi1b, mj0b, mj1b, "%d ", "img_temp : ")); DEBUG(puts(""));
     }
     else
     {
@@ -164,74 +157,156 @@ void bench_mouvement_SIMD_car(bool is_visual){
 	// transfert ui8matrix à vui8matrix real
 	ui8matrix_to_vui8matrix(card, vmi0b, vmi1b, vmj0b, vmj1b, img_temp, image);
 
-	DEBUG(printf("After conversion : \n"));DEBUG(puts(""));
 
 	/*---------------------------------------------------*/
-
-	DEBUG(puts("==================="));
-	DEBUG(puts("=== traitements ==="));
-	DEBUG(puts("==================="));
 
 	// ----------------- //
 	// -- traitements -- //
 	// ----------------- //
 
-	BENCH(printf("Sigma Delta :\n\n"));
+	BENCH(printf("Sigma Delta SIMD :\n\n"));
 
+	/*----------------------------------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------*/
+
+	// STEP 1
 	CHRONO(SigmaDelta_step1_simd(vmi0b, vmi1b, vmj0b, vmj1b, mean0, mean1, image), cycles_step1);
 	time_step1 = (double)(cycles_step1/CLK_PROC);
-	debit_step1 = (width*height) / time_step1;
-	time_step1 *= 1000;
+	debit_step1 = (width*height) / time_step1;	
 
 	BENCH(printf("step 1 :")); BENCH(puts(""));
-	BENCH(printf("temps (ms) \t    = %0.6f", time_step1)); BENCH(puts(""));
+	BENCH(printf("temps (ms) \t    = %0.6f", time_step1*1000)); BENCH(puts(""));
 	BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_step1/(WIDTH*HEIGHT))); BENCH(puts("")); 
 	BENCH(printf("debit (pixel/sec)   = %0.2f", debit_step1)); BENCH(puts("")); BENCH(puts(""));
 
+	// STEP 1 OPTI
+	CHRONO(SigmaDelta_step1_simd_opti(vmi0b, vmi1b, vmj0b, vmj1b, mean0, mean1, image), cycles_step1_opti);
+	time_step1_opti = (double)(cycles_step1_opti/CLK_PROC);
+	debit_step1_opti = (WIDTH*HEIGHT) / time_step1_opti;
+
+	BENCH(printf("step 1 optimisée :")); BENCH(puts(""));
+	BENCH(printf("temps (ms) \t    = %0.6f", time_step1_opti*1000)); BENCH(puts(""));
+	BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_step1_opti/(WIDTH*HEIGHT))); BENCH(puts("")); 
+	BENCH(printf("debit (pixel/sec)   = %0.2f", debit_step1_opti)); BENCH(puts("")); BENCH(puts(""));
+
+	/*----------------------------------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------*/
+
+	// STEP 2
 	CHRONO(SigmaDelta_step2_simd(vmi0b, vmi1b, vmj0b, vmj1b, image, mean1, img_diff), cycles_step2);
 	time_step2 = (double)(cycles_step2/CLK_PROC);
 	debit_step2 = (width*height) / time_step2;
-	time_step2 *= 1000;
 
 	BENCH(printf("step 2 :")); BENCH(puts(""));
-	BENCH(printf("temps (ms) \t    = %0.6f", time_step2)); BENCH(puts(""));
+	BENCH(printf("temps (ms) \t    = %0.6f", time_step2*1000)); BENCH(puts(""));
 	BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_step2/(WIDTH*HEIGHT))); BENCH(puts(""));
 	BENCH(printf("debit (pixel/sec)   = %0.2f", debit_step2)); BENCH(puts("")); BENCH(puts(""));
 
+	// STEP 2 OPTI
+	CHRONO(SigmaDelta_step2_simd_opti(vmi0b, vmi1b, vmj0b, vmj1b, image, mean1, img_diff), cycles_step2_opti);
+	time_step2_opti = (double)(cycles_step2_opti/CLK_PROC);
+	debit_step2_opti = (WIDTH*HEIGHT) / time_step2_opti;
+
+	BENCH(printf("step 2 optimisée :")); BENCH(puts(""));
+	BENCH(printf("temps (ms) \t    = %0.6f", time_step2_opti*1000)); BENCH(puts(""));
+	BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_step2_opti/(WIDTH*HEIGHT))); BENCH(puts("")); 
+	BENCH(printf("debit (pixel/sec)   = %0.2f", debit_step2_opti)); BENCH(puts("")); BENCH(puts(""));
+
+	/*----------------------------------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------*/
+
+	// STEP 3
 	CHRONO(SigmaDelta_step3_simd(vmi0b, vmi1b, vmj0b, vmj1b, std0, std1, img_diff), cycles_step3);
 	time_step3 = (double)(cycles_step3/CLK_PROC);
 	debit_step3 = (width*height) / time_step3;
-	time_step3 *= 1000;
 
 	BENCH(printf("step 3 :")); BENCH(puts(""));
-	BENCH(printf("temps (ms) \t    = %0.6f", time_step3)); BENCH(puts(""));
+	BENCH(printf("temps (ms) \t    = %0.6f", time_step3*1000)); BENCH(puts(""));
 	BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_step3/(WIDTH*HEIGHT))); BENCH(puts(""));
 	BENCH(printf("debit (pixel/sec)   = %0.2f", debit_step3)); BENCH(puts("")); BENCH(puts(""));
 
+	// STEP 3 OPTI
+	CHRONO(SigmaDelta_step3_simd_opti(vmi0b, vmi1b, vmj0b, vmj1b, std0, std1, img_diff), cycles_step3_opti);
+	time_step3_opti = (double)(cycles_step3_opti/CLK_PROC);
+	debit_step3_opti = (WIDTH*HEIGHT) / time_step3_opti;
+
+	BENCH(printf("step 3 optimisée :")); BENCH(puts(""));
+	BENCH(printf("temps (ms) \t    = %0.6f", time_step3_opti*1000)); BENCH(puts(""));
+	BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_step3_opti/(WIDTH*HEIGHT))); BENCH(puts("")); 
+	BENCH(printf("debit (pixel/sec)   = %0.2f", debit_step3_opti)); BENCH(puts("")); BENCH(puts(""));
+
+	/*----------------------------------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------*/
+
+	// STEP 4
 	CHRONO(SigmaDelta_step4_simd( vmi0b, vmi1b, vmj0b, vmj1b, std1, img_diff, img_bin), cycles_step4);
 	time_step4 = (double)(cycles_step4/CLK_PROC);
 	debit_step4 = (width*height) / time_step4;
-	time_step4 *= 1000;
 
 	BENCH(printf("step 4 :")); BENCH(puts(""));
-	BENCH(printf("temps (ms) \t    = %0.6f", time_step4)); BENCH(puts(""));
+	BENCH(printf("temps (ms) \t    = %0.6f", time_step4*1000)); BENCH(puts(""));
 	BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_step4/(WIDTH*HEIGHT))); BENCH(puts(""));
 	BENCH(printf("debit (pixel/sec)   = %0.2f", debit_step4)); BENCH(puts("")); BENCH(puts(""));
 
+	// STEP 4 OPTI
+	CHRONO(SigmaDelta_step4_simd_opti(vmi0b, vmi1b, vmj0b, vmj1b, std1, img_diff, img_bin), cycles_step4_opti);
+	time_step4_opti = (double)(cycles_step4_opti/CLK_PROC);
+	debit_step4_opti = (WIDTH*HEIGHT) / time_step4_opti;
+
+	BENCH(printf("step 4 optimisée :")); BENCH(puts(""));
+	BENCH(printf("temps (ms) \t    = %0.6f", time_step4_opti*1000)); BENCH(puts(""));
+	BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_step4_opti/(WIDTH*HEIGHT))); BENCH(puts(""));
+	BENCH(printf("debit (pixel/sec)   = %0.2f", debit_step4_opti)); BENCH(puts("")); BENCH(puts(""));
+
+	/*----------------------------------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------*/
+
+	// TOTAL
 	cycles_total = cycles_step1 + cycles_step2 + cycles_step3 + cycles_step4;
 	time_total   = time_step1   + time_step2   + time_step3   + time_step4;
-	debit_total  = (width*height) / time_total;;
+	debit_total  = (width*height) / time_total;
 
 	BENCH(printf("Total :")); BENCH(puts(""));
-	BENCH(printf("temps (ms) \t    = %0.6f", time_total)); BENCH(puts(""));
+	BENCH(printf("temps (ms) \t    = %0.6f", time_total*1000)); BENCH(puts(""));
 	BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_total/(WIDTH*HEIGHT))); BENCH(puts(""));
 	BENCH(printf("debit (pixel/sec)   = %0.2f", debit_total)); BENCH(puts("")); BENCH(puts(""));
 
-	/*---------------------------------------------------*/
+	// TOTAL OPTI
+	cycles_total_opti = cycles_step1_opti + cycles_step2_opti + cycles_step3_opti + cycles_step4_opti;
+	time_total_opti   = time_step1_opti   + time_step2_opti   + time_step3_opti   + time_step4_opti;
+	debit_total_opti  = (WIDTH*HEIGHT) / time_total_opti;
 
-	DEBUG(puts("============"));
-	DEBUG(puts("=== free ==="));
-	DEBUG(puts("============"));
+	BENCH(printf("Total optimisé :")); BENCH(puts(""));
+	BENCH(printf("temps (ms) \t    = %0.6f", time_total_opti*1000)); BENCH(puts(""));
+	BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_total_opti/(WIDTH*HEIGHT))); BENCH(puts(""));
+	BENCH(printf("debit (pixel/sec)   = %0.2f", debit_total_opti)); BENCH(puts("")); BENCH(puts(""));
+
+	/*----------------------------------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------------------------*/
+
+	// FULL
+	CHRONO(SigmaDelta_simd_full(vmi0b, vmi1b, vmj0b, vmj1b, image, mean0, std0, img_bin), cycles_total_full);
+	time_total_full = (double)(cycles_total_full/CLK_PROC);
+	debit_total_full = (WIDTH*HEIGHT) / time_total_full;
+	time_total_full *= 1000;
+
+	BENCH(printf("Total full :")); BENCH(puts(""));
+	BENCH(printf("temps (ms) \t    = %0.6f", time_total_full)); BENCH(puts(""));
+	BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_total_full/(WIDTH*HEIGHT))); BENCH(puts(""));
+	BENCH(printf("debit (pixel/sec)   = %0.2f", debit_total_full)); BENCH(puts("")); BENCH(puts(""));	
+
+	// FULL OPTI
+	CHRONO(SigmaDelta_simd_full_opti(vmi0b, vmi1b, vmj0b, vmj1b, image, mean0, std0, img_bin), cycles_total_full_opti);
+	time_total_full_opti = (double)(cycles_total_full_opti/CLK_PROC);
+	debit_total_full_opti = (WIDTH*HEIGHT) / time_total_full_opti;
+	time_total_full_opti *= 1000;
+
+	BENCH(printf("Total full optimisé :")); BENCH(puts(""));
+	BENCH(printf("temps (ms) \t    = %0.6f", time_total_full_opti)); BENCH(puts(""));
+	BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_total_full_opti/(WIDTH*HEIGHT))); BENCH(puts(""));
+	BENCH(printf("debit (pixel/sec)   = %0.2f", debit_total_full_opti)); BENCH(puts("")); BENCH(puts(""));
+
+	/*---------------------------------------------------*/
 
 	// ---------- //
 	// -- free -- //
