@@ -31,6 +31,7 @@ extern "C" {
 
 void bench_mouvement_car(bool is_visual);
 void bench_mouvement_dataset();
+void bench_mouvement_graphic();
 
 // fonction principale     
 void main_bench_mouvement(int argc, char *argv[]);
