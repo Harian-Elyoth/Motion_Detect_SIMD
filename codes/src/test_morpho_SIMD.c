@@ -112,6 +112,109 @@ void test_morpho_5_SIMD(){
     void free_vmatrix();
 }
 
+void test_erosion_3_SIMD_opti(){
+    
+    DEBUG(printf("\n===========================  TEST EROSION 3 =================================\n"));
+
+    gen_vimg_bin_test_SIMD(1, 3); //erosion kernel_3
+
+	char * format = "%d ";
+
+    DEBUG(display_vui8matrix(vimg_bin_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "image binaire : ")); DEBUG(puts(""));
+    //On recupère vimg_bin de mouvement et on applique une erosion_3 dessus
+    erosion_3_SIMD_opti(vimg_bin_test, vimg_filtered_test , vmi0_test, vmi1_test, vmj0_test, vmj1_test);
+
+    DEBUG(display_vui8matrix(vimg_filtered_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "image érodée : ")); DEBUG(puts(""));
+
+    void free_vmatrix();
+}
+
+void test_erosion_5_SIMD_opti(){
+
+    DEBUG(printf("\n===========================  TEST EROSION 5 =================================\n"));
+
+    gen_vimg_bin_test_SIMD(1, 5); //erosion kernel_3
+
+	char * format = "%d ";
+
+    DEBUG(display_vui8matrix(vimg_bin_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "image binaire : ")); DEBUG(puts(""));
+    //On recupère vimg_bin de mouvement et on applique une erosion_3 dessus
+    erosion_5_SIMD_opti(vimg_bin_test, vimg_filtered_test , vmi0_test, vmi1_test, vmj0_test, vmj1_test);
+
+    DEBUG(display_vui8matrix(vimg_filtered_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "image érodée : ")); DEBUG(puts(""));
+
+    void free_vmatrix();
+}
+
+void test_dilatation_3_SIMD_opti(){
+
+    DEBUG(printf("\n===========================  TEST DILATATION 3 =================================\n"));
+
+    gen_vimg_bin_test_SIMD(0, 3); //erosion kernel_3
+
+	char * format = "%d ";
+
+    DEBUG(display_vui8matrix(vimg_bin_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "image binaire : ")); DEBUG(puts(""));
+    //On recupère vimg_bin de mouvement et on applique une erosion_3 dessus
+    dilatation_3_SIMD_opti(vimg_bin_test, vimg_filtered_test , vmi0_test, vmi1_test, vmj0_test, vmj1_test);
+
+    DEBUG(display_vui8matrix(vimg_filtered_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "image dilatée : ")); DEBUG(puts(""));
+
+    void free_vmatrix();
+}
+
+void test_dilatation_5_SIMD_opti(){
+
+    DEBUG(printf("\n===========================  TEST DILATATION 5 =================================\n"));
+
+    gen_vimg_bin_test_SIMD(0, 5); //erosion kernel_3
+
+	char * format = "%d ";
+
+    DEBUG(display_vui8matrix(vimg_bin_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "image binaire : ")); DEBUG(puts(""));
+    //On recupère vimg_bin de mouvement et on applique une erosion_3 dessus
+    dilatation_5_SIMD_opti(vimg_bin_test, vimg_filtered_test , vmi0_test, vmi1_test, vmj0_test, vmj1_test);
+
+    DEBUG(display_vui8matrix(vimg_filtered_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "image dilatée : ")); DEBUG(puts(""));
+
+    void free_vmatrix();
+}
+
+void test_morpho_3_SIMD_opti(){
+
+    DEBUG(printf("\n===========================  TEST MORPHO 3 =================================\n"));
+
+    gen_vimg_bin_test_SIMD(1, 3); //erosion kernel_3
+
+	char * format = "%d ";
+
+    DEBUG(display_vui8matrix(vimg_bin_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "image binaire : ")); DEBUG(puts(""));
+    //On recupère vimg_bin de mouvement et on applique une erosion_3 dessus
+    morpho_3_SIMD_opti(vimg_bin_test, vimg_filtered_test , vmi0_test, vmi1_test, vmj0_test, vmj1_test);
+
+    DEBUG(display_vui8matrix(vimg_filtered_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "image transformée : ")); DEBUG(puts(""));
+
+    void free_vmatrix();
+}
+
+void test_morpho_5_SIMD_opti(){
+
+    DEBUG(printf("\n===========================  TEST MORPHO 5 =================================\n"));
+
+    gen_vimg_bin_test_SIMD(1, 5); //erosion kernel_3
+
+
+	char * format = "%d ";
+
+    DEBUG(display_vui8matrix(vimg_bin_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "image binaire : ")); DEBUG(puts(""));
+    //On recupère vimg_bin de mouvement et on applique une erosion_3 dessus
+    morpho_5_SIMD_opti(vimg_bin_test, vimg_filtered_test , vmi0_test, vmi1_test, vmj0_test, vmj1_test);
+
+    DEBUG(display_vui8matrix(vimg_filtered_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "image transformée : ")); DEBUG(puts(""));
+
+    void free_vmatrix();
+}
+
 void gen_vimg_bin_test_SIMD(int type, int kernel_size){
     
     int seuil;
@@ -161,11 +264,15 @@ void gen_vimg_bin_test_SIMD(int type, int kernel_size){
 
 void main_test_morpho_SIMD(int argc, char *argv[])
 {
+    test_erosion_3_SIMD_opti();
+    test_erosion_5_SIMD_opti();
+    test_dilatation_3_SIMD_opti();
+    test_dilatation_5_SIMD_opti();
     //test_erosion_3_SIMD();
     //test_erosion_5_SIMD();
     //test_dilatation_3_SIMD();
     //test_dilatation_5_SIMD();
-    //test_morpho_3_SIMD();
-    //test_morpho_5_SIMD();
+    test_morpho_3_SIMD_opti();
+    test_morpho_5_SIMD_opti();
 
 }

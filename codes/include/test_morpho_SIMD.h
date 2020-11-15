@@ -51,6 +51,13 @@ void test_dilatation_5_SIMD();
 void test_morpho_3_SIMD();
 void test_morpho_5_SIMD();
 
+void test_erosion_3_SIMD_opti();
+void test_erosion_5_SIMD_opti();
+void test_dilatation_3_SIMD_opti();
+void test_dilatation_5_SIMD_opti();
+void test_morpho_3_SIMD_opti();
+void test_morpho_5_SIMD_opti();
+
 void gen_vimg_bin_test_SIMD(int type, int kernel_size);
 
 void main_test_morpho_SIMD(int arg, char * argv[]);

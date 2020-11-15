@@ -23,14 +23,15 @@
 #include "simd_macro.h"
 
 #include "morpho_SIMD.h"
+#include "mouvement_SIMD.h"
 
 #ifdef __cplusplus
 #pragma message ("C++")
 extern "C" {
 #endif
 
-#define HEIGHT_BENCH 24
-#define WIDTH_BENCH 32
+#define HEIGHT_BENCH 240
+#define WIDTH_BENCH 320
 
 int b_bench;
 

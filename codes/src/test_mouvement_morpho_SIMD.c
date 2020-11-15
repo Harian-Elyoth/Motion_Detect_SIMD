@@ -187,7 +187,7 @@ void test_mouvement_morpho_SIMD_car(bool is_visual){
 
 	// MORPHOLOGIE
 
-	morpho_3_SIMD(img_bin, img_filtered, vmi0, vmi1, vmj0, vmj1);
+	morpho_3_SIMD_opti(img_bin, img_filtered, vmi0, vmi1, vmj0, vmj1);
 	
 	/*---------------------------------------------------*/
 
@@ -371,7 +371,7 @@ void test_mouvement_morpho_SIMD_dataset(){
 		SigmaDelta_step4_simd(vmi0b, vmi1b, vmj0b, vmj1b, std1, img_diff, img_bin);
 
 		// MORPHOLOGIE
-		morpho_3_SIMD(img_bin, img_filtered, vmi0, vmi1, vmj0, vmj1);
+		morpho_3_SIMD_opti(img_bin, img_filtered, vmi0, vmi1, vmj0, vmj1);
 
 		/*---------------------------------------------------*/
 
@@ -423,7 +423,7 @@ void main_test_mouvement_morpho_SIMD(int argc, char *argv[]){
 	// test_mouvement_morpho_SIMD_car(true);
 
 	// test unitaire sur image du set
-	test_mouvement_morpho_SIMD_car(false);
+	//test_mouvement_morpho_SIMD_car(false);
 
-	// test_mouvement_morpho_SIMD_dataset();
+	test_mouvement_morpho_SIMD_dataset();
 }

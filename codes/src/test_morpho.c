@@ -205,10 +205,10 @@ void gen_img_bin_test(int type, int kernel_size){
     
     int seuil;
     if(type){
-       seuil = 50; 
+       seuil = 90; 
     }
     else {
-        seuil = 50;
+        seuil = 10;
     }
     if(kernel_size == 3){
         b_test = 1;
@@ -260,9 +260,14 @@ void main_test_morpho(int argc, char *argv[])
 
     //test_erosion_3();
     //test_erosion_5();
-    //test_erosion_3_opti();
-    //test_dilatation_3_opti();
+    test_erosion_3_opti();
+    test_dilatation_3_opti();
+    test_morpho_3_opti();
+
+    test_erosion_5_opti();
+    test_dilatation_5_opti();
     test_morpho_5_opti();
+    //test_morpho_5_opti();
     //test_dilatation_5();
     //test_morpho_3();
     // test_morpho_5();
