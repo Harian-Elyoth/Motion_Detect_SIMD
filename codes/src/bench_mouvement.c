@@ -441,8 +441,9 @@ void bench_mouvement_graphic(){
 
 	// init fichier csv
 	FILE* fichier_csv = fopen("csv_files/perf_SigmaDelta.csv","w");
-	fprintf(fichier_csv, "%s\n", "Sigma Delta");
-	fprintf(fichier_csv, "%s;%s;%s;%s\n", "Taille (pixels)", "Temps (ms)", "Cycle par point (cpp)", "Debit (pixel/seconde)");
+	fprintf(fichier_csv, "%s;;;;;%s\n", "Sigma Delta", "Sigma Delta Optimise");
+	fprintf(fichier_csv, "%s;%s;%s;%s;", "Taille (pixels)", "Temps (ms)", "Cycle par point (cpp)", "Debit (pixel/seconde)");
+	fprintf(fichier_csv, ";%s;%s;%s\n", "Temps (ms)", "Cycle par point (cpp)", "Debit (pixel/seconde)");
 
 	// BORD
 	int b;
@@ -458,13 +459,13 @@ void bench_mouvement_graphic(){
     char *format = "%d ";
 
     // calcul cpp
-	double cycles_dataset, cycles_total, cycles_step1, cycles_step2, cycles_step3, cycles_step4;
+	double cycles_dataset, cycles_total, cycles_step1, cycles_step2, cycles_step3, cycles_step4, cycles_total_full_opti;
 
 	// calcul temps
-	double time_total, time_step1, time_step2, time_step3, time_step4;
+	double time_total, time_step1, time_step2, time_step3, time_step4, time_total_full_opti;
 
 	// calcul debit
-	double debit_total, debit_step1, debit_step2, debit_step3, debit_step4;
+	double debit_total, debit_step1, debit_step2, debit_step3, debit_step4, debit_total_full_opti;
 
     puts("====================================");
 	puts("=== benchmark mouvement graphics ===");
@@ -478,14 +479,17 @@ void bench_mouvement_graphic(){
     b = 1; 
     
     // Dimension initial des matrices générés
-    int height = 6;
-    int width  = 6;
+    int height = 32;
+    int width  = 32;
 
-    for (int i = 0; i < 500; ++i)
+    for (int i = 0; i < 300; ++i)
     {
+
+    	printf("\ni = %d\n", i);
+
     	// commence a 8 x 8
-    	height += 2;
-    	width  += 2;
+    	height += 16;
+    	width  += 16;
 
     	// indices matrices
 		mi0 = 0; mi1 = height-1;
@@ -560,12 +564,20 @@ void bench_mouvement_graphic(){
 		time_total   = time_step1   + time_step2   + time_step3   + time_step4;
 		debit_total  = (WIDTH*HEIGHT) / time_total;
 
+		// FULL OPTI
+		CHRONO(SigmaDelta_full_opti(mi0b, mi1b, mj0b, mj1b, image, mean0, std0, img_bin), cycles_total_full_opti);
+		time_total_full_opti = (double)(cycles_total_full_opti/CLK_PROC);
+		debit_total_full_opti = (WIDTH*HEIGHT) / time_total_full_opti;
+
 		// ecrire les donnees dans un fichier csv
 		fprintf(fichier_csv, "%d;", height);
 		fprintf(fichier_csv, "%f;", time_total*1000);
 		fprintf(fichier_csv, "%f;", cycles_total/(height*width));
-		fprintf(fichier_csv, "%f\n", debit_total);
+		fprintf(fichier_csv, "%f;", debit_total);
 
+		fprintf(fichier_csv, ";%f;", time_total_full_opti*1000);
+		fprintf(fichier_csv, "%f;", cycles_total_full_opti/(height*width));
+		fprintf(fichier_csv, "%f\n", debit_total_full_opti);
 
 		// ---------- //
 	    // -- free -- //
