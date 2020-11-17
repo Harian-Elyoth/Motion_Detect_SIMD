@@ -30,8 +30,8 @@
 extern "C" {
 #endif
 
-#define HEIGHT_BENCH 240
-#define WIDTH_BENCH 320
+#define HEIGHT_BENCH 2400
+#define WIDTH_BENCH 3200
 
 int b_bench;
 
