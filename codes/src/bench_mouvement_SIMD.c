@@ -700,11 +700,11 @@ void main_bench_mouvement_SIMD(int argc, char *argv[]){
 	// bench_mouvement_SIMD_car(true);
 
 	// benchmark unitaire sur image du set
-	// bench_mouvement_SIMD_car(false);
+	bench_mouvement_SIMD_car(false);
 
 	// benchmark global sur tout le dataset
 	// bench_mouvement_SIMD_dataset();
 
 	// benchmark sur images generees pour fichier csv
-	bench_mouvement_SIMD_graphic();
+	//bench_mouvement_SIMD_graphic();
 }

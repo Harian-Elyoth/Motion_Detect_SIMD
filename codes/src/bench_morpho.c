@@ -392,20 +392,21 @@ void gen_img_bin_bench(int type, int kernel_size){
 
 void main_bench_morpho(int argc, char *argv[])
 {
-    // bench_erosion_3();
-    // bench_dilatation_3();
+    bench_erosion_3();
+    bench_dilatation_3();
 
-    // bench_erosion_5();
-    // bench_dilatation_5();
+    bench_erosion_5();
+    bench_dilatation_5();
 
     bench_morpho_3();
     bench_morpho_5();
 
-    //bench_erosion_3_opti();
+    bench_erosion_3_opti();
+    bench_dilatation_3_opti();
     //bench_dilatation_3_opti();
-    //bench_dilatation_3_opti();
     //bench_erosion_3_opti();
-
+    bench_erosion_5_opti();
+    bench_dilatation_5_opti();
     //bench_dilatation_5();
     bench_morpho_3_opti();
     bench_morpho_5_opti();

@@ -400,15 +400,24 @@ void gen_vimg_bin_bench_SIMD(int kernel_size){
 
 void main_bench_morpho_SIMD(int argc, char *argv[])
 {
-    // bench_erosion_3_SIMD();
+    bench_erosion_3_SIMD();
     // bench_erosion_5();
+    bench_dilatation_3_SIMD();
     // bench_dilatation_3_SIMD_opti();
-    // bench_dilatation_3_SIMD_opti();
-
+    bench_erosion_5_SIMD();
+    
+    bench_dilatation_5_SIMD();
     // bench_erosion_3_SIMD_opti();
     // bench_dilatation_5();
     bench_morpho_3_SIMD();
-
+    bench_morpho_5_SIMD();
+    
+    bench_erosion_3_SIMD_opti();
+    bench_dilatation_3_SIMD_opti();
+    
+    bench_erosion_5_SIMD_opti();
+    bench_dilatation_5_SIMD_opti();
+    
     bench_morpho_3_SIMD_opti();
-    // bench_morpho_SIMD_5();
+    bench_morpho_SIMD_5_opti();
 }
