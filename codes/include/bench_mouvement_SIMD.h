@@ -31,6 +31,7 @@ extern "C" {
 
 void bench_mouvement_SIMD_car(bool is_visual);
 void bench_mouvement_SIMD_dataset();
+void bench_mouvement_SIMD_graphic();
 
 // fonction principale     
 void main_bench_mouvement_SIMD(int argc, char *argv[]);

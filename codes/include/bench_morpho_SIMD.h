@@ -49,7 +49,7 @@ void bench_dilatation_5_SIMD();
 void bench_morpho_3_SIMD();
 void bench_morpho_5_SIMD();
 
-void gen_vimg_bin_bench_SIMD(int type, int kernel_size);
+void gen_vimg_bin_bench_SIMD(int kernel_size);
 
 void main_bench_morpho_SIMD(int arg, char * argv[]);
 

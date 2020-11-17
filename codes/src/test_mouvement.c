@@ -19,9 +19,6 @@ void test_mouvement_car(bool is_visual){
 
 	char *format = "%d ";
 
-	// taille noyau de convolution	
-    int kernel_size = 3;
-
     puts("===============================");
     puts("=== test mouvement unitaire ===");
     puts("===============================");
@@ -31,7 +28,7 @@ void test_mouvement_car(bool is_visual){
     // ------------------------- //
 
     // 1 for 3x3 / 2 for 5x5
-    b = 1; 
+    b = 2; 
 
     if (is_visual) {
     	// indices matrices
@@ -105,7 +102,7 @@ void test_mouvement_car(bool is_visual){
 
     DEBUG(display_ui8matrix(image, mi0b, mi1b, mj0b, mj1b, " %d ", "image"));
 
- 	// SigmaDelta_step1_opti(mi0b, mi1b, mj0b, mj1b, mean0, mean1, image);
+ // 	SigmaDelta_step1_opti(mi0b, mi1b, mj0b, mj1b, mean0, mean1, image);
 	// SigmaDelta_step2_opti(mi0b, mi1b, mj0b, mj1b, image, mean1, img_diff);
 	// SigmaDelta_step3_opti(mi0b, mi1b, mj0b, mj1b, std0, std1, img_diff);
 	// SigmaDelta_step4_opti(mi0b, mi1b, mj0b, mj1b, std1, img_diff, img_bin);
@@ -265,7 +262,7 @@ void main_test_mouvement(int argc, char *argv[])
 	// Genere les images pgm dans pgm_imgs/
 
 	// test unitaire sur petite image generer
-	// test_mouvement_car(true);
+	test_mouvement_car(true);
 
 	// test unitaire sur image du set
 	// test_mouvement_car(false);
