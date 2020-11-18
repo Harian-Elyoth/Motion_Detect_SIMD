@@ -44,7 +44,7 @@ void duplicate_vborder(int mi0, int mi1, int mj0, int mj1, int b, vuint8** image
 
 void gen_pgm_img_simd(){
 
-   	int w = 32, h = 16;
+   	int w = 32, h = 10;
 
    	uint8 **image_t  = ui8matrix(0, h, 0, w);
    	uint8 **image_t2 = ui8matrix(0, h, 0, w);
@@ -53,8 +53,15 @@ void gen_pgm_img_simd(){
    	{
    		for (int j = 0; j < w; ++j)
    		{
-   			image_t [i][j]  = i + j + (j*10);
-   			image_t2[i][j]  = i + j + (i*10);
+   			uint8 val = rand()%245;
+   			image_t [i][j]  = val;
+   			if (rand()%5 <= 3)
+   			{
+   				image_t2[i][j]  = val + 10;
+   			}   
+   			else{
+   				image_t2[i][j]  = val;
+   			}
    		}
    	}
 

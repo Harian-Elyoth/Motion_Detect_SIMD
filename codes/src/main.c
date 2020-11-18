@@ -44,6 +44,8 @@ void info(void)
 
 int main(int argc, char *argv[])
 {
+    srand(time(NULL));
+
     info();
 
     // main_test_mouvement(argc,argv);

@@ -32,8 +32,8 @@ extern "C" {
 
 #define load_uint8(vX, i, j) _mm_load_si128((vuint8 *) &vX[i][j])
 
-#define HEIGHT_TEST 24
-#define WIDTH_TEST 32
+#define HEIGHT_TEST 10
+#define WIDTH_TEST 64
 
 int b_test;
 

@@ -1,6 +1,7 @@
 #generer par l'editeur de text
 .vscode/
 .DS_Store
+codes/.DS_Store
 
 #object files
 codes/obj
