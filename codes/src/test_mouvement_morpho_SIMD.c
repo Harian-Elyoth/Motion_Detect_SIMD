@@ -196,10 +196,10 @@ void test_mouvement_morpho_SIMD_car(bool is_visual){
 
 	// MORPHOLOGIE
 
-	// morpho_3_SIMD(img_bin, img_filtered, vmi0, vmi1, vmj0, vmj1);
+	morpho_3_SIMD(img_bin, img_filtered, vmi0, vmi1, vmj0, vmj1);
 
 	// DEBUG(display_vui8matrix(img_filtered, vmi0, vmi1, vmj0, vmj1, "%d ", "img_filtered : "));
-	morpho_3_SIMD_pipeline(img_bin, img_filtered, vmi0, vmi1, vmj0, vmj1);
+	// morpho_3_SIMD_pipeline(img_bin, img_filtered, vmi0, vmi1, vmj0, vmj1);
 	
 	/*---------------------------------------------------*/
 
@@ -424,7 +424,6 @@ void test_mouvement_morpho_SIMD_dataset(){
 
 	free_vui8matrix(img_diff, vmi0b, vmi1b, vmj0b, vmj1b);
 	free_vui8matrix(img_bin, vmi0b, vmi1b, vmj0b, vmj1b);
-
 }
 
 void main_test_mouvement_morpho_SIMD(int argc, char *argv[]){

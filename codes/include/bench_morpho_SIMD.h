@@ -30,8 +30,8 @@
 extern "C" {
 #endif
 
-#define HEIGHT_BENCH 2400
-#define WIDTH_BENCH 3200
+#define HEIGHT_BENCH 240
+#define WIDTH_BENCH 320
 
 int b_bench;
 
@@ -44,10 +44,23 @@ int vmi0b_bench, vmi1b_bench, vmj0b_bench, vmj1b_bench; // indices scalaires ave
 
 void bench_erosion_3_SIMD();
 void bench_erosion_5_SIMD();
+
 void bench_dilatation_3_SIMD();
 void bench_dilatation_5_SIMD();
+
 void bench_morpho_3_SIMD();
 void bench_morpho_5_SIMD();
+
+void bench_erosion_3_SIMD_opti();
+void bench_erosion_5_SIMD_opti();
+
+void bench_dilatation_3_SIMD_opti();
+void bench_dilatation_5_SIMD_opti();
+
+void bench_morpho_3_SIMD_opti();
+void bench_morpho_5_SIMD_opti();
+
+void bench_morpho_3_SIMD_pipeline();
 
 void gen_vimg_bin_bench_SIMD(int kernel_size);
 

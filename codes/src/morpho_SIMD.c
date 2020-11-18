@@ -300,7 +300,7 @@ void erosion_5_SIMD_opti(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0
     int vmj0b = vmj0 - bord;
     int vmj1b = vmj1 + bord;
 
-    printf("mi1 = %d, r = %d\n", vmi1, r);
+    DEBUG(printf("mi1 = %d, r = %d\n", vmi1, r));
 
     for(j = vmj0 ; j <= vmj1 ; j++){
 
@@ -1131,26 +1131,14 @@ void morpho_5_SIMD_opti(vuint8 **vX, vuint8 **vY, int vmi0, int vmi1, int vmj0, 
     erosion_5_SIMD_opti(tmp1, vY, vmi0, vmi1, vmj0, vmj1);
 }
 
-void morpho_3_SIMD_pipeline(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0, int vmj1) {
+void morpho_3_SIMD_pipeline(vuint8 **vX, vuint8 **tmp1, vuint8 **tmp2, vuint8 **tmp3, vuint8 ** vY, int vmi0, int vmi1, int vmj0, int vmj1){
 
-    printf("vmi0 = %d, vmi1 = %d, vmj0 = %d, vmj1 = %d\n", vmi0, vmi1, vmj0, vmj1);
+    DEBUG(printf("vmi0 = %d, vmi1 = %d, vmj0 = %d, vmj1 = %d\n", vmi0, vmi1, vmj0, vmj1));
 
-    int bord = 1;
-    
-    int vmi0b = vmi0 - bord;
-    int vmi1b = vmi1 + bord;
+    DEBUG(printf("vmi0b = %d, vmi1b = %d, vmj0b = %d, vmj1b = %d\n", vmi0b, vmi1b, vmj0b, vmj1b));
 
-    int vmj0b = vmj0 - bord;
-    int vmj1b = vmj1 + bord;
-
-    vuint8 ** tmp1 = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
-    vuint8 ** tmp2 = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b); 
-    vuint8 ** tmp3 = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);   
-
-    printf("vmi0b = %d, vmi1b = %d, vmj0b = %d, vmj1b = %d\n", vmi0b, vmi1b, vmj0b, vmj1b);
-
-    // TEST SUR LA TAILLE DES MATRICES
-    // il faut au 4 colonnes SIMD
+    // CONDITION SUR LA TAILLE DES MATRICES
+    // il faut au moins 4 colonnes SIMD et 6 lignes
     // width >= 16 * 4 = 64
     // height >= 6
 

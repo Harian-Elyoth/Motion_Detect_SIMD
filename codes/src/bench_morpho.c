@@ -28,7 +28,6 @@ void bench_erosion_3(){
     BENCH(printf("temps (ms) \t    = %0.6f", time * 1000)); BENCH(puts(""));
     BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles/(WIDTH  * HEIGHT ))); BENCH(puts(""));
     BENCH(printf("debit (pixel/sec)   = %0.2f", debit)); BENCH(puts("")); BENCH(puts(""));
-
 }
 
 void bench_erosion_5(){
@@ -53,7 +52,6 @@ void bench_erosion_5(){
     BENCH(printf("temps (ms) \t    = %0.6f", time * 1000)); BENCH(puts(""));
     BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles/(WIDTH  * HEIGHT ))); BENCH(puts(""));
     BENCH(printf("debit (pixel/sec)   = %0.2f", debit)); BENCH(puts("")); BENCH(puts(""));
-
 }
 
 void bench_dilatation_3(){
@@ -303,7 +301,6 @@ void bench_morpho_5_opti(){
 
 void gen_img_bin_bench(int type, int kernel_size){
     
-
     if (kernel_size == 3)
     {
         b_bench = 1; 
@@ -316,7 +313,6 @@ void gen_img_bin_bench(int type, int kernel_size){
     // indices matrices
     mi0_bench = 0; mi1_bench = HEIGHT  - 1;
     mj0_bench = 0; mj1_bench = WIDTH   - 1;
-    
 	
 	// indices matrices avec bord
 	mi0b_bench = mi0_bench-b_bench; mi1b_bench = mi1_bench+b_bench;
@@ -343,7 +339,6 @@ void gen_img_bin_bench(int type, int kernel_size){
     // -- prologue -- //
     // -------------- //
 
-
     MLoadPGM_ui8matrix("../car3/car_3037.pgm", mi0b_bench, mi1b_bench, mj0b_bench, mj1b_bench, image);
 
     duplicate_border(mi0_bench, mi1_bench, mj0_bench, mj1_bench, b_bench, image);
@@ -361,7 +356,6 @@ void gen_img_bin_bench(int type, int kernel_size){
     MLoadPGM_ui8matrix("../car3/car_3038.pgm", mi0b_bench, mi1b_bench, mj0b_bench, mj1b_bench, image);
 
     duplicate_border(mi0_bench, mi1_bench, mj0_bench, mj1_bench, b_bench, image);
-    
 
 	// ----------------- //
     // -- traitements -- //
@@ -371,9 +365,6 @@ void gen_img_bin_bench(int type, int kernel_size){
 	SigmaDelta_step2(mi0b_bench, mi1b_bench, mj0b_bench, mj1b_bench, image, mean1, img_diff);
 	SigmaDelta_step3(mi0b_bench, mi1b_bench, mj0b_bench, mj1b_bench, std0, std1, img_diff);
 	SigmaDelta_step4(mi0b_bench, mi1b_bench, mj0b_bench, mj1b_bench, std1, img_diff, img_bin_bench);
-
-	// convert binary img to pgm img
-	//bin_to_pgm(mi0b_bench, mi1b_bench, mj0b_bench, mj1b_bench, img_bin_bench,"SD_out.pgm");
 
 	// ---------- //
     // -- free -- //
@@ -390,8 +381,7 @@ void gen_img_bin_bench(int type, int kernel_size){
 	free_ui8matrix(img_diff, mi0b_bench, mi1b_bench, mj0b_bench, mj1b_bench);
 }
 
-void main_bench_morpho(int argc, char *argv[])
-{
+void main_bench_morpho(int argc, char *argv[]){
     bench_erosion_3();
     bench_dilatation_3();
 
@@ -410,5 +400,4 @@ void main_bench_morpho(int argc, char *argv[])
     //bench_dilatation_5();
     bench_morpho_3_opti();
     bench_morpho_5_opti();
-
 }
