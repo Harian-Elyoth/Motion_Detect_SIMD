@@ -71,7 +71,7 @@ void erosion_3_SIMD_opti(vuint8 ** vX, vuint8 ** vY, int vmi0, int vmi1, int vmj
 
     int k = 3;
 
-    int r;
+    int r = vmi1 % k;
 
     int bord = 1;
     
@@ -80,7 +80,6 @@ void erosion_3_SIMD_opti(vuint8 ** vX, vuint8 ** vY, int vmi0, int vmi1, int vmj
 
     int vmj0b = vmj0 - bord;
     int vmj1b = vmj1 + bord;
-
 
     for(j = vmj0 ; j <= vmj1 ; j++){
 
@@ -98,10 +97,7 @@ void erosion_3_SIMD_opti(vuint8 ** vX, vuint8 ** vY, int vmi0, int vmi1, int vmj
         bb2 = VEC_LOAD_2D_EPI8(i, j + 1, vX);
         bb2 = VEC_RIGHT1_EPI8(b1, bb2);
 
-        r = vmi1 % k;
-
         for(i = vmi0 ; i <= vmi1 - r - 1; i = i + k){
-
 
             c1 = VEC_LOAD_2D_EPI8(i + 1, j, vX);
             cc0 = VEC_LOAD_2D_EPI8(i + 1, j - 1, vX);
@@ -134,7 +130,6 @@ void erosion_3_SIMD_opti(vuint8 ** vX, vuint8 ** vY, int vmi0, int vmi1, int vmj
             bb0 = ee0; b1 = e1; bb2 = ee2;
 
         }
-
         switch(r) {
             case 1 :
                 c1 = VEC_LOAD_2D_EPI8(i + 1, j, vX);
@@ -149,16 +144,16 @@ void erosion_3_SIMD_opti(vuint8 ** vX, vuint8 ** vY, int vmi0, int vmi1, int vmj
 
             case 2 :
 
-                c1 = VEC_LOAD_2D_EPI8(i + 1, j, vX);
-                cc0 = VEC_LOAD_2D_EPI8(i + 1, j - 1, vX);
+                c1  = VEC_LOAD_2D_EPI8(i + 0, j, vX);
+                cc0 = VEC_LOAD_2D_EPI8(i + 0, j - 1, vX);
                 cc0 = VEC_LEFT1_EPI8(cc0, c1);
-                cc2 = VEC_LOAD_2D_EPI8(i + 1, j + 1, vX);
+                cc2 = VEC_LOAD_2D_EPI8(i + 0, j + 1, vX);
                 cc2 = VEC_RIGHT1_EPI8(c1, cc2);
 
-                d1 = VEC_LOAD_2D_EPI8(i + 2, j, vX);
-                dd0 = VEC_LOAD_2D_EPI8(i + 2, j - 1, vX);
+                d1  = VEC_LOAD_2D_EPI8(i + 1, j, vX);
+                dd0 = VEC_LOAD_2D_EPI8(i + 1, j - 1, vX);
                 dd0 = VEC_LEFT1_EPI8(dd0, d1);
-                dd2 = VEC_LOAD_2D_EPI8(i + 2, j + 1, vX);
+                dd2 = VEC_LOAD_2D_EPI8(i + 1, j + 1, vX);
                 dd2 = VEC_RIGHT1_EPI8(d1, dd2);
 
                 y0 = VEC_AND_9_EPI8(aa0, a1, aa2, bb0, b1, bb2, cc0, c1, cc2);
@@ -406,7 +401,7 @@ void erosion_5_SIMD_opti(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0
         }
         switch(r) {
             case 1 :
-                e2 = VEC_LOAD_2D_EPI8(i + 2, j, vX);
+                e2  = VEC_LOAD_2D_EPI8(i + 2, j, vX);
                 ee0 = VEC_LOAD_2D_EPI8(i + 2, j - 1, vX);
                 ee1 = VEC_LEFT1_EPI8(ee0, e2);
                 ee0 = VEC_LEFT2_EPI8(ee0, e2);
@@ -421,19 +416,19 @@ void erosion_5_SIMD_opti(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0
 
             case 2 :
 
-                e2 = VEC_LOAD_2D_EPI8(i + 2, j, vX);
-                ee0 = VEC_LOAD_2D_EPI8(i + 2, j - 1, vX);
+                e2  = VEC_LOAD_2D_EPI8(i + 1, j, vX);
+                ee0 = VEC_LOAD_2D_EPI8(i + 1, j - 1, vX);
                 ee1 = VEC_LEFT1_EPI8(ee0, e2);
                 ee0 = VEC_LEFT2_EPI8(ee0, e2);
-                ee4 = VEC_LOAD_2D_EPI8(i + 2, j + 1, vX);
+                ee4 = VEC_LOAD_2D_EPI8(i + 1, j + 1, vX);
                 ee3 = VEC_RIGHT1_EPI8(e2, ee4);
                 ee4 = VEC_RIGHT2_EPI8(e2, ee4);
 
-                f2 = VEC_LOAD_2D_EPI8(i + 3, j, vX);
-                ff0 = VEC_LOAD_2D_EPI8(i + 3, j - 1, vX);
+                f2  = VEC_LOAD_2D_EPI8(i + 2, j, vX);
+                ff0 = VEC_LOAD_2D_EPI8(i + 2, j - 1, vX);
                 ff1 = VEC_LEFT1_EPI8(ff0, f2);
                 ff0 = VEC_LEFT2_EPI8(ff0, f2);
-                ff4 = VEC_LOAD_2D_EPI8(i + 3, j + 1, vX);
+                ff4 = VEC_LOAD_2D_EPI8(i + 2, j + 1, vX);
                 ff3 = VEC_RIGHT1_EPI8(f2, ff4);
                 ff4 = VEC_RIGHT2_EPI8(f2, ff4);
 
@@ -446,27 +441,27 @@ void erosion_5_SIMD_opti(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0
             
             case 3 :
 
-                e2 = VEC_LOAD_2D_EPI8(i + 2, j, vX);
-                ee0 = VEC_LOAD_2D_EPI8(i + 2, j - 1, vX);
+                e2  = VEC_LOAD_2D_EPI8(i + 0, j, vX);
+                ee0 = VEC_LOAD_2D_EPI8(i + 0, j - 1, vX);
                 ee1 = VEC_LEFT1_EPI8(ee0, e2);
                 ee0 = VEC_LEFT2_EPI8(ee0, e2);
-                ee4 = VEC_LOAD_2D_EPI8(i + 2, j + 1, vX);
+                ee4 = VEC_LOAD_2D_EPI8(i + 0, j + 1, vX);
                 ee3 = VEC_RIGHT1_EPI8(e2, ee4);
                 ee4 = VEC_RIGHT2_EPI8(e2, ee4);
 
-                f2 = VEC_LOAD_2D_EPI8(i + 3, j, vX);
-                ff0 = VEC_LOAD_2D_EPI8(i + 3, j - 1, vX);
+                f2  = VEC_LOAD_2D_EPI8(i + 1, j, vX);
+                ff0 = VEC_LOAD_2D_EPI8(i + 1, j - 1, vX);
                 ff1 = VEC_LEFT1_EPI8(ff0, f2);
                 ff0 = VEC_LEFT2_EPI8(ff0, f2);
-                ff4 = VEC_LOAD_2D_EPI8(i + 3, j + 1, vX);
+                ff4 = VEC_LOAD_2D_EPI8(i + 1, j + 1, vX);
                 ff3 = VEC_RIGHT1_EPI8(f2, ff4);
                 ff4 = VEC_RIGHT2_EPI8(f2, ff4);
 
-                g2 = VEC_LOAD_2D_EPI8(i + 4, j, vX);
-                gg0 = VEC_LOAD_2D_EPI8(i + 4, j - 1, vX);
+                g2  = VEC_LOAD_2D_EPI8(i + 2, j, vX);
+                gg0 = VEC_LOAD_2D_EPI8(i + 2, j - 1, vX);
                 gg1 = VEC_LEFT1_EPI8(gg0, g2);
                 gg0 = VEC_LEFT2_EPI8(gg0, g2);
-                gg4 = VEC_LOAD_2D_EPI8(i + 4, j + 1, vX);
+                gg4 = VEC_LOAD_2D_EPI8(i + 2, j + 1, vX);
                 gg3 = VEC_RIGHT1_EPI8(g2, gg4);
                 gg4 = VEC_RIGHT2_EPI8(g2, gg4);
 
@@ -481,35 +476,35 @@ void erosion_5_SIMD_opti(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0
 
             case 4 :
 
-                e2 = VEC_LOAD_2D_EPI8(i + 2, j, vX);
-                ee0 = VEC_LOAD_2D_EPI8(i + 2, j - 1, vX);
+                e2  = VEC_LOAD_2D_EPI8(i - 1, j, vX);
+                ee0 = VEC_LOAD_2D_EPI8(i - 1, j - 1, vX);
                 ee1 = VEC_LEFT1_EPI8(ee0, e2);
                 ee0 = VEC_LEFT2_EPI8(ee0, e2);
-                ee4 = VEC_LOAD_2D_EPI8(i + 2, j + 1, vX);
+                ee4 = VEC_LOAD_2D_EPI8(i - 1, j + 1, vX);
                 ee3 = VEC_RIGHT1_EPI8(e2, ee4);
                 ee4 = VEC_RIGHT2_EPI8(e2, ee4);
 
-                f2 = VEC_LOAD_2D_EPI8(i + 3, j, vX);
-                ff0 = VEC_LOAD_2D_EPI8(i + 3, j - 1, vX);
+                f2  = VEC_LOAD_2D_EPI8(i + 0, j, vX);
+                ff0 = VEC_LOAD_2D_EPI8(i + 0, j - 1, vX);
                 ff1 = VEC_LEFT1_EPI8(ff0, f2);
                 ff0 = VEC_LEFT2_EPI8(ff0, f2);
-                ff4 = VEC_LOAD_2D_EPI8(i + 3, j + 1, vX);
+                ff4 = VEC_LOAD_2D_EPI8(i + 0, j + 1, vX);
                 ff3 = VEC_RIGHT1_EPI8(f2, ff4);
                 ff4 = VEC_RIGHT2_EPI8(f2, ff4);
 
-                g2 = VEC_LOAD_2D_EPI8(i + 4, j, vX);
-                gg0 = VEC_LOAD_2D_EPI8(i + 4, j - 1, vX);
+                g2  = VEC_LOAD_2D_EPI8(i + 1, j, vX);
+                gg0 = VEC_LOAD_2D_EPI8(i + 1, j - 1, vX);
                 gg1 = VEC_LEFT1_EPI8(gg0, g2);
                 gg0 = VEC_LEFT2_EPI8(gg0, g2);
-                gg4 = VEC_LOAD_2D_EPI8(i + 4, j + 1, vX);
+                gg4 = VEC_LOAD_2D_EPI8(i + 1, j + 1, vX);
                 gg3 = VEC_RIGHT1_EPI8(g2, gg4);
                 gg4 = VEC_RIGHT2_EPI8(g2, gg4);
             
-                h2 = VEC_LOAD_2D_EPI8(i + 5, j, vX);
-                hh0 = VEC_LOAD_2D_EPI8(i + 5, j - 1, vX);
+                h2  = VEC_LOAD_2D_EPI8(i + 2, j, vX);
+                hh0 = VEC_LOAD_2D_EPI8(i + 2, j - 1, vX);
                 hh1 = VEC_LEFT1_EPI8(hh0, h2);
                 hh0 = VEC_LEFT2_EPI8(hh0, h2);
-                hh4 = VEC_LOAD_2D_EPI8(i + 5, j + 1, vX);
+                hh4 = VEC_LOAD_2D_EPI8(i + 2, j + 1, vX);
                 hh3 = VEC_RIGHT1_EPI8(h2, hh4);
                 hh4 = VEC_RIGHT2_EPI8(h2, hh4);
 
@@ -677,16 +672,16 @@ void dilatation_3_SIMD_opti(vuint8 ** vX, vuint8 ** vY, int vmi0, int vmi1, int 
 
             case 2 :
 
-                c1 = VEC_LOAD_2D_EPI8(i + 1, j, vX);
-                cc0 = VEC_LOAD_2D_EPI8(i + 1, j - 1, vX);
+                c1  = VEC_LOAD_2D_EPI8(i + 0, j, vX);
+                cc0 = VEC_LOAD_2D_EPI8(i + 0, j - 1, vX);
                 cc0 = VEC_LEFT1_EPI8(cc0, c1);
-                cc2 = VEC_LOAD_2D_EPI8(i + 1, j + 1, vX);
+                cc2 = VEC_LOAD_2D_EPI8(i + 0, j + 1, vX);
                 cc2 = VEC_RIGHT1_EPI8(c1, cc2);
 
-                d1 = VEC_LOAD_2D_EPI8(i + 2, j, vX);
-                dd0 = VEC_LOAD_2D_EPI8(i + 2, j - 1, vX);
+                d1  = VEC_LOAD_2D_EPI8(i + 1, j, vX);
+                dd0 = VEC_LOAD_2D_EPI8(i + 1, j - 1, vX);
                 dd0 = VEC_LEFT1_EPI8(dd0, d1);
-                dd2 = VEC_LOAD_2D_EPI8(i + 2, j + 1, vX);
+                dd2 = VEC_LOAD_2D_EPI8(i + 1, j + 1, vX);
                 dd2 = VEC_RIGHT1_EPI8(d1, dd2);
 
                 y0 = VEC_OR_9_EPI8(aa0, a1, aa2, bb0, b1, bb2, cc0, c1, cc2);
@@ -946,19 +941,19 @@ void dilatation_5_SIMD_opti(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int v
 
             case 2 :
 
-                e2 = VEC_LOAD_2D_EPI8(i + 2, j, vX);
-                ee0 = VEC_LOAD_2D_EPI8(i + 2, j - 1, vX);
+                e2  = VEC_LOAD_2D_EPI8(i + 1, j, vX);
+                ee0 = VEC_LOAD_2D_EPI8(i + 1, j - 1, vX);
                 ee1 = VEC_LEFT1_EPI8(ee0, e2);
                 ee0 = VEC_LEFT2_EPI8(ee0, e2);
-                ee4 = VEC_LOAD_2D_EPI8(i + 2, j + 1, vX);
+                ee4 = VEC_LOAD_2D_EPI8(i + 1, j + 1, vX);
                 ee3 = VEC_RIGHT1_EPI8(e2, ee4);
                 ee4 = VEC_RIGHT2_EPI8(e2, ee4);
 
-                f2 = VEC_LOAD_2D_EPI8(i + 3, j, vX);
-                ff0 = VEC_LOAD_2D_EPI8(i + 3, j - 1, vX);
+                f2  = VEC_LOAD_2D_EPI8(i + 2, j, vX);
+                ff0 = VEC_LOAD_2D_EPI8(i + 2, j - 1, vX);
                 ff1 = VEC_LEFT1_EPI8(ff0, f2);
                 ff0 = VEC_LEFT2_EPI8(ff0, f2);
-                ff4 = VEC_LOAD_2D_EPI8(i + 3, j + 1, vX);
+                ff4 = VEC_LOAD_2D_EPI8(i + 2, j + 1, vX);
                 ff3 = VEC_RIGHT1_EPI8(f2, ff4);
                 ff4 = VEC_RIGHT2_EPI8(f2, ff4);
 
@@ -971,27 +966,27 @@ void dilatation_5_SIMD_opti(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int v
             
             case 3 :
 
-                e2 = VEC_LOAD_2D_EPI8(i + 2, j, vX);
-                ee0 = VEC_LOAD_2D_EPI8(i + 2, j - 1, vX);
+                e2  = VEC_LOAD_2D_EPI8(i + 0, j, vX);
+                ee0 = VEC_LOAD_2D_EPI8(i + 0, j - 1, vX);
                 ee1 = VEC_LEFT1_EPI8(ee0, e2);
                 ee0 = VEC_LEFT2_EPI8(ee0, e2);
-                ee4 = VEC_LOAD_2D_EPI8(i + 2, j + 1, vX);
+                ee4 = VEC_LOAD_2D_EPI8(i + 0, j + 1, vX);
                 ee3 = VEC_RIGHT1_EPI8(e2, ee4);
                 ee4 = VEC_RIGHT2_EPI8(e2, ee4);
 
-                f2 = VEC_LOAD_2D_EPI8(i + 3, j, vX);
-                ff0 = VEC_LOAD_2D_EPI8(i + 3, j - 1, vX);
+                f2  = VEC_LOAD_2D_EPI8(i + 1, j, vX);
+                ff0 = VEC_LOAD_2D_EPI8(i + 1, j - 1, vX);
                 ff1 = VEC_LEFT1_EPI8(ff0, f2);
                 ff0 = VEC_LEFT2_EPI8(ff0, f2);
-                ff4 = VEC_LOAD_2D_EPI8(i + 3, j + 1, vX);
+                ff4 = VEC_LOAD_2D_EPI8(i + 1, j + 1, vX);
                 ff3 = VEC_RIGHT1_EPI8(f2, ff4);
                 ff4 = VEC_RIGHT2_EPI8(f2, ff4);
 
-                g2 = VEC_LOAD_2D_EPI8(i + 4, j, vX);
-                gg0 = VEC_LOAD_2D_EPI8(i + 4, j - 1, vX);
+                g2  = VEC_LOAD_2D_EPI8(i + 2, j, vX);
+                gg0 = VEC_LOAD_2D_EPI8(i + 2, j - 1, vX);
                 gg1 = VEC_LEFT1_EPI8(gg0, g2);
                 gg0 = VEC_LEFT2_EPI8(gg0, g2);
-                gg4 = VEC_LOAD_2D_EPI8(i + 4, j + 1, vX);
+                gg4 = VEC_LOAD_2D_EPI8(i + 2, j + 1, vX);
                 gg3 = VEC_RIGHT1_EPI8(g2, gg4);
                 gg4 = VEC_RIGHT2_EPI8(g2, gg4);
 
@@ -1006,35 +1001,35 @@ void dilatation_5_SIMD_opti(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int v
 
             case 4 :
 
-                e2 = VEC_LOAD_2D_EPI8(i + 2, j, vX);
-                ee0 = VEC_LOAD_2D_EPI8(i + 2, j - 1, vX);
+                e2  = VEC_LOAD_2D_EPI8(i - 1, j, vX);
+                ee0 = VEC_LOAD_2D_EPI8(i - 1, j - 1, vX);
                 ee1 = VEC_LEFT1_EPI8(ee0, e2);
                 ee0 = VEC_LEFT2_EPI8(ee0, e2);
-                ee4 = VEC_LOAD_2D_EPI8(i + 2, j + 1, vX);
+                ee4 = VEC_LOAD_2D_EPI8(i - 1, j + 1, vX);
                 ee3 = VEC_RIGHT1_EPI8(e2, ee4);
                 ee4 = VEC_RIGHT2_EPI8(e2, ee4);
 
-                f2 = VEC_LOAD_2D_EPI8(i + 3, j, vX);
-                ff0 = VEC_LOAD_2D_EPI8(i + 3, j - 1, vX);
+                f2  = VEC_LOAD_2D_EPI8(i + 0, j, vX);
+                ff0 = VEC_LOAD_2D_EPI8(i + 0, j - 1, vX);
                 ff1 = VEC_LEFT1_EPI8(ff0, f2);
                 ff0 = VEC_LEFT2_EPI8(ff0, f2);
-                ff4 = VEC_LOAD_2D_EPI8(i + 3, j + 1, vX);
+                ff4 = VEC_LOAD_2D_EPI8(i + 0, j + 1, vX);
                 ff3 = VEC_RIGHT1_EPI8(f2, ff4);
                 ff4 = VEC_RIGHT2_EPI8(f2, ff4);
 
-                g2 = VEC_LOAD_2D_EPI8(i + 4, j, vX);
-                gg0 = VEC_LOAD_2D_EPI8(i + 4, j - 1, vX);
+                g2  = VEC_LOAD_2D_EPI8(i + 1, j, vX);
+                gg0 = VEC_LOAD_2D_EPI8(i + 1, j - 1, vX);
                 gg1 = VEC_LEFT1_EPI8(gg0, g2);
                 gg0 = VEC_LEFT2_EPI8(gg0, g2);
-                gg4 = VEC_LOAD_2D_EPI8(i + 4, j + 1, vX);
+                gg4 = VEC_LOAD_2D_EPI8(i + 1, j + 1, vX);
                 gg3 = VEC_RIGHT1_EPI8(g2, gg4);
                 gg4 = VEC_RIGHT2_EPI8(g2, gg4);
             
-                h2 = VEC_LOAD_2D_EPI8(i + 5, j, vX);
-                hh0 = VEC_LOAD_2D_EPI8(i + 5, j - 1, vX);
+                h2  = VEC_LOAD_2D_EPI8(i + 2, j, vX);
+                hh0 = VEC_LOAD_2D_EPI8(i + 2, j - 1, vX);
                 hh1 = VEC_LEFT1_EPI8(hh0, h2);
                 hh0 = VEC_LEFT2_EPI8(hh0, h2);
-                hh4 = VEC_LOAD_2D_EPI8(i + 5, j + 1, vX);
+                hh4 = VEC_LOAD_2D_EPI8(i + 2, j + 1, vX);
                 hh3 = VEC_RIGHT1_EPI8(h2, hh4);
                 hh4 = VEC_RIGHT2_EPI8(h2, hh4);
 
@@ -1059,21 +1054,24 @@ void dilatation_5_SIMD_opti(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int v
 
 void morpho_3_SIMD(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0, int vmj1) {
     
-    int bord = 1;
+    int bord = 2;
     
     int vmi0b = vmi0 - bord;
     int vmi1b = vmi1 + bord;
 
-    int vmj0b = vmj0 - bord;
-    int vmj1b = vmj1 + bord;
+    int vmj0b = vmj0 - 1;
+    int vmj1b = vmj1 + 1;
 
     vuint8 ** tmp1 = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
     vuint8 ** tmp2 = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);  
 
     erosion_3_SIMD(vX, tmp1, vmi0, vmi1, vmj0, vmj1);
-    dilatation_3_SIMD(tmp1, tmp2, vmi0, vmi1, vmj0, vmj1);
-    dilatation_3_SIMD(tmp2, tmp1, vmi0, vmi1, vmj0, vmj1);
-    erosion_3_SIMD(tmp1, vY, vmi0, vmi1, vmj0, vmj1);
+    // dilatation_3_SIMD(tmp1, tmp2, vmi0, vmi1, vmj0, vmj1);
+    // dilatation_3_SIMD(tmp2, tmp1, vmi0, vmi1, vmj0, vmj1);
+
+    dilatation_5_SIMD(tmp1, tmp2, vmi0, vmi1, vmj0, vmj1);
+
+    erosion_3_SIMD(tmp2, vY, vmi0, vmi1, vmj0, vmj1);
 }
 
 void morpho_3_SIMD_opti(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0, int vmj1) {
@@ -1134,8 +1132,6 @@ void morpho_5_SIMD_opti(vuint8 **vX, vuint8 **vY, int vmi0, int vmi1, int vmj0, 
 void morpho_3_SIMD_pipeline(vuint8 **vX, vuint8 **tmp1, vuint8 **tmp2, vuint8 **tmp3, vuint8 ** vY, int vmi0, int vmi1, int vmj0, int vmj1){
 
     DEBUG(printf("vmi0 = %d, vmi1 = %d, vmj0 = %d, vmj1 = %d\n", vmi0, vmi1, vmj0, vmj1));
-
-    DEBUG(printf("vmi0b = %d, vmi1b = %d, vmj0b = %d, vmj1b = %d\n", vmi0b, vmi1b, vmj0b, vmj1b));
 
     // CONDITION SUR LA TAILLE DES MATRICES
     // il faut au moins 4 colonnes SIMD et 6 lignes
@@ -1282,9 +1278,9 @@ void morpho_3_SIMD_pipeline(vuint8 **vX, vuint8 **tmp1, vuint8 **tmp2, vuint8 **
             // ligne 7, autour de la colonne 3
             ii9  = VEC_LOAD_2D_EPI8(i + 1, j - 1, vX);
             i10  = VEC_LOAD_2D_EPI8(i + 1, j - 0, vX);
-            ii9  = VEC_LEFT1_EPI8(hh9, h10);
+            ii9  = VEC_LEFT1_EPI8(ii9, i10);
             ii11 = VEC_LOAD_2D_EPI8(i + 1, j + 1, vX);
-            ii11 = VEC_RIGHT1_EPI8(h10, hh11);
+            ii11 = VEC_RIGHT1_EPI8(i10, ii11);
 
             // TRAITEMENT
 
@@ -1330,13 +1326,15 @@ void morpho_3_SIMD_pipeline(vuint8 **vX, vuint8 **tmp1, vuint8 **tmp2, vuint8 **
         // EPILOGUE BOUCLE EXTERNE
 
         // dilation sur les 2 derniere ligne de l'avant derniere colonnes de l'iteration courante
-        dilatation_3_SIMD(tmp3, tmp2, vmi1 - 2, vmi1, j - 1, j - 1);
+        dilatation_3_SIMD(tmp3, tmp2, vmi1 - 1, vmi1, j - 1, j - 1);
 
         // dilation sur la 4 dernières lignes de l'avant avant derniere colonne de l'iteration courante
-        dilatation_3_SIMD(tmp2, tmp1, vmi1 - 4, vmi1, j - 2, j - 2);
+        dilatation_3_SIMD(tmp2, tmp1, vmi1 - 3, vmi1, j - 2, j - 2);
+
+        // printf("\n\nvmi1 - 6 = %d, vmi1 = %d, j - 3 = %d, j - 3 = %d\n\n", vmi1 - 6, vmi1, j - 3, j - 3);
 
         // erosion sur la 6 dernières lignes de l'avant avant avant derniere colonne de l'iteration courante
-        erosion_3_SIMD(tmp1, vY, vmi1 - 6, vmi1, j - 3, j - 3);
+        erosion_3_SIMD(tmp1, vY, vmi1 - 5, vmi1, j - 3, j - 3);
     }
 
     // EPILOGUE GLOBAL
@@ -1349,6 +1347,230 @@ void morpho_3_SIMD_pipeline(vuint8 **vX, vuint8 **tmp1, vuint8 **tmp2, vuint8 **
 
     // erosion sur sur toutes les lignes des trois dernieres colonne
     erosion_3_SIMD(tmp1, vY, vmi0, vmi1, vmj1 - 2, vmj1);
+}
+
+void morpho_3_SIMD_pipeline_opti(vuint8 **vX, vuint8 **tmp1, vuint8 **tmp2, vuint8 ** vY, int vmi0, int vmi1, int vmj0, int vmj1){
+
+    DEBUG(printf("vmi0 = %d, vmi1 = %d, vmj0 = %d, vmj1 = %d\n", vmi0, vmi1, vmj0, vmj1));
+
+    // CONDITION SUR LA TAILLE DES MATRICES
+    // il faut au moins 4 colonnes SIMD et 6 lignes
+    // width >= 16 * 4 = 64
+    // height >= 6
+
+    int i, j;
+
+    // PROLOGUE GLOBAL
+
+    printf("1\n");
+
+    // 1ere erosion sur les 2 premiere colonnes et toutes les lignes
+    erosion_3_SIMD_opti(vX, tmp2, vmi0, vmi1, vmj0, vmj0 + 1);
+
+    // dilation 5 sur la 1ere colonnes et toutes les lignes
+    dilatation_5_SIMD_opti(tmp2, tmp1, vmi0, vmi1, vmj0, vmj0);
+
+    printf("2\n");
+
+    // aa, bb : non alignés
+    // a, b   : alignés
+
+    // colonne 0
+    vuint8 aa0, a1, aa2; 
+    vuint8 bb0, b1, bb2;
+    vuint8 cc0, c1, cc2; 
+
+    // colonne 1
+    vuint8 bb3, bb4, b5, bb6, bb7;
+    vuint8 cc3, cc4, c5, cc6, cc7;  
+    vuint8 dd3, dd4, d5, dd6, dd7;
+    vuint8 ee3, ee4, e5, ee6, ee7;
+    vuint8 ff3, ff4, f5, ff6, ff7;
+
+    // colonne 2
+    vuint8 ff8, f9, ff10;
+    vuint8 gg8, g9, gg10;
+    vuint8 hh8, h9, hh10;
+
+    // vecteur de sorties
+    vuint8 y0, y1, y2;
+
+    // on commence a j egale 3 (ie : la 4e colonne)
+    for (j = vmj0 + 2; j <= vmj1; ++j){   
+
+        printf("j = %d\n", j);
+
+        // on commence a i = 5 (ie : la 6e ligne)
+        i = vmi0 + 5;
+
+        // PROLOGUE BOUCLE EXTERNE
+
+        // 1ere erosion sur la 3e colonne et les 5 premières lignes
+        erosion_3_SIMD_opti(vX, tmp2, vmi0, i - 1, j, j);
+
+        // dilation sur la 2e colonnes et les 2 premieres lignes
+        dilatation_5_SIMD_opti(tmp2, tmp1, vmi0, i - 4, j - 1, j - 1);
+
+        // on considère i et j pour la ligne jaune (3e colonne, 5e ligne)
+
+        // EROSION 3 - 2 ligne rouge
+        // ligne de bord, autour de la colonne 0
+        aa0 = VEC_LOAD_2D_EPI8(i - 6, j - 3, tmp1);
+        a1  = VEC_LOAD_2D_EPI8(i - 6, j - 2, tmp1);
+        aa0 = VEC_LEFT1_EPI8(aa0, a1);
+        aa2 = VEC_LOAD_2D_EPI8(i - 6, j - 1, tmp1);
+        aa2 = VEC_RIGHT1_EPI8(a1, aa2);
+
+        // ligne 0, autour de la colonne 0
+        bb0 = VEC_LOAD_2D_EPI8(i - 5, j - 3, tmp1);
+        b1  = VEC_LOAD_2D_EPI8(i - 5, j - 2, tmp1);
+        bb0 = VEC_LEFT1_EPI8(bb0, b1);
+        bb2 = VEC_LOAD_2D_EPI8(i - 5, j - 1, tmp1);
+        bb2 = VEC_RIGHT1_EPI8(b1, bb2);
+
+        // DILATAION 5 ligne cyan
+        // ligne 0 autour de la colonne 1
+        bb3 = VEC_LOAD_2D_EPI8(i - 5, j - 2, tmp2);
+        b5  = VEC_LOAD_2D_EPI8(i - 5, j - 1, tmp2);
+        bb4 = VEC_LEFT1_EPI8(bb3, b5);
+        bb3 = VEC_LEFT2_EPI8(bb3, b5);
+        bb7 = VEC_LOAD_2D_EPI8(i - 5, j - 0, tmp2);
+        bb6 = VEC_RIGHT1_EPI8(b5, bb7);
+        bb7 = VEC_RIGHT2_EPI8(b5, bb7);
+
+        // ligne 1 autour de colonne 1
+        cc3 = VEC_LOAD_2D_EPI8(i - 4, j - 2, tmp2);
+        c5  = VEC_LOAD_2D_EPI8(i - 4, j - 1, tmp2);
+        cc4 = VEC_LEFT1_EPI8(cc3, c5);
+        cc3 = VEC_LEFT2_EPI8(cc3, c5);
+        cc7 = VEC_LOAD_2D_EPI8(i - 4, j - 0, tmp2);
+        cc6 = VEC_RIGHT1_EPI8(c5, cc7);
+        cc7 = VEC_RIGHT2_EPI8(c5, cc7);
+
+        // ligne 2 autour de la colonne 1
+        dd3 = VEC_LOAD_2D_EPI8(i - 3, j - 2, tmp2);
+        d5  = VEC_LOAD_2D_EPI8(i - 3, j - 1, tmp2);
+        dd4 = VEC_LEFT1_EPI8(dd3, d5);
+        dd3 = VEC_LEFT2_EPI8(dd3, d5);
+        dd7 = VEC_LOAD_2D_EPI8(i - 3, j - 0, tmp2);
+        dd6 = VEC_RIGHT1_EPI8(d5, dd7);
+        dd7 = VEC_RIGHT2_EPI8(d5, dd7);
+
+        // ligne 3 autour de la colonne 1
+        ee3 = VEC_LOAD_2D_EPI8(i - 2, j - 2, tmp2);
+        e5  = VEC_LOAD_2D_EPI8(i - 2, j - 1, tmp2);
+        ee4 = VEC_LEFT1_EPI8(ee3, e5);
+        ee3 = VEC_LEFT2_EPI8(ee3, e5);
+        ee7 = VEC_LOAD_2D_EPI8(i - 2, j - 0, tmp2);
+        ee6 = VEC_RIGHT1_EPI8(e5, ee7);
+        ee7 = VEC_RIGHT2_EPI8(e5, ee7);
+
+        // EROSION 3 - 1 ligne jaune
+        // ligne 4, autour de la colonne 2
+        ff8  = VEC_LOAD_2D_EPI8(i - 1, j - 1, vX);
+        f9   = VEC_LOAD_2D_EPI8(i - 1, j - 0, vX);
+        ff8  = VEC_LEFT1_EPI8(ff8, f9);
+        ff10 = VEC_LOAD_2D_EPI8(i - 1, j + 1, vX);
+        ff10 = VEC_RIGHT1_EPI8(f9, ff10);
+
+        // ligne 5, autour de la colonne 2
+        gg8  = VEC_LOAD_2D_EPI8(i - 0, j - 1, vX);
+        g9   = VEC_LOAD_2D_EPI8(i - 0, j - 0, vX);
+        gg8  = VEC_LEFT1_EPI8(gg8, g9);
+        gg10 = VEC_LOAD_2D_EPI8(i - 0, j + 1, vX);
+        gg10 = VEC_RIGHT1_EPI8(g9, gg10);
+
+        for (i = vmi0 + 5; i <= vmi1; ++i)
+        {
+
+            printf("i = %d\n", i);
+
+            // EROSION 3 - 2
+            // ligne 1, autour de la colonne 0
+            cc0 = VEC_LOAD_2D_EPI8(i - 4, j - 3, tmp1);
+            c1  = VEC_LOAD_2D_EPI8(i - 4, j - 2, tmp1);
+            cc0 = VEC_LEFT1_EPI8(cc0, c1);
+            cc2 = VEC_LOAD_2D_EPI8(i - 4, j - 1, tmp1);
+            cc2 = VEC_RIGHT1_EPI8(c1, cc2);
+
+            // DILATAION 5
+            // ligne 4 autour de la colonne 1
+            ff3 = VEC_LOAD_2D_EPI8(i - 1, j - 2, tmp2);
+            f5  = VEC_LOAD_2D_EPI8(i - 1, j - 1, tmp2);
+            ff4 = VEC_LEFT1_EPI8(ff3, f5);
+            ff3 = VEC_LEFT2_EPI8(ff3, f5);
+            ff7 = VEC_LOAD_2D_EPI8(i - 1, j - 0, tmp2);
+            ff6 = VEC_RIGHT1_EPI8(f5, ff7);
+            ff7 = VEC_RIGHT2_EPI8(f5, ff7);
+
+            // EROSION 3 - 1
+            // ligne 6, autour de la colonne 3
+            hh8  = VEC_LOAD_2D_EPI8(i + 1, j - 1, vX);
+            h9   = VEC_LOAD_2D_EPI8(i + 1, j - 0, vX);
+            hh8  = VEC_LEFT1_EPI8(hh8, h9);
+            hh10 = VEC_LOAD_2D_EPI8(i + 1, j + 1, vX);
+            hh10 = VEC_RIGHT1_EPI8(h9, hh10);
+
+            // TRAITEMENT
+
+            // 1ere erosion 3 : ligne jaune : ligne 5, colonne 2
+            y0 = VEC_AND_9_EPI8(ff8, f9, ff10, gg8, g9, gg10, hh8, h9, hh10);
+            VEC_STORE_2D_EPI8(y0, i, j, tmp2);
+      
+            // dilatation 5 : ligne cyan : ligne 2, colonne 1
+            y1 = VEC_OR_25_EPI8(bb3, bb4, b5, bb6, bb7, cc3, cc4, c5, cc6, cc7, dd3, dd4, d5, dd6, dd7, ee3, ee4, e5, ee6, ee7, ff3, ff4, f5, ff6, ff7);
+            VEC_STORE_2D_EPI8(y1, i - 3, j - 1, tmp1);
+
+            // 2e erosion 3 : ligne rouge : ligne 0, colonne 0
+            y2 = VEC_AND_9_EPI8(aa0, a1, aa2, bb0, b1, bb2, cc0, c1, cc2);
+            VEC_STORE_2D_EPI8(y2, i - 5, j - 2, vY);
+
+            // ROTATION DE REGISTRE  
+
+            // colonne 0   
+            aa0 = bb0 ; bb0 = cc0 ;
+            a1  = b1  ; b1  = c1  ;
+            aa2 = bb2 ; bb2 = cc2 ;
+
+            // colonne 1
+            bb3 = cc3 ; cc3 = dd3 ; dd3 = ee3 ; ee3 = ff3 ;
+            bb4 = cc4 ; cc4 = dd4 ; dd4 = ee4 ; ee4 = ff4 ;
+            b5  = c5  ; c5  = d5  ; d5  = e5  ; e5  = f5  ;
+            bb6 = cc6 ; cc6 = dd6 ; dd6 = ee6 ; ee6 = ff6 ;
+            bb7 = cc7 ; cc7 = dd7 ; dd7 = ee7 ; ee7 = ff7 ;
+
+            // colonne 2
+            ff8  = gg8  ; gg8  = hh8  ;
+            f9   = g9   ; g9   = h9   ;
+            ff10 = gg10 ; gg10 = hh10 ;
+        }
+
+        // EPILOGUE BOUCLE EXTERNE
+
+        printf("3\n");
+
+        // dilataion 5 sur les 2 dernieres ligne de la 2 colonnes
+        dilatation_5_SIMD_opti(tmp2, tmp1, vmi1 - 1, vmi1, j - 1, j - 1);
+
+        printf("\n\nvmi1 - 3 = %d, vmi1 = %d, j - 2 = %d, j - 2 = %d\n\n", vmi1 - 3, vmi1, j - 2, j - 2);
+
+        printf("4\n");
+
+        // erosion sur les 4 dernières lignes de l'avant avant derniere colonne de l'iteration courante
+        erosion_3_SIMD_opti(tmp1, vY, vmi1 - 3, vmi1, j - 2, j - 2);
+    }
+
+    // EPILOGUE GLOBAL
+
+    printf("5\n");
+
+    // dilatation 5 sur toutes les lignes de la derniere colonne
+    dilatation_5_SIMD_opti(tmp2, tmp1, vmi0, vmi1, vmj1, vmj1);
+
+    printf("6\n");
+
+    // erosion sur sur toutes les lignes des 2 dernieres colonnes
+    erosion_3_SIMD_opti(tmp1, vY, vmi0, vmi1, vmj1 - 1, vmj1);
 }
 
 

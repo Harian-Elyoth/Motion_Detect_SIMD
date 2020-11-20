@@ -76,7 +76,7 @@ void test_morpho_3_SIMD(){
 	char * format = "%d ";
 
     DEBUG(display_vui8matrix(vimg_bin_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "image binaire : ")); DEBUG(puts(""));
-    //On recupère vimg_bin de mouvement et on applique une erosion_3 dessus
+    
     morpho_3_SIMD(vimg_bin_test, vimg_filtered_test , vmi0_test, vmi1_test, vmj0_test, vmj1_test);
 
     DEBUG(display_vui8matrix(vimg_filtered_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "image transformée : ")); DEBUG(puts(""));
@@ -216,6 +216,32 @@ void test_morpho_3_SIMD_pipeline(){
     DEBUG(display_vui8matrix(vimg_filtered_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "image transformée : ")); DEBUG(puts(""));
 }
 
+void test_morpho_3_SIMD_pipeline_opti(){
+
+    DEBUG(printf("\n===========================  TEST MORPHO 3 SIMD PIPELINE OPTI =================================\n"));
+
+    gen_vimg_bin_test_SIMD(1, 5);
+
+    char * format = "%d ";
+
+    int bord = 2;
+    
+    int vmi0b = vmi0_test - bord;
+    int vmi1b = vmi1_test + bord;
+
+    int vmj0b = vmj0_test - 1;
+    int vmj1b = vmj1_test + 1;
+
+    vuint8 ** tmp1 = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
+    vuint8 ** tmp2 = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);  
+
+    DEBUG(display_vui8matrix(vimg_bin_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "image binaire : ")); DEBUG(puts(""));
+
+    morpho_3_SIMD_pipeline_opti(vimg_bin_test, tmp1, tmp2, vimg_filtered_test , vmi0_test, vmi1_test, vmj0_test, vmj1_test);
+
+    DEBUG(display_vui8matrix(vimg_filtered_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "image transformée : ")); DEBUG(puts(""));
+}
+
 void gen_vimg_bin_test_SIMD(int type, int kernel_size){
     
     int seuil;
@@ -286,6 +312,7 @@ void main_test_morpho_SIMD(int argc, char *argv[])
     //test_dilatation_5_SIMD();
     // test_morpho_3_SIMD_opti();
     // test_morpho_5_SIMD_opti();
-    test_morpho_3_SIMD();
-    test_morpho_3_SIMD_pipeline();
+    // test_morpho_3_SIMD();
+    // test_morpho_3_SIMD_pipeline();
+    test_morpho_3_SIMD_pipeline_opti();
 }
