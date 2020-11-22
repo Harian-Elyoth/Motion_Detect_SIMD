@@ -45,8 +45,8 @@ void SigmaDelta_step2_simd_opti(int vmi0, int vmi1, int vmj0, int vmj1, vuint8**
 void SigmaDelta_step3_simd(int vmi0, int vmi1, int vmj0, int vmj1, vuint8** std0, vuint8** std1, vuint8** img_diff);
 void SigmaDelta_step3_simd_opti(int vmi0, int vmi1, int vmj0, int vmj1, vuint8** std0, vuint8** std1, vuint8** img_diff);
 
-void SigmaDelta_step4_simd(int vmi0b, int vmi1b, int vmj0b, int vmj1b, vuint8** std1, vuint8** img_diff, vuint8** img_bin);
-void SigmaDelta_step4_simd_opti(int vmi0b, int vmi1b, int vmj0b, int vmj1b, vuint8** std1, vuint8** img_diff, vuint8** img_bin);
+void SigmaDelta_step4_simd(int vmi0, int vmi1, int vmj0, int vmj1, vuint8** std1, vuint8** img_diff, vuint8** img_bin);
+void SigmaDelta_step4_simd_opti(int vmi0, int vmi1, int vmj0, int vmj1, vuint8** std1, vuint8** img_diff, vuint8** img_bin);
 
 void SigmaDelta_simd_full(int vmi0b, int vmi1b, int vmj0b, int vmj1b,  vuint8** image, vuint8** mean0, vuint8** std0, vuint8** img_bin);
 void SigmaDelta_simd_full_opti(int vmi0b, int vmi1b, int vmj0b, int vmj1b,  vuint8** image, vuint8** mean0, vuint8** std0, vuint8** img_bin);

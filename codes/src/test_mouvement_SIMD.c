@@ -163,15 +163,31 @@ void test_mouvement_SIMD_unit(){
     }
     printf("\nStep 3 : \033[32mOK\033[00m\n");
 
-	// SigmaDelta_step4_simd( vmi0b, vmi1b, vmj0b, vmj1b, std1, img_diff, img_bin);
+    DEBUG(display_vui8matrix(std1, vmi0, vmi1, vmj0, vmj1, format, "\nstd1 :\n"));
+
+	SigmaDelta_step4_simd_opti(vmi0, vmi1, vmj0, vmj1, std1, img_diff, img_bin);
+
+	vuint8** img_bin_correct		= vui8matrix(vmi0, vmi1, vmj0, vmj1);
+	img_bin_correct[0][0]    		= init_vuint8_all(0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1); 
+	img_bin_correct[1][0]    		= init_vuint8_all(1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1); 
+    img_bin_correct[2][0]    		= init_vuint8_all(1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+    img_bin_correct[3][0]    		= init_vuint8_all(1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+
+    for (int i = vmi0; i <= vmi1; ++i)
+    {
+    	for (int j = vmj0; j <= vmj1; ++j)
+    	{
+    		for (int k = 0; k < card; ++k)
+    		{
+    			assert(img_bin[i][j][k] == img_bin_correct[i][j][k]);
+    		}
+    	}
+    }
+    printf("\nStep 4 : \033[32mOK\033[00m\n");
 	
-	// DEBUG(display_vui8matrix(image, vmi0b, vmi1b, vmj0b, vmj1b, "%03d ", "image : ")); DEBUG(puts(""));
-	// DEBUG(display_vui8matrix(mean0, vmi0b, vmi1b, vmj0b, vmj1b, "%03d ", "mean0 : ")); DEBUG(puts(""));
+    DEBUG(display_vui8matrix(img_bin, vmi0, vmi1, vmj0, vmj1, format, "\nimg_bin :\n"));
 
 	// SigmaDelta_step1_simd_opti(vmi0b, vmi1b, vmj0b, vmj1b, mean0, mean1, image);
-
-	// DEBUG(display_vui8matrix(mean1, vmi0b, vmi1b, vmj0b, vmj1b, "%03d ", "mean1 : ")); DEBUG(puts(""));
-
 	// SigmaDelta_step2_simd_opti(vmi0b, vmi1b, vmj0b, vmj1b, image, mean1, img_diff);
 	// SigmaDelta_step3_simd_opti(vmi0b, vmi1b, vmj0b, vmj1b, std0, std1, img_diff);
 	// SigmaDelta_step4_simd_opti( vmi0b, vmi1b, vmj0b, vmj1b, std1, img_diff, img_bin);
