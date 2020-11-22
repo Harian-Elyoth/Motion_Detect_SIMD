@@ -109,7 +109,7 @@ void bench_mouvement_morpho_SIMD_car(bool is_visual){
 	if (is_visual)
     {
     	// gen img visuel
-		gen_pgm_img_simd();
+		// gen_pgm_img_simd();
 
 		MLoadPGM_ui8matrix("pgm_imgs/my_pgm1.pgm", mi0b, mi1b, mj0b, mj1b, img_temp);
 

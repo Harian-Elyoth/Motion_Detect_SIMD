@@ -106,7 +106,7 @@ void bench_mouvement_SIMD_car(bool is_visual){
 	if (is_visual)
     {
     	// gen img visuel
-		gen_pgm_img_simd();
+		// gen_pgm_img_simd();
 
 		MLoadPGM_ui8matrix("pgm_imgs/my_pgm1.pgm", mi0b, mi1b, mj0b, mj1b, img_temp);
 
@@ -700,7 +700,7 @@ void main_bench_mouvement_SIMD(int argc, char *argv[]){
 	// bench_mouvement_SIMD_car(true);
 
 	// benchmark unitaire sur image du set
-	bench_mouvement_SIMD_car(false);
+	// bench_mouvement_SIMD_car(false);
 
 	// benchmark global sur tout le dataset
 	// bench_mouvement_SIMD_dataset();

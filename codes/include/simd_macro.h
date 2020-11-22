@@ -35,9 +35,9 @@
 #define VEC_AVERAGE3_PS(x0,x1,x2) VEC_DIV3(VEC_ADD3(x0, x1, x2))
 #define VEC_AVERAGE5_PS(x0,x1,x2,x3,x4) VEC_DIV5(VEC_ADD5(x0, x1, x2, x3, x4))
 
-// ------------------ //
-// --- MACRO EPI8 --- //
-// ------------------ //
+// ----------------- //
+// --- MACRO EPI --- //
+// ----------------- //
 
 // MEMORY
 #define VEC_LOAD_2D_EPI8(i, j, X) _mm_load_si128((vuint8 *) &X[i][j])
@@ -52,24 +52,94 @@
 #define SWITCH_8_EPI8(x)  _mm_shuffle_epi8(x, init_vuint8_all(8, 9, 10, 11, 12, 13, 14, 15, 0, 1, 2, 3, 4, 5, 6, 7)) // abcdefghijklmnop -> ijklmnopabcdefgh
 
 // VEC LEFT AND RIGHT
-#define VEC_LEFT1_EPI8(x1, x2) _mm_add_epi8(_mm_bslli_si128(x2, 1), _mm_bsrli_si128(x1, 15)) // x1 abcdefghijklmnop ; x2 qrstuvwxyz012345 -> pqrstuvwxyz01234
+#define VEC_LEFT1_EPI8(x1, x2)  _mm_add_epi8(_mm_bslli_si128(x2, 1),  _mm_bsrli_si128(x1, 15)) // x1 abcdefghijklmnop ; x2 qrstuvwxyz012345 -> pqrstuvwxyz01234
 #define VEC_RIGHT1_EPI8(x1, x2) _mm_add_epi8(_mm_bslli_si128(x2, 15), _mm_bsrli_si128(x1, 1)) // x1 abcdefghijklmnop ; x2 qrstuvwxyz012345 -> bcdefghijklmnopq
-#define VEC_LEFT2_EPI8(x1, x2) _mm_add_epi8(_mm_bslli_si128(x2, 2), _mm_bsrli_si128(x1, 14))
+#define VEC_LEFT2_EPI8(x1, x2)  _mm_add_epi8(_mm_bslli_si128(x2, 2),  _mm_bsrli_si128(x1, 14))
 #define VEC_RIGHT2_EPI8(x1, x2) _mm_add_epi8(_mm_bslli_si128(x2, 14), _mm_bsrli_si128(x1, 2))
 
-// COMPARE
+// CAST EPI8 EPI16
+#define EPI8_TO_EPI16(x, x1, x2) \
+		x1 = init_vuint16_all(_mm_extract_epi8(x, 0), _mm_extract_epi8(x, 1), _mm_extract_epi8(x, 2)  , _mm_extract_epi8(x, 3)  , _mm_extract_epi8(x, 4)  , _mm_extract_epi8(x, 5)  , _mm_extract_epi8(x, 6)  , _mm_extract_epi8(x, 7)); \
+		x2 = init_vuint16_all(_mm_extract_epi8(x, 8), _mm_extract_epi8(x, 9), _mm_extract_epi8(x, 10) , _mm_extract_epi8(x, 11) , _mm_extract_epi8(x, 12) , _mm_extract_epi8(x, 13) , _mm_extract_epi8(x, 14) , _mm_extract_epi8(x, 15)); \
+
+#define EPI16_TO_EPI8(x, x1, x2) \
+		x = init_vuint8_all( _mm_extract_epi16(x1, 0), _mm_extract_epi16(x1, 1), _mm_extract_epi16(x1, 2), _mm_extract_epi16(x1, 3),	\
+							 _mm_extract_epi16(x1, 4), _mm_extract_epi16(x1, 5), _mm_extract_epi16(x1, 6), _mm_extract_epi16(x1, 7),	\
+							 _mm_extract_epi16(x2, 0), _mm_extract_epi16(x2, 1), _mm_extract_epi16(x2, 2), _mm_extract_epi16(x2, 3),	\
+							 _mm_extract_epi16(x2, 4), _mm_extract_epi16(x2, 5), _mm_extract_epi16(x2, 6), _mm_extract_epi16(x2, 7));	\
+
+// COMPARE EPI8
 #define VEC_CMPEQ_EPI8(x, y) _mm_cmpeq_epi8(x, y) // if x = y => 255 else 0
 #define VEC_CMPGT_EPI8(x, y) _mm_cmpgt_epi8(x, y) // if x > y => 255 else 0
 #define VEC_CMPLT_EPI8(x, y) _mm_cmplt_epi8(x, y) // if x < y => 255 else 0
 
-// CALCULS BASES
-#define VEC_AND_EPI8(x, y) _mm_and_si128(x, y) 	// ET logique bit a bit
-#define VEC_ADD_EPI8(x, y) _mm_add_epi8(x, y)  	// Addition 8 bits 
-#define VEC_SUB_EPI8(x, y) _mm_sub_epi8(x, y)  	// Soustraction 8 bits 
+// COMPARE EPI8 UNSIGNED
+#define VEC_CMPGTU_EPI8(x, y, cmpgt) 			\
+		EPI8_TO_EPI16(x, x1_gt, x2_gt);			\
+		EPI8_TO_EPI16(y, y1_gt, y2_gt);			\
+		cmpgt1 = _mm_cmpgt_epi16(x1_gt, y1_gt);	\
+		cmpgt2 = _mm_cmpgt_epi16(x2_gt, y2_gt);	\
+		EPI16_TO_EPI8(cmpgt, cmpgt1, cmpgt2);	\
 
+#define VEC_CMPLTU_EPI8(x, y, cmplt) 			\
+		EPI8_TO_EPI16(x, x1_lt, x2_lt);			\
+		EPI8_TO_EPI16(y, y1_lt, y2_lt);			\
+		cmplt1 = _mm_cmplt_epi16(x1_lt, y1_lt);	\
+		cmplt2 = _mm_cmplt_epi16(x2_lt, y2_lt);	\
+		EPI16_TO_EPI8(cmplt, cmplt1, cmplt2);	\
+
+#define VEC_MINU_EPI8(x, y, min) 					\
+		EPI8_TO_EPI16(x, x1_min, x2_min);			\
+		EPI8_TO_EPI16(y, y1_min, y2_min);			\
+		min1 = _mm_min_epi16(x1_min, y1_min);		\
+		min2 = _mm_min_epi16(x2_min, y2_min);		\
+		EPI16_TO_EPI8(min, min1, min2);				\
+
+#define VEC_MAXU_EPI8(x, y, max) 					\
+		EPI8_TO_EPI16(x, x1_max, x2_max);			\
+		EPI8_TO_EPI16(y, y1_max, y2_max);			\
+		max1 = _mm_max_epi16(x1_max, y1_max);		\
+		max2 = _mm_max_epi16(x2_max, y2_max);		\
+		EPI16_TO_EPI8(max, max1, max2);				\
+
+// COMPARE EPI16
+#define VEC_CMPEQ_EPI16(x, y) _mm_cmpeq_epi16(x, y) // if x = y => 255 else 0
+#define VEC_CMPGT_EPI16(x, y) _mm_cmpgt_epi16(x, y) // if x > y => 255 else 0
+#define VEC_CMPLT_EPI16(x, y) _mm_cmplt_epi16(x, y) // if x < y => 255 else 0
+
+// CALCULS BASES
+#define VEC_AND_EPI8(x, y)  _mm_and_si128(x, y) 	// ET logique bit a bit
+#define VEC_ADDU_EPI8(x, y) _mm_add_epi8(x, y) 		// Addition non signé 8 bits 
+#define VEC_ADD_EPI8(x, y)  _mm_adds_epi8(x, y) 	// Addition signé 8 bits 
+#define VEC_SUBU_EPI8(x, y) _mm_sub_epi8(x, y)		// Soustraction non signé 8 bits
+#define VEC_SUB_EPI8(x, y)  _mm_subs_epi8(x, y)		// Soustraction signé 8 bits 
+
+#define VEC_MULU_EPI8(x, y, res)						\
+		EPI8_TO_EPI16(x, x1_mul, x2_mul);				\
+		EPI8_TO_EPI16(y, y1_mul, y2_mul);				\
+		mullo_1 = _mm_mullo_epi16(x1_mul, y1_mul);		\
+		mullo_2 = _mm_mullo_epi16(x2_mul, y2_mul);		\
+		cmpgt1_mul = _mm_cmpgt_epi16(mullo_1, full);	\
+		cmpgt2_mul = _mm_cmpgt_epi16(mullo_2, full);	\
+		cmpgt1_mul = _mm_or_si128(mullo_1, cmpgt1_mul); \
+		cmpgt2_mul = _mm_or_si128(mullo_2, cmpgt2_mul); \
+		res1 = _mm_and_si128(cmpgt1_mul, full); 		\
+		res2 = _mm_and_si128(cmpgt2_mul, full); 		\
+		EPI16_TO_EPI8(res, res1, res2);	 				\
+ 
 #define VEC_ABS_EPI8(x) _mm_abs_epi8(x)			// Valeur absolue
 #define VEC_MAX_EPI8(x, y) _mm_max_epi8(x, y) 	// Max 8 bits
 #define VEC_MIN_EPI8(x, y) _mm_min_epi8(x, y) 	// Min 8 bits
+
+// SOUSTRACTION + VALEUR ABSOLUE EPI8 UNISIGNED
+#define VEC_ABS_SUB_EPI8(x, y, z)					\
+		EPI8_TO_EPI16(x, x1_abs, x2_abs);			\
+		EPI8_TO_EPI16(y, y1_abs, y2_abs);			\
+		sub1_abs = _mm_subs_epi16(x1_abs, y1_abs);	\
+		sub2_abs = _mm_subs_epi16(x2_abs, y2_abs);	\
+		res1_abs = _mm_abs_epi16(sub1_abs);			\
+		res2_abs = _mm_abs_epi16(sub2_abs);			\
+		EPI16_TO_EPI8(z, res1_abs, res2_abs);		\
 
 // CALCULS SUR 9 VECTEURS
 #define VEC_AND_9_EPI8(x1, x2, x3, x4, x5, x6, x7, x8, x9) _mm_and_si128(x1, _mm_and_si128(x2, _mm_and_si128(x3, _mm_and_si128(x4, _mm_and_si128(x5, _mm_and_si128(x6, _mm_and_si128(x7, _mm_and_si128(x8, x9))))))))

@@ -65,20 +65,15 @@ void SigmaDelta_step1_opti(int mi0b, int mi1b, int mj0b, int mj1b, uint8** mean0
 	int k = 4; 
 	int r = mj1b % k;
 
-	DEBUG(printf("mj0b = %d\n", mj0b));
-	DEBUG(printf("mj1b = %d\n", mj1b));
-	DEBUG(printf("r = %d\n", r));
-	DEBUG(printf("mj1b - r = %d\n", mj1b - r));
+	// DEBUG(printf("mj0b = %d\n", mj0b));
+	// DEBUG(printf("mj1b = %d\n", mj1b));
+	// DEBUG(printf("r = %d\n", r));
+	// DEBUG(printf("mj1b - r = %d\n", mj1b - r));
 
 	for (int i = mi0b; i <= mi1b; ++i)
 	{
 		for (int j = mj0b; j < mj1b - r; j = j + k)
 		{
-			DEBUG(printf("j = %d\n", j));
-			DEBUG(printf("j+1 = %d\n", j+1));
-			DEBUG(printf("j+2 = %d\n", j+2));
-			DEBUG(printf("j+3 = %d\n", j+3));
-
 			int meanj0 = mean0[i][j];
 			if (meanj0 < image[i][j]){
 				mean1[i][j] = meanj0 + 1;
@@ -776,49 +771,43 @@ void SigmaDelta_full_opti(int mi0b, int mi1b, int mj0b, int mj1b,  uint8** image
 
 void gen_pgm_img(int mi0, int mi1, int mj0, int mj1, int b, uint8** mean0, uint8** std0, uint8** image){
    
+	DEBUG(printf("GEN IMG\n"));
+
    	// indices matrices avec bord
-	int mi0b = mi0-b; int mi1b = mi1+b;
-	int mj0b = mj0-b; int mj1b = mj1+b;
+	int mi0b = mi0 - b ; int mi1b = mi1 + b;
+	int mj0b = mj0 - b ; int mj1b = mj1 + b;	
 
-   	uint8 **image_t  = ui8matrix(mi0, mi1, mj0, mj1);
-   	uint8 **image_t2 = ui8matrix(mi0, mi1, mj0, mj1);
+   	uint8 **image_t  = ui8matrix(mi0b, mi1b, mj0b, mj1b);
 
-   	for (int i = mi0; i <= mi1; ++i)
+   	for (int i = mi0b ; i <= mi1b ; ++i)
    	{
-   		for (int j = mj0; j <= mj1; ++j)
+   		for (int j = mj0b ; j <= mj1b ; ++j)
    		{
-   			image_t [i][j]  = i + j + 11;
-   			image_t2[i][j]  = (i*j) + i + j + 11;
+   			image_t [i][j]  = i + j + 5;
+
+   			if (j % 2 == 0){
+   				image   [i][j]  = i + j + 3;
+   			}
+   			else{
+   				image   [i][j]  = i + j + 7;
+   			}
    		}
    	}
 
-   	BENCH(display_ui8matrix(image_t,  mi0, mi1, mj0, mj1, "%d ", "\nimage_t :\n"));
-   	BENCH(display_ui8matrix(image_t2, mi0, mi1, mj0, mj1, "%d ", "\nimage_t2 :\n"));
+   	DEBUG(display_ui8matrix(image_t, mi0, mi1, mj0, mj1, "%02d ", "\nimage_gen_1 :"));
+   	DEBUG(display_ui8matrix(image  , mi0, mi1, mj0, mj1, "%02d ", "\nimage_gen_2 :"));
 
-   	char *filename_pgm1 = "pgm_imgs/my_pgm1.pgm";
-   	char *filename_pgm2 = "pgm_imgs/my_pgm2.pgm";
-
-	// save result on pgm file
-	SavePGM_ui8matrix(image_t  , mi0, mi1, mj0, mj1, filename_pgm1);
-	SavePGM_ui8matrix(image_t2 , mi0, mi1, mj0, mj1, filename_pgm2);
-
-	// load pgm gen file on images
-	MLoadPGM_ui8matrix(filename_pgm1, mi0b, mi1b, mj0b, mj1b, image);
-
-	duplicate_border(mi0, mi1, mj0, mj1, b, image);
+	duplicate_border(mi0, mi1, mj0, mj1, b, image_t);
 
 	// initiate mean0 et std0 for first iteration
 	for (int i = mi0b; i <= mi1b; ++i)
 	{
 		for (int j = mj0b; j <= mj1b; ++j)
 		{
-			mean0[i][j] = image[i][j];
+			mean0[i][j] = image_t[i][j];
 			std0[i][j]  = VMIN;
 		}
 	}
-
-	// load pgm gen file on images
-	MLoadPGM_ui8matrix(filename_pgm2, mi0b, mi1b, mj0b, mj1b, image);
 
 	duplicate_border(mi0, mi1, mj0, mj1, b, image);
 }
