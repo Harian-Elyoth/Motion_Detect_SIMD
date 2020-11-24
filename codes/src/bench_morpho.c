@@ -120,7 +120,7 @@ void bench_morpho_3(){
     double debit;
     
     //On recupère img_bin_bench de mouvement et on applique une erosion_3 dessus
-    CHRONO(morpho_3(img_bin_bench, img_filtered_bench , mi0_bench, mi1_bench, mj0_bench, mj1_bench), cycles);
+    CHRONO(morpho_3(img_bin_bench, img_filtered_bench, tmp1, tmp2, mi0_bench, mi1_bench, mj0_bench, mj1_bench), cycles);
     
     time = (double)cycles/CLK_PROC;
     debit = (WIDTH  * HEIGHT ) / time;
@@ -144,7 +144,7 @@ void bench_morpho_5(){
     double time;
     double debit;
     
-    CHRONO(morpho_5(img_bin_bench, img_filtered_bench , mi0_bench, mi1_bench, mj0_bench, mj1_bench), cycles);
+    CHRONO(morpho_5(img_bin_bench, img_filtered_bench, tmp1, tmp2, mi0_bench, mi1_bench, mj0_bench, mj1_bench), cycles);
     
     time = (double)cycles/CLK_PROC;
     debit = (WIDTH  * HEIGHT ) / time;
@@ -266,7 +266,7 @@ void bench_morpho_3_opti(){
     double time;
     double debit;
     
-    CHRONO(morpho_3_opti(img_bin_bench, img_filtered_bench , mi0_bench, mi1_bench, mj0_bench, mj1_bench), cycles);
+    CHRONO(morpho_3_opti(img_bin_bench, img_filtered_bench, tmp1, tmp2, mi0_bench, mi1_bench, mj0_bench, mj1_bench), cycles);
 
     time = (double)cycles/CLK_PROC;
     debit = (WIDTH  * HEIGHT ) / time;
@@ -290,7 +290,7 @@ void bench_morpho_5_opti(){
     double time;
     double debit;
     
-    CHRONO(morpho_5_opti(img_bin_bench, img_filtered_bench , mi0_bench, mi1_bench, mj0_bench, mj1_bench), cycles);
+    CHRONO(morpho_5_opti(img_bin_bench, img_filtered_bench, tmp1, tmp2, mi0_bench, mi1_bench, mj0_bench, mj1_bench), cycles);
 
     time = (double)cycles/CLK_PROC;
     debit = (WIDTH  * HEIGHT ) / time;
@@ -338,6 +338,8 @@ void gen_img_bin_bench(int type, int kernel_size){
 	uint8** img_diff 	= ui8matrix(mi0b_bench, mi1b_bench, mj0b_bench, mj1b_bench);
 	img_bin_bench 	    = ui8matrix(mi0b_bench, mi1b_bench, mj0b_bench, mj1b_bench);
 	img_filtered_bench 	= ui8matrix(mi0b_bench, mi1b_bench, mj0b_bench, mj1b_bench);
+    tmp1                = ui8matrix(mi0b_bench, mi1b_bench, mj0b_bench, mj1b_bench);
+    tmp2                = ui8matrix(mi0b_bench, mi1b_bench, mj0b_bench, mj1b_bench);
    
 	// -------------- //
     // -- prologue -- //

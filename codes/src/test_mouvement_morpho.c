@@ -60,6 +60,8 @@ void test_mouvement_morpho_car(bool is_visual){
 	uint8** img_diff 		= ui8matrix(mi0b, mi1b, mj0b, mj1b);
 	uint8** img_bin 		= ui8matrix(mi0b, mi1b, mj0b, mj1b);
 	uint8** img_filtered	= ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** tmp1			= ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** tmp2 			= ui8matrix(mi0b, mi1b, mj0b, mj1b);
 
 	// -------------- //
     // -- prologue -- //
@@ -101,7 +103,7 @@ void test_mouvement_morpho_car(bool is_visual){
 	SigmaDelta_step4(mi0b, mi1b, mj0b, mj1b, std1, img_diff, img_bin);
 
 	// MORPHOLOGIE
-	morpho_3_opti(img_bin, img_filtered, mi0, mi1, mj0, mj1); 
+	morpho_3_opti(img_bin, img_filtered, tmp1, tmp2, mi0, mi1, mj0, mj1); 
 
 	// convert binary img to pgm img
 	bin_to_pgm(mi0, mi1, mj0, mj1, img_bin,"SD_out.pgm");
@@ -167,6 +169,9 @@ void test_mouvement_morpho_dataset(){
 
 	uint8 ** img_filtered = ui8matrix(mi0b, mi1b, mj0b, mj1b);
 
+	uint8** tmp1			= ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** tmp2 			= ui8matrix(mi0b, mi1b, mj0b, mj1b);
+
 	// -------------- //
   // -- prologue -- //
   // -------------- //
@@ -214,7 +219,7 @@ void test_mouvement_morpho_dataset(){
 		SigmaDelta_step4(mi0b, mi1b, mj0b, mj1b, std1, img_diff, img_bin);
 
 		// MORPHOLOGIE
-		morpho_5_opti(img_bin, img_filtered, mi0, mi1, mj0, mj1); 
+		morpho_5_opti(img_bin, img_filtered, tmp1, tmp2, mi0, mi1, mj0, mj1); 
 
 		// built pgm filename out
 		char filename_out[25] = "";

@@ -39,7 +39,8 @@ int b_test;
 
 vuint8 ** vimg_bin_test;
 vuint8 ** vimg_filtered_test;
-
+vuint8 ** tmp1_SIMD;
+vuint8 ** tmp2_SIMD;
 int vmi0_test, vmi1_test, vmj0_test, vmj1_test; 	// indices scalaire
 int vmi0b_test, vmi1b_test, vmj0b_test, vmj1b_test; // indices scalaires avec bord
 

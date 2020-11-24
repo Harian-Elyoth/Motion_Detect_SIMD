@@ -38,6 +38,8 @@ int b_test;
 
 uint8 ** img_bin_test;
 uint8 ** img_filtered_test;
+uint8 ** tmp1;
+uint8 ** tmp2;
 
 int mi0_test, mi1_test, mj0_test, mj1_test; 	// indices scalaire
 int mi0b_test, mi1b_test, mj0b_test, mj1b_test; // indices scalaires avec bord

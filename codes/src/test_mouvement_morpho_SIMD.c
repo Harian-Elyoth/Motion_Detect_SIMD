@@ -94,6 +94,10 @@ void test_mouvement_morpho_SIMD_car(bool is_visual){
 	// image filtré par morpho
 	vuint8 ** img_filtered = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
 
+	// matrices temporaires de morpho
+	vuint8 ** tmp1 = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
+	vuint8 ** tmp2 = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
+
 	/*---------------------------------------------------*/
 
 	DEBUG(puts("================================"));
@@ -187,7 +191,7 @@ void test_mouvement_morpho_SIMD_car(bool is_visual){
 
 	// MORPHOLOGIE
 
-	morpho_3_SIMD_opti(img_bin, img_filtered, vmi0, vmi1, vmj0, vmj1);
+	morpho_3_SIMD(img_bin, img_filtered, tmp1, tmp2, vmi0, vmi1, vmj0, vmj1);
 	
 	/*---------------------------------------------------*/
 
@@ -310,6 +314,9 @@ void test_mouvement_morpho_SIMD_dataset(){
 	// image filtré par morpho
 	vuint8 ** img_filtered = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
 
+	// matrices temporaires pour morpho
+	vuint8 ** tmp1 = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
+	vuint8 ** tmp2 = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
 	/*---------------------------------------------------*/
 
 	// -------------- //
@@ -371,7 +378,7 @@ void test_mouvement_morpho_SIMD_dataset(){
 		SigmaDelta_step4_simd(vmi0b, vmi1b, vmj0b, vmj1b, std1, img_diff, img_bin);
 
 		// MORPHOLOGIE
-		morpho_3_SIMD_opti(img_bin, img_filtered, vmi0, vmi1, vmj0, vmj1);
+		morpho_3_SIMD(img_bin, img_filtered, tmp1, tmp2, vmi0, vmi1, vmj0, vmj1);
 
 		/*---------------------------------------------------*/
 

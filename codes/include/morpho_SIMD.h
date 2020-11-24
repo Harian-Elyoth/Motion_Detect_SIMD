@@ -37,8 +37,8 @@ void erosion_5_SIMD(vuint8 **X, vuint8 **Y, int mi0, int mj0, int mi1, int mj1);
 void dilatation_3_SIMD(vuint8 **X, vuint8 **Y, int mi0, int mj0, int mi1, int mj1);
 void dilatation_5_SIMD(vuint8 **X, vuint8 **Y, int mi0, int mj0, int mi1, int mj1);
 
-void morpho_3_SIMD(vuint8 **X, vuint8 **Y, int mi0, int mj0, int mi1, int mj1);
-void morpho_5_SIMD(vuint8 **X, vuint8 **Y, int mi0, int mj0, int mi1, int mj1);
+void morpho_3_SIMD(vuint8 **X, vuint8 **Y, vuint8 ** tmp1, vuint8 ** tmp2, int mi0, int mj0, int mi1, int mj1);
+void morpho_5_SIMD(vuint8 **X, vuint8 **Y, vuint8 ** tmp1, vuint8 ** tmp2, int mi0, int mj0, int mi1, int mj1);
 
 void erosion_3_SIMD_opti(vuint8 **X, vuint8 **Y, int mi0, int mj0, int mi1, int mj1);
 void erosion_5_SIMD_opti(vuint8 **X, vuint8 **Y, int mi0, int mj0, int mi1, int mj1);
@@ -46,8 +46,8 @@ void erosion_5_SIMD_opti(vuint8 **X, vuint8 **Y, int mi0, int mj0, int mi1, int 
 void dilatation_3_SIMD_opti(vuint8 **X, vuint8 **Y, int mi0, int mj0, int mi1, int mj1);
 void dilatation_5_SIMD_opti(vuint8 **X, vuint8 **Y, int mi0, int mj0, int mi1, int mj1);
 
-void morpho_3_SIMD_opti(vuint8 **X, vuint8 **Y, int mi0, int mj0, int mi1, int mj1);
-void morpho_5_SIMD_opti(vuint8 **X, vuint8 **Y, int mi0, int mj0, int mi1, int mj1);
+void morpho_3_SIMD_opti(vuint8 **X, vuint8 **Y, vuint8 ** tmp1, vuint8 ** tmp2, int mi0, int mj0, int mi1, int mj1);
+void morpho_5_SIMD_opti(vuint8 **X, vuint8 **Y, vuint8 ** tmp1, vuint8 ** tmp2, int mi0, int mj0, int mi1, int mj1);
 
 
 

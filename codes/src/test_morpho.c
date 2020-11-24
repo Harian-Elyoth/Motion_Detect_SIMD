@@ -80,7 +80,7 @@ void test_morpho_3(){
 
     DEBUG(display_ui8matrix(img_bin_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image binaire : ")); DEBUG(puts(""));
     //On recupère img_bin de mouvement et on applique une erosion_3 dessus
-    morpho_3(img_bin_test, img_filtered_test, mi0_test, mi1_test, mj0_test, mj1_test);
+    morpho_3(img_bin_test, img_filtered_test, tmp1, tmp2, mi0_test, mi1_test, mj0_test, mj1_test);
 
     DEBUG(display_ui8matrix(img_filtered_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image transformée : ")); DEBUG(puts(""));
 
@@ -96,7 +96,7 @@ void test_morpho_5(){
     DEBUG(display_ui8matrix(img_bin_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image binaire : ")); DEBUG(puts(""));
 
     //On recupère img_bin de mouvement et on applique une erosion_3 dessus
-    morpho_5(img_bin_test, img_filtered_test, mi0_test, mi1_test, mj0_test, mj1_test);
+    morpho_5(img_bin_test, img_filtered_test, tmp1, tmp2, mi0_test, mi1_test, mj0_test, mj1_test);
 
 
     DEBUG(display_ui8matrix(img_filtered_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image transformée : ")); DEBUG(puts(""));
@@ -172,10 +172,10 @@ void test_morpho_3_opti(){
     gen_img_bin_test(1, 3);
 
 	char * format = "%d ";
-
+    
     DEBUG(display_ui8matrix(img_bin_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image binaire : ")); DEBUG(puts(""));
     //On recupère img_bin de mouvement et on applique une erosion_3 dessus
-    morpho_3_opti(img_bin_test, img_filtered_test, mi0_test, mi1_test, mj0_test, mj1_test);
+    morpho_3_opti(img_bin_test, img_filtered_test, tmp1, tmp2, mi0_test, mi1_test, mj0_test, mj1_test);
 
     DEBUG(display_ui8matrix(img_filtered_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image transformée : ")); DEBUG(puts(""));
 
@@ -191,7 +191,7 @@ void test_morpho_5_opti(){
     DEBUG(display_ui8matrix(img_bin_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image binaire : ")); DEBUG(puts(""));
 
     //On recupère img_bin de mouvement et on applique une erosion_3 dessus
-    morpho_5_opti(img_bin_test, img_filtered_test, mi0_test, mi1_test, mj0_test, mj1_test);
+    morpho_5_opti(img_bin_test, img_filtered_test, tmp1, tmp2, mi0_test, mi1_test, mj0_test, mj1_test);
 
 
     DEBUG(display_ui8matrix(img_filtered_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test, format, "image transformée : ")); DEBUG(puts(""));
@@ -228,6 +228,8 @@ void gen_img_bin_test(int type, int kernel_size){
 	mi0b_test = mi0_test-b_test; mi1b_test = mi1_test+b_test;
 	mj0b_test = mj0_test-b_test; mj1b_test = mj1_test+b_test;
 
+    tmp1 = ui8matrix(mi0b_test, mi1b_test, mj0b_test, mj1b_test);
+    tmp2 = ui8matrix(mi0b_test, mi1b_test, mj0b_test, mj1b_test);
     img_bin_test = ui8matrix(mi0b_test, mi1b_test, mj0b_test, mj1b_test);
 
 	// image filtrée
@@ -252,6 +254,7 @@ void gen_img_bin_test(int type, int kernel_size){
            }
         }
     }
+
 }
 
 void main_test_morpho(int argc, char *argv[])
@@ -271,5 +274,8 @@ void main_test_morpho(int argc, char *argv[])
     //test_dilatation_5();
     //test_morpho_3();
     // test_morpho_5();
-    
+    free_ui8matrix(tmp1, mi0b_test, mi1b_test, mj0b_test, mj1b_test);
+    free_ui8matrix(tmp2, mi0b_test, mi1b_test, mj0b_test, mj1b_test);
+    free_ui8matrix(img_bin_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test);
+    free_ui8matrix(img_filtered_test, mi0b_test, mi1b_test, mj0b_test, mj1b_test);
 }
