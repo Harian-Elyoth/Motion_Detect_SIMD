@@ -53,22 +53,22 @@ void test_mouvement_unit(){
     // -- allocation -- //
     // ---------------- //
 
-	uint8** image 		= ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** image 		= ui8matrix(mi0, mi1, mj0, mj1);
 
-	uint8** mean0 		= ui8matrix(mi0b, mi1b, mj0b, mj1b);
-	uint8** mean1 		= ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** mean0 		= ui8matrix(mi0, mi1, mj0, mj1);
+	uint8** mean1 		= ui8matrix(mi0, mi1, mj0, mj1);
 
-	uint8** std0 		= ui8matrix(mi0b, mi1b, mj0b, mj1b);
-	uint8** std1 		= ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** std0 		= ui8matrix(mi0, mi1, mj0, mj1);
+	uint8** std1 		= ui8matrix(mi0, mi1, mj0, mj1);
 
-	uint8** img_diff 	= ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** img_diff 	= ui8matrix(mi0, mi1, mj0, mj1);
 	uint8** img_bin 	= ui8matrix(mi0b, mi1b, mj0b, mj1b);
 
 	// -------------- //
     // -- prologue -- //
     // -------------- //
 
-    gen_pgm_img(mi0, mi1, mj0, mj1, b, mean0, std0, image);
+    gen_pgm_img(mi0, mi1, mj0, mj1, mean0, std0, image);
 
 	// ----------------- //
     // -- traitements -- //
@@ -76,93 +76,91 @@ void test_mouvement_unit(){
 
     printf("\nTest unitaire Sigma Delta\n");
 
-    DEBUG(display_ui8matrix(mean0, mi0b, mi1b, mj0b, mj1b, format, "\nmean0 : "));
-    DEBUG(display_ui8matrix(image, mi0b, mi1b, mj0b, mj1b, format, "\nimage : "));
+    DEBUG(display_ui8matrix(mean0, mi0, mi1, mj0, mj1, format, "\nmean0 : "));
+    DEBUG(display_ui8matrix(image, mi0, mi1, mj0, mj1, format, "\nimage : "));
 
-    SigmaDelta_step1_opti(mi0b, mi1b, mj0b, mj1b, mean0, mean1, image);
+    SigmaDelta_step1(mi0, mi1, mj0, mj1, mean0, mean1, image);
 
-    int mean1_correct[4][5] = 
+    int mean1_correct[2][3] = 
     { 
-    	{4, 4, 7, 6, 6}, 
-    	{4, 4, 7, 6, 6}, 
-    	{5, 5, 8, 7, 7}, 
-    	{5, 5, 8, 7, 7} 
+    	{4, 7, 6}, 
+    	{5, 8, 7}, 
     };
 
-    for (int i = mi0b; i <= mi1b; ++i)
+    for (int i = mi0; i <= mi1; ++i)
     {
-    	for (int j = mj0b; j <= mj1b; ++j)
+    	for (int j = mj0; j <= mj1; ++j)
     	{
-    		assert(mean1[i][j] == mean1_correct[i+1][j+1]);
+    		assert(mean1[i][j] == mean1_correct[i][j]);
     	}
     }
     printf("\nStep 1 : \033[32mOK\033[00m\n");
 
-    DEBUG(display_ui8matrix(mean1, mi0b, mi1b, mj0b, mj1b, format, "\nmean1 : "));
+    DEBUG(display_ui8matrix(mean1, mi0, mi1, mj0, mj1, format, "\nmean1 : "));
 
-	SigmaDelta_step2_opti(mi0b, mi1b, mj0b, mj1b, image, mean1, img_diff);
+	SigmaDelta_step2(mi0, mi1, mj0, mj1, image, mean1, img_diff);
 
-	int img_diff_correct[4][5] = 
+	int img_diff_correct[2][3] = 
     { 
-    	{1, 1, 1, 1, 1}, 
-    	{1, 1, 1, 1, 1}, 
-    	{1, 1, 1, 1, 1}, 
-    	{1, 1, 1, 1, 1},
+    	{1, 1, 1}, 
+    	{1, 1, 1}, 
     };
 
-    for (int i = mi0b; i <= mi1b; ++i)
+    for (int i = mi0; i <= mi1; ++i)
     {
-    	for (int j = mj0b; j <= mj1b; ++j)
+    	for (int j = mj0; j <= mj1; ++j)
     	{
-    		assert(img_diff[i][j] == img_diff_correct[i+1][j+1]);
+    		assert(img_diff[i][j] == img_diff_correct[i][j]);
     	}
     }
     printf("\nStep 2 : \033[32mOK\033[00m\n");
 
-    DEBUG(display_ui8matrix(img_diff, mi0b, mi1b, mj0b, mj1b, format, "\nimg_diff : "));
+    DEBUG(display_ui8matrix(img_diff, mi0, mi1, mj0, mj1, format, "\nimg_diff : "));
 
-    DEBUG(display_ui8matrix(std0, mi0b, mi1b, mj0b, mj1b, format, "\nstd0 : "));
+    DEBUG(display_ui8matrix(std0, mi0, mi1, mj0, mj1, format, "\nstd0 : "));
 
-    SigmaDelta_step3_opti(mi0b, mi1b, mj0b, mj1b, std0, std1, img_diff);
+    SigmaDelta_step3(mi0, mi1, mj0, mj1, std0, std1, img_diff);
 
-	int std1_correct[4][5] = 
+	int std1_correct[2][3] = 
     { 
-    	{2, 2, 2, 2, 2}, 
-    	{2, 2, 2, 2, 2}, 
-    	{2, 2, 2, 2, 2}, 
-    	{2, 2, 2, 2, 2},
+    	{2, 2, 2},
+    	{2, 2, 2},
     };
 
-    for (int i = mi0b; i <= mi1b; ++i)
+    for (int i = mi0; i <= mi1; ++i)
     {
-    	for (int j = mj0b; j <= mj1b; ++j)
+    	for (int j = mj0; j <= mj1; ++j)
     	{
-    		assert(std1[i][j] == std1_correct[i+1][j+1]);
+    		assert(std1[i][j] == std1_correct[i][j]);
     	}
     }
     printf("\nStep 3 : \033[32mOK\033[00m\n");
 
-    DEBUG(display_ui8matrix(std1, mi0b, mi1b, mj0b, mj1b, format, "\nstd1 : "));
+    DEBUG(display_ui8matrix(std1, mi0, mi1, mj0, mj1, format, "\nstd1 : "));
 
-    SigmaDelta_step4_opti(mi0b, mi1b, mj0b, mj1b, std1, img_diff, img_bin);
+    SigmaDelta_step4_opti(mi0, mi1, mj0, mj1, std1, img_diff, img_bin);
 
-    int img_bin_correct[4][5] = 
+    int img_bin_correct[2][3] = 
     { 
-    	{0, 0, 0, 0, 0},
-    	{0, 0, 0, 0, 0},
-    	{0, 0, 0, 0, 0},
-    	{0, 0, 0, 0, 0},
+    	{0, 0, 0},
+    	{0, 0, 0},
     };
 
-    for (int i = mi0b; i <= mi1b; ++i)
+    for (int i = mi0; i <= mi1; ++i)
     {
-    	for (int j = mj0b; j <= mj1b; ++j)
+    	for (int j = mj0; j <= mj1; ++j)
     	{
-    		assert(img_bin[i][j] == img_bin_correct[i+1][j+1]);
+    		assert(img_bin[i][j] == img_bin_correct[i][j]);
     	}
     }
     printf("\nStep 4 : \033[32mOK\033[00m\n");
 
+    DEBUG(printf("\nBefore duplicate border :"));
+    DEBUG(display_ui8matrix(img_bin, mi0, mi1, mj0, mj1, format, "\nimg_bin : "));
+
+    duplicate_border(mi0, mi1, mj0, mj1, b, img_bin);
+
+    DEBUG(printf("\nAfter duplicate border :"));
     DEBUG(display_ui8matrix(img_bin, mi0b, mi1b, mj0b, mj1b, format, "\nimg_bin : "));
 
     // TEST FULL VERSION 
@@ -177,15 +175,15 @@ void test_mouvement_unit(){
     // -- free -- //
     // ---------- //
 
-	free_ui8matrix(image, mi0b, mi1b, mj0b, mj1b);
+	free_ui8matrix(image, mi0, mi1, mj0, mj1);
 
-	free_ui8matrix(mean0, mi0b, mi1b, mj0b, mj1b);
-	free_ui8matrix(mean1, mi0b, mi1b, mj0b, mj1b);
+	free_ui8matrix(mean0, mi0, mi1, mj0, mj1);
+	free_ui8matrix(mean1, mi0, mi1, mj0, mj1);
 
-	free_ui8matrix(std0, mi0b, mi1b, mj0b, mj1b);
-	free_ui8matrix(std1, mi0b, mi1b, mj0b, mj1b);
+	free_ui8matrix(std0, mi0, mi1, mj0, mj1);
+	free_ui8matrix(std1, mi0, mi1, mj0, mj1);
 
-	free_ui8matrix(img_diff, mi0b, mi1b, mj0b, mj1b);
+	free_ui8matrix(img_diff, mi0, mi1, mj0, mj1);
 	free_ui8matrix(img_bin, mi0b, mi1b, mj0b, mj1b);
 }
 
@@ -223,80 +221,87 @@ void test_mouvement_car(){
 	mi0b = mi0-b; mi1b = mi1+b;
 	mj0b = mj0-b; mj1b = mj1+b;
 
-	DEBUG(puts("")); 
-	DEBUG(printf("mi0b : %d\n", mi0b)); 
-	DEBUG(printf("mi1b : %d\n", mi1b)); 
-	DEBUG(printf("mj0b : %d\n", mj0b)); 
-	DEBUG(printf("mj1b : %d\n", mj1b));
-	DEBUG(puts("")); 
+	// DEBUG(puts("")); 
+	// DEBUG(printf("mi0b : %d\n", mi0b)); 
+	// DEBUG(printf("mi1b : %d\n", mi1b)); 
+	// DEBUG(printf("mj0b : %d\n", mj0b)); 
+	// DEBUG(printf("mj1b : %d\n", mj1b));
+	// DEBUG(puts("")); 
 
 	// ---------------- //
     // -- allocation -- //
     // ---------------- //
 
-	uint8** image 		= ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** image 		= ui8matrix(mi0, mi1, mj0, mj1);
 
-	uint8** mean0 		= ui8matrix(mi0b, mi1b, mj0b, mj1b);
-	uint8** mean1 		= ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** mean0 		= ui8matrix(mi0, mi1, mj0, mj1);
+	uint8** mean1 		= ui8matrix(mi0, mi1, mj0, mj1);
 
-	uint8** std0 		= ui8matrix(mi0b, mi1b, mj0b, mj1b);
-	uint8** std1 		= ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** std0 		= ui8matrix(mi0, mi1, mj0, mj1);
+	uint8** std1 		= ui8matrix(mi0, mi1, mj0, mj1);
 
-	uint8** img_diff 	= ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** img_diff 	= ui8matrix(mi0, mi1, mj0, mj1);
 	uint8** img_bin 	= ui8matrix(mi0b, mi1b, mj0b, mj1b);
 
 	// -------------- //
     // -- prologue -- //
     // -------------- //
 
-	MLoadPGM_ui8matrix("../car3/car_3037.pgm", mi0b, mi1b, mj0b, mj1b, image);
-
-	duplicate_border(mi0, mi1, mj0, mj1, b, image);
+	MLoadPGM_ui8matrix("../car3/car_3037.pgm", mi0, mi1, mj0, mj1, image);
 
 	// initiate mean0 et std0 for first iteration
-	for (int i = mi0b; i <= mi1b; ++i)
+	for (int i = mi0; i <= mi1; ++i)
 	{
-		for (int j = mj0b; j <= mj1b; ++j)
+		for (int j = mj0; j <= mj1; ++j)
 		{
 			mean0[i][j] = image[i][j];
 			std0[i][j]  = VMIN;
 		}
 	}
 
-	MLoadPGM_ui8matrix("../car3/car_3038.pgm", mi0b, mi1b, mj0b, mj1b, image);
-
-	duplicate_border(mi0, mi1, mj0, mj1, b, image);
+	MLoadPGM_ui8matrix("../car3/car_3038.pgm", mi0, mi1, mj0, mj1, image);
 
 	// ----------------- //
     // -- traitements -- //
     // ----------------- //
 
+	// SIGMA DELTA
+	// SigmaDelta_step1(mi0, mi1, mj0, mj1, mean0, mean1    , image);
+	// SigmaDelta_step2(mi0, mi1, mj0, mj1, image, mean1    , img_diff);
+	// SigmaDelta_step3(mi0, mi1, mj0, mj1, std0 , std1     , img_diff);
+	// SigmaDelta_step4(mi0, mi1, mj0, mj1, std1 , img_diff , img_bin);
 
-    // SigmaDelta_step1_opti(mi0b, mi1b, mj0b, mj1b, mean0, mean1, image);
-	// SigmaDelta_step2_opti(mi0b, mi1b, mj0b, mj1b, image, mean1, img_diff);
-	// SigmaDelta_step3_opti(mi0b, mi1b, mj0b, mj1b, std0, std1, img_diff);
-	// SigmaDelta_step4_opti(mi0b, mi1b, mj0b, mj1b, std1, img_diff, img_bin);
+	// SIGMA DELTA OPTI
+ 	// SigmaDelta_step1_opti(mi0, mi1, mj0, mj1, mean0, mean1, image);
+	// SigmaDelta_step2_opti(mi0, mi1, mj0, mj1, image, mean1, img_diff);
+	// SigmaDelta_step3_opti(mi0, mi1, mj0, mj1, std0, std1, img_diff);
+	// SigmaDelta_step4_opti(mi0, mi1, mj0, mj1, std1, img_diff, img_bin);
 
-	// SigmaDelta_full(mi0b, mi1b, mj0b, mj1b, image, mean0, mean1, img_diff, std0, std1, img_bin);
+	// SIGMA DELTA FUSIONNE
+	// SigmaDelta_full(mi0, mi1, mj0, mj1, image, mean0, mean1, img_diff, std0, std1, img_bin);
 
-	SigmaDelta_full_opti(mi0b, mi1b, mj0b, mj1b, image, mean0, std0, img_bin);
+	// SIGMA DELTA FUSIONNE DEROULE SCALARISE
+	SigmaDelta_full_opti(mi0, mi1, mj0, mj1, image, mean0, std0, img_bin);
 
-	// convert binary img to pgm img
+	// duplicate border for morpho
+	duplicate_border(mi0, mi1, mj0, mj1, b, img_bin);
+
+	// convert binary img to pgm img (without border)
 	bin_to_pgm(mi0, mi1, mj0, mj1, img_bin,"SD_out.pgm");
 
 	// ---------- //
     // -- free -- //
     // ---------- //
 
-	free_ui8matrix(image, mi0b, mi1b, mj0b, mj1b);
+	free_ui8matrix(image, mi0, mi1, mj0, mj1);
 
-	free_ui8matrix(mean0, mi0b, mi1b, mj0b, mj1b);
-	free_ui8matrix(mean1, mi0b, mi1b, mj0b, mj1b);
+	free_ui8matrix(mean0, mi0, mi1, mj0, mj1);
+	free_ui8matrix(mean1, mi0, mi1, mj0, mj1);
 
-	free_ui8matrix(std0, mi0b, mi1b, mj0b, mj1b);
-	free_ui8matrix(std1, mi0b, mi1b, mj0b, mj1b);
+	free_ui8matrix(std0, mi0, mi1, mj0, mj1);
+	free_ui8matrix(std1, mi0, mi1, mj0, mj1);
 
-	free_ui8matrix(img_diff, mi0b, mi1b, mj0b, mj1b);
+	free_ui8matrix(img_diff, mi0, mi1, mj0, mj1);
 	free_ui8matrix(img_bin, mi0b, mi1b, mj0b, mj1b);
 }
 
@@ -314,9 +319,6 @@ void test_mouvement_dataset(){
     double t0, t1, dt, tmin, t;
 
     char *format = "%d ";
-
-	// taille noyau de convolution	
-    int kernel_size = 3;
 
     puts("==============================");
 	puts("=== test mouvement dataset ===");
@@ -341,29 +343,27 @@ void test_mouvement_dataset(){
     // -- allocation -- //
     // ---------------- //
 
-	uint8** image = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** image 		= ui8matrix(mi0, mi1, mj0, mj1);
 
-	uint8** mean0 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
-	uint8** mean1 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** mean0 		= ui8matrix(mi0, mi1, mj0, mj1);
+	uint8** mean1 		= ui8matrix(mi0, mi1, mj0, mj1);
 
-	uint8** std0 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
-	uint8** std1 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** std0 		= ui8matrix(mi0, mi1, mj0, mj1);
+	uint8** std1 		= ui8matrix(mi0, mi1, mj0, mj1);
 
-	uint8** img_diff = ui8matrix(mi0b, mi1b, mj0b, mj1b);
-	uint8** img_bin = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** img_diff 	= ui8matrix(mi0, mi1, mj0, mj1);
+	uint8** img_bin 	= ui8matrix(mi0b, mi1b, mj0b, mj1b);
 
 	// -------------- //
     // -- prologue -- //
     // -------------- //
 
-	MLoadPGM_ui8matrix("../car3/car_3000.pgm", mi0b, mi1b, mj0b, mj1b, image);
-
-	duplicate_border(mi0, mi1, mj0, mj1, b, image);
+	MLoadPGM_ui8matrix("../car3/car_3000.pgm", mi0, mi1, mj0, mj1, image);
 
 	// initiate mean0 et std0 for first iteration
-	for (int i = mi0b; i <= mi1b; ++i)
+	for (int i = mi0; i <= mi1; ++i)
 	{
-		for (int j = mj0b; j <= mj1b; ++j)
+		for (int j = mj0; j <= mj1; ++j)
 		{
 			mean0[i][j] = image[i][j];
 			std0[i][j]  = VMIN;
@@ -384,22 +384,21 @@ void test_mouvement_dataset(){
     	// -- chargement de l'image -- //
     	// --------------------------- //
 
-		MLoadPGM_ui8matrix(filename, mi0b, mi1b, mj0b, mj1b, image);
-
-		duplicate_border(mi0, mi1, mj0, mj1, b, image);
+		MLoadPGM_ui8matrix(filename, mi0, mi1, mj0, mj1, image);
 
 		// ----------------- //
 	    // -- traitements -- //
 	    // ----------------- //
 
-		// SigmaDelta_step1(mi0b, mi1b, mj0b, mj1b, mean0, mean1, image);
-		// SigmaDelta_step2(mi0b, mi1b, mj0b, mj1b, image, mean1, img_diff);
-		// SigmaDelta_step3(mi0b, mi1b, mj0b, mj1b, std0, std1, img_diff);
-		// SigmaDelta_step4(mi0b, mi1b, mj0b, mj1b, std1, img_diff, img_bin);
+		// SIGMA DELTA
+		SigmaDelta_step1(mi0, mi1, mj0, mj1, mean0, mean1, image);
+		SigmaDelta_step2(mi0, mi1, mj0, mj1, image, mean1, img_diff);
+		SigmaDelta_step3(mi0, mi1, mj0, mj1, std0, std1, img_diff);
+		SigmaDelta_step4(mi0, mi1, mj0, mj1, std1, img_diff, img_bin);
 
 		// SigmaDelta_full(mi0b, mi1b, mj0b, mj1b, image, mean0, mean1, img_diff, std0, std1, img_bin);
 
-		SigmaDelta_full_opti(mi0b, mi1b, mj0b, mj1b, image, mean0, std0, img_bin);
+		// SigmaDelta_full_opti(mi0b, mi1b, mj0b, mj1b, image, mean0, std0, img_bin);
 
 		// built pgm filename out
 		char filename_out[25] = "";
@@ -413,15 +412,15 @@ void test_mouvement_dataset(){
     // -- free -- //
     // ---------- //
 
-	free_ui8matrix(image, mi0b, mi1b, mj0b, mj1b);
+	free_ui8matrix(image, mi0, mi1, mj0, mj1);
 
-	free_ui8matrix(mean0, mi0b, mi1b, mj0b, mj1b);
-	free_ui8matrix(mean1, mi0b, mi1b, mj0b, mj1b);
+	free_ui8matrix(mean0, mi0, mi1, mj0, mj1);
+	free_ui8matrix(mean1, mi0, mi1, mj0, mj1);
 
-	free_ui8matrix(std0, mi0b, mi1b, mj0b, mj1b);
-	free_ui8matrix(std1, mi0b, mi1b, mj0b, mj1b);
+	free_ui8matrix(std0, mi0, mi1, mj0, mj1);
+	free_ui8matrix(std1, mi0, mi1, mj0, mj1);
 
-	free_ui8matrix(img_diff, mi0b, mi1b, mj0b, mj1b);
+	free_ui8matrix(img_diff, mi0, mi1, mj0, mj1);
 	free_ui8matrix(img_bin, mi0b, mi1b, mj0b, mj1b);
 }
 
@@ -430,7 +429,7 @@ void main_test_mouvement(int argc, char *argv[])
 	// Genere les images pgm dans pgm_imgs/
 
 	// test unitaire sur petite image generer
-	test_mouvement_unit();
+	// test_mouvement_unit();
 
 	// test unitaire sur image du set
 	// test_mouvement_car();

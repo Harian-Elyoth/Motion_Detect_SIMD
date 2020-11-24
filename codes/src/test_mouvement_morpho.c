@@ -67,7 +67,7 @@ void test_mouvement_morpho_car(bool is_visual){
 
     if (is_visual)
     {
-    	gen_pgm_img(mi0, mi1, mj0, mj1, b, mean0, std0, image);
+    	gen_pgm_img(mi0, mi1, mj0, mj1, mean0, std0, image);
     }
     else
     {
