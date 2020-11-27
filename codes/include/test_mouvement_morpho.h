@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <assert.h>
 
 #include "nrdef.h"
 #include "nrutil.h"
@@ -29,7 +30,8 @@
 extern "C" {
 #endif
 
-void test_mouvement_morpho();
+void test_mouvement_morpho_car();
+void test_mouvement_morpho_dataset();
 
 // fonction principale     
 void main_test_mouvement_morpho(int argc, char *argv[]);
