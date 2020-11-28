@@ -266,34 +266,31 @@ void bench_mouvement_dataset(){
     char *format = "%d ";
 
 	// calcul cpp
-	double cycles_total 		= 0, cycles_step1 		= 0, cycles_step2 		= 0, cycles_step3 		= 0, cycles_step4 		= 0;
-	double cycles_total_mean 	= 0, cycles_step1_mean 	= 0, cycles_step2_mean 	= 0, cycles_step3_mean 	= 0, cycles_step4_mean 	= 0;
-	
-	double cycles_total_opti 		= 0, cycles_step1_opti 		= 0, cycles_step2_opti 		= 0, cycles_step3_opti 		= 0, cycles_step4_opti 		= 0;
-	double cycles_total_opti_mean 	= 0, cycles_step1_opti_mean = 0, cycles_step2_opti_mean = 0, cycles_step3_opti_mean = 0, cycles_step4_opti_mean = 0;
-
-	double cycles_total_full_mean 		= 0, cycles_total_full 			= 0;
-	double cycles_total_full_opti_mean 	= 0, cycles_total_full_opti 	= 0;
+	double cycles_step1 = 0, cycles_step1_mean = 0, cycles_step1_opti = 0, cycles_step1_opti_mean = 0;
+	double cycles_step2 = 0, cycles_step2_mean = 0, cycles_step2_opti = 0, cycles_step2_opti_mean = 0;
+	double cycles_step3 = 0, cycles_step3_mean = 0, cycles_step3_opti = 0, cycles_step3_opti_mean = 0;
+	double cycles_step4 = 0, cycles_step4_mean = 0, cycles_step4_opti = 0, cycles_step4_opti_mean = 0;
+   	double cycles_total = 0, cycles_total_mean = 0, cycles_total_opti = 0, cycles_total_opti_mean = 0; 
+   	
+   	double cycles_total_full = 0, cycles_total_full_mean = 0, cycles_total_full_opti = 0, cycles_total_full_opti_mean = 0;
 
 	// calcul temps
-	double time_total 		= 0, time_step1 		= 0, time_step2 		= 0, time_step3 		= 0, time_step4 		= 0;
-	double time_total_mean 	= 0, time_step1_mean 	= 0, time_step2_mean 	= 0, time_step3_mean 	= 0, time_step4_mean 	= 0;
+   	double time_step1 = 0, time_step1_mean = 0, time_step1_opti = 0, time_step1_opti_mean = 0;
+   	double time_step2 = 0, time_step2_mean = 0, time_step2_opti = 0, time_step2_opti_mean = 0;
+   	double time_step3 = 0, time_step3_mean = 0, time_step3_opti = 0, time_step3_opti_mean = 0;
+   	double time_step4 = 0, time_step4_mean = 0, time_step4_opti = 0, time_step4_opti_mean = 0;
+	double time_total = 0, time_total_mean = 0, time_total_opti = 0, time_total_opti_mean = 0;
 
-	double time_total_opti 		= 0, time_step1_opti 		= 0, time_step2_opti 		= 0, time_step3_opti 		= 0, time_step4_opti 		= 0;
-	double time_total_opti_mean = 0, time_step1_opti_mean 	= 0, time_step2_opti_mean 	= 0, time_step3_opti_mean 	= 0, time_step4_opti_mean 	= 0;
-
-	double time_total_full_mean 		= 0, time_total_full 		= 0;
-	double time_total_full_opti_mean 	= 0, time_total_full_opti 	= 0;
+	double time_total_full = 0, time_total_full_mean = 0, time_total_full_opti = 0, time_total_full_opti_mean = 0;
 
 	// calcul debit
-	double debit_total 		= 0, debit_step1 		= 0, debit_step2 		= 0, debit_step3 		= 0, debit_step4 		= 0;
-	double debit_total_mean = 0, debit_step1_mean 	= 0, debit_step2_mean 	= 0, debit_step3_mean 	= 0, debit_step4_mean 	= 0;
+	double debit_step1 = 0, debit_step1_mean = 0, debit_step1_opti = 0, debit_step1_opti_mean = 0;
+	double debit_step2 = 0, debit_step2_mean = 0, debit_step2_opti = 0, debit_step2_opti_mean = 0;
+	double debit_step3 = 0, debit_step3_mean = 0, debit_step3_opti = 0, debit_step3_opti_mean = 0;
+	double debit_step4 = 0, debit_step4_mean = 0, debit_step4_opti = 0, debit_step4_opti_mean = 0;
+	double debit_total = 0, debit_total_mean = 0, debit_total_opti = 0, debit_total_opti_mean = 0;
 
-	double debit_total_opti 		= 0, debit_step1_opti 		= 0, debit_step2_opti 		= 0, debit_step3_opti 		= 0, debit_step4_opti 		= 0;
-	double debit_total_opti_mean 	= 0, debit_step1_opti_mean 	= 0, debit_step2_opti_mean 	= 0, debit_step3_opti_mean 	= 0, debit_step4_opti_mean 	= 0;
-
-	double debit_total_full_mean 		= 0, debit_total_full 		= 0; 
-	double debit_total_full_opti_mean 	= 0, debit_total_full_opti 	= 0;
+	double debit_total_full = 0, debit_total_full_mean = 0, debit_total_full_opti = 0, debit_total_full_opti_mean = 0;
 
     puts("===================================");
 	puts("=== benchmark mouvement dataset ===");
@@ -360,75 +357,75 @@ void bench_mouvement_dataset(){
 
 		// STEP 1
 		CHRONO(SigmaDelta_step1(mi0, mi1, mj0, mj1, mean0, mean1, image), cycles_step1);
-		time_step1 = (double)(cycles_step1/CLK_PROC);
+		time_step1  = (double)(cycles_step1/CLK_PROC);
 		debit_step1 = (WIDTH*HEIGHT) / time_step1;
-		time_step1 *= 1000;
+		time_step1  *= 1000;
 
 		// STEP 1 OPTI
 		CHRONO(SigmaDelta_step1_opti(mi0, mi1, mj0, mj1, mean0, mean1, image), cycles_step1_opti);
-		time_step1_opti = (double)(cycles_step1_opti/CLK_PROC);
+		time_step1_opti  = (double)(cycles_step1_opti/CLK_PROC);
 		debit_step1_opti = (WIDTH*HEIGHT) / time_step1_opti;
-		time_step1_opti *= 1000;
+		time_step1_opti  *= 1000;
 
 		/*----------------------------------------------------------------------------------------------*/
 		/*----------------------------------------------------------------------------------------------*/
 
 		// STEP 2
 		CHRONO(SigmaDelta_step2(mi0, mi1, mj0, mj1, image, mean1, img_diff), cycles_step2);
-		time_step2 = (double)(cycles_step2/CLK_PROC);
+		time_step2  = (double)(cycles_step2/CLK_PROC);
 		debit_step2 = (WIDTH*HEIGHT) / time_step2;
-		time_step2 *= 1000;
+		time_step2  *= 1000;
 		
 		// STEP 2 OPTI
-		CHRONO(SigmaDelta_step2_opti(mi0, mi1, mj0, mj1, mean0, mean1, image), cycles_step2_opti);
-		time_step2_opti = (double)(cycles_step2_opti/CLK_PROC);
+		CHRONO(SigmaDelta_step2_opti(mi0, mi1, mj0, mj1, image, mean1, img_diff), cycles_step2_opti);
+		time_step2_opti  = (double)(cycles_step2_opti/CLK_PROC);
 		debit_step2_opti = (WIDTH*HEIGHT) / time_step2_opti;
-		time_step2_opti *= 1000;
+		time_step2_opti  *= 1000;
 
 		/*----------------------------------------------------------------------------------------------*/
 		/*----------------------------------------------------------------------------------------------*/
 
 		// STEP 3
 		CHRONO(SigmaDelta_step3(mi0, mi1, mj0, mj1, std0, std1, img_diff), cycles_step3);
-		time_step3 = (double)(cycles_step3/CLK_PROC);
+		time_step3  = (double)(cycles_step3/CLK_PROC);
 		debit_step3 = (WIDTH*HEIGHT) / time_step3;
-		time_step3 *= 1000;
+		time_step3  *= 1000;
 
 		// STEP 3 OPTI
-		CHRONO(SigmaDelta_step3_opti(mi0, mi1, mj0, mj1, mean0, mean1, image), cycles_step3_opti);
-		time_step3_opti = (double)(cycles_step3_opti/CLK_PROC);
+		CHRONO(SigmaDelta_step3_opti(mi0, mi1, mj0, mj1, std0, std1, img_diff), cycles_step3_opti);
+		time_step3_opti  = (double)(cycles_step3_opti/CLK_PROC);
 		debit_step3_opti = (WIDTH*HEIGHT) / time_step3_opti;
-		time_step3_opti *= 1000;
+		time_step3_opti  *= 1000;
 
 		/*----------------------------------------------------------------------------------------------*/
 		/*----------------------------------------------------------------------------------------------*/
 
 		// STEP 4
 		CHRONO(SigmaDelta_step4(mi0, mi1, mj0, mj1, std1, img_diff, img_bin), cycles_step4);
-		time_step4 = (double)(cycles_step4/CLK_PROC);
+		time_step4  = (double)(cycles_step4/CLK_PROC);
 		debit_step4 = (WIDTH*HEIGHT) / time_step4;
-		time_step4 *= 1000;
+		time_step4  *= 1000;
 
 		// STEP 4 OPTI
 		CHRONO(SigmaDelta_step4_opti(mi0, mi1, mj0, mj1, std1, img_diff, img_bin), cycles_step4_opti);
-		time_step4_opti = (double)(cycles_step4_opti/CLK_PROC);
+		time_step4_opti  = (double)(cycles_step4_opti/CLK_PROC);
 		debit_step4_opti = (WIDTH*HEIGHT) / time_step4_opti;
-		time_step4_opti *= 1000;
+		time_step4_opti  *= 1000;
 
 		/*----------------------------------------------------------------------------------------------*/
 		/*----------------------------------------------------------------------------------------------*/
 
 		// FULL
 		CHRONO(SigmaDelta_full(mi0, mi1, mj0, mj1, image, mean0, mean1, img_diff, std0, std1, img_bin), cycles_total_full);
-		time_total_full = (double)(cycles_total_full/CLK_PROC);
+		time_total_full  = (double)(cycles_total_full/CLK_PROC);
 		debit_total_full = (WIDTH*HEIGHT) / time_total_full;
-		time_total_full *= 1000;
+		time_total_full  *= 1000;
 
 		// FULL OPTI
 		CHRONO(SigmaDelta_full_opti(mi0, mi1, mj0, mj1, image, mean0, std0, img_bin), cycles_total_full_opti);
-		time_total_full_opti = (double)(cycles_total_full_opti/CLK_PROC);
+		time_total_full_opti  = (double)(cycles_total_full_opti/CLK_PROC);
 		debit_total_full_opti = (WIDTH*HEIGHT) / time_total_full_opti;
-		time_total_full_opti *= 1000;
+		time_total_full_opti  *= 1000;
 
 		/*----------------------------------------------------------------------------------------------*/
 		/*----------------------------------------------------------------------------------------------*/
@@ -742,10 +739,10 @@ void main_bench_mouvement(int argc, char *argv[]){
 	// Affiche les métriques de performance
 
 	// benchmark unitaire sur une image du set
-	bench_mouvement_car();
+	// bench_mouvement_car();
 
 	// benchmark global sur tout le dataset
-	// bench_mouvement_dataset();
+	bench_mouvement_dataset();
 
 	// benchmark sur images generees pour fichier csv
 	//bench_mouvement_graphic();

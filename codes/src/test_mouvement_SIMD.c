@@ -494,7 +494,7 @@ void main_test_mouvement_SIMD(int argc, char *argv[]){
 	// Genere les images pgm dans pgm_imgs/
 
 	// test unitaire sur petite image generer
-	test_mouvement_SIMD_unit();
+	// test_mouvement_SIMD_unit();
 
 	// test unitaire sur image du set
 	// test_mouvement_SIMD_car();
