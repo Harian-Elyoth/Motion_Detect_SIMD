@@ -787,8 +787,15 @@ void gen_pgm_img(int mi0, int mi1, int mj0, int mj1, int b, uint8** mean0, uint8
    	{
    		for (int j = mj0; j <= mj1; ++j)
    		{
-   			image_t [i][j]  = i + j + 11;
-   			image_t2[i][j]  = (i*j) + i + j + 11;
+   			uint8 val = rand()%245;
+   			image_t [i][j]  = val;
+   			if (rand()%5 == 2)
+   			{
+   				image_t2[i][j]  = val + 10;
+   			}
+   			else{
+   				image_t2[i][j]  = val;
+   			}			
    		}
    	}
 

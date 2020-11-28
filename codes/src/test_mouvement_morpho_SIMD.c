@@ -14,7 +14,7 @@ void test_mouvement_morpho_SIMD_car(bool is_visual){
 	{
 		// img test size
 		width  = 32; // correspond au nb de colonne  => indice boucle j
-		height = 16; // correspond au nb de ligne    => indice boucle i
+		height = 10; // correspond au nb de ligne    => indice boucle i
 	}
 	else{
 
@@ -23,8 +23,7 @@ void test_mouvement_morpho_SIMD_car(bool is_visual){
 		height = 240; // correspond au nb de ligne    => indice boucle i
 	}
 
-	char *format = "%d ";
-	int kernel_size = 3;
+	char *format = "%03d ";
 
 	puts("====================================");
 	puts("=== test mouvement unitaire SIMD ===");
@@ -104,7 +103,8 @@ void test_mouvement_morpho_SIMD_car(bool is_visual){
 	// -- chargement et conversion -- //
 	// ------------------------------ //
 
-	uint8 ** img_temp = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8 ** img_temp   = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8 ** img_temp_2 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
 
 	if (is_visual)
     {
@@ -113,7 +113,13 @@ void test_mouvement_morpho_SIMD_car(bool is_visual){
 
 		MLoadPGM_ui8matrix("pgm_imgs/my_pgm1.pgm", mi0b, mi1b, mj0b, mj1b, img_temp);
 
+		DEBUG(printf("Before duplicate_border 1 : \n")); DEBUG(puts(""));
+		DEBUG(display_ui8matrix(img_temp, mi0b, mi1b, mj0b, mj1b, format, "img_temp : ")); DEBUG(puts(""));
+
 		duplicate_border(mi0, mi1, mj0, mj1, b, img_temp);
+
+		DEBUG(printf("After duplicate_vborder 1 : \n")); DEBUG(puts(""));
+		DEBUG(display_ui8matrix(img_temp, mi0b, mi1b, mj0b, mj1b, format, "img_temp : ")); DEBUG(puts(""));
 
 		// transfert ui8matrix à vui8matrix init
 		ui8matrix_to_vui8matrix(card, vmi0b, vmi1b, vmj0b, vmj1b, img_temp, image);
@@ -128,15 +134,15 @@ void test_mouvement_morpho_SIMD_car(bool is_visual){
 			}
 		}
 
-		MLoadPGM_ui8matrix("pgm_imgs/my_pgm2.pgm", mi0b, mi1b, mj0b, mj1b, img_temp);
+		MLoadPGM_ui8matrix("pgm_imgs/my_pgm2.pgm", mi0b, mi1b, mj0b, mj1b, img_temp_2);
 
-		DEBUG(printf("Before duplicate_border : \n")); DEBUG(puts(""));
-		DEBUG(display_ui8matrix(img_temp, mi0b, mi1b, mj0b, mj1b, "%d ", "img_temp : ")); DEBUG(puts(""));
+		DEBUG(printf("Before duplicate_border 2 : \n")); DEBUG(puts(""));
+		DEBUG(display_ui8matrix(img_temp_2, mi0b, mi1b, mj0b, mj1b, format, "img_temp_2 : ")); DEBUG(puts(""));
 
-		duplicate_border(mi0, mi1, mj0, mj1, b, img_temp);
+		duplicate_border(mi0, mi1, mj0, mj1, b, img_temp_2);
 
-		DEBUG(printf("After duplicate_vborder : \n")); DEBUG(puts(""));
-		DEBUG(display_ui8matrix(img_temp, mi0b, mi1b, mj0b, mj1b, "%d ", "img_temp : ")); DEBUG(puts(""));
+		DEBUG(printf("After duplicate_vborder 2 : \n")); DEBUG(puts(""));
+		DEBUG(display_ui8matrix(img_temp_2, mi0b, mi1b, mj0b, mj1b, format, "img_temp_2 : ")); DEBUG(puts(""));
     }
     else
     {
@@ -158,13 +164,13 @@ void test_mouvement_morpho_SIMD_car(bool is_visual){
 			}
 		}
 
-		MLoadPGM_ui8matrix("../car3/car_3038.pgm", mi0b, mi1b, mj0b, mj1b, img_temp);
+		MLoadPGM_ui8matrix("../car3/car_3038.pgm", mi0b, mi1b, mj0b, mj1b, img_temp_2);
 
-		duplicate_border(mi0, mi1, mj0, mj1, b, img_temp);
+		duplicate_border(mi0, mi1, mj0, mj1, b, img_temp_2);
     }
 
 	// transfert ui8matrix à vui8matrix real
-	ui8matrix_to_vui8matrix(card, vmi0b, vmi1b, vmj0b, vmj1b, img_temp, image);
+	ui8matrix_to_vui8matrix(card, vmi0b, vmi1b, vmj0b, vmj1b, img_temp_2, image);
 
 	DEBUG(printf("After conversion : \n"));DEBUG(puts(""));
 
@@ -179,15 +185,21 @@ void test_mouvement_morpho_SIMD_car(bool is_visual){
 	// ----------------- //
 
 	// SIGMA DELA
+	// DEBUG(display_vui8matrix(image, vmi0b, vmi1b, vmj0b, vmj1b, format, "image : "));
 
 	SigmaDelta_step1_simd(vmi0b, vmi1b, vmj0b, vmj1b, mean0, mean1, image);
 	SigmaDelta_step2_simd(vmi0b, vmi1b, vmj0b, vmj1b, image, mean1, img_diff);
 	SigmaDelta_step3_simd(vmi0b, vmi1b, vmj0b, vmj1b, std0, std1, img_diff);
-	SigmaDelta_step4_simd( vmi0b, vmi1b, vmj0b, vmj1b, std1, img_diff, img_bin);
+	SigmaDelta_step4_simd(vmi0b, vmi1b, vmj0b, vmj1b, std1, img_diff, img_bin);
+
+	// DEBUG(display_vui8matrix(img_bin, vmi0, vmi1, vmj0, vmj1, "%d ", "img_bin : "));
 
 	// MORPHOLOGIE
 
-	morpho_3_SIMD_opti(img_bin, img_filtered, vmi0, vmi1, vmj0, vmj1);
+	morpho_3_SIMD(img_bin, img_filtered, vmi0, vmi1, vmj0, vmj1);
+
+	// DEBUG(display_vui8matrix(img_filtered, vmi0, vmi1, vmj0, vmj1, "%d ", "img_filtered : "));
+	// morpho_3_SIMD_pipeline(img_bin, img_filtered, vmi0, vmi1, vmj0, vmj1);
 	
 	/*---------------------------------------------------*/
 
@@ -412,7 +424,6 @@ void test_mouvement_morpho_SIMD_dataset(){
 
 	free_vui8matrix(img_diff, vmi0b, vmi1b, vmj0b, vmj1b);
 	free_vui8matrix(img_bin, vmi0b, vmi1b, vmj0b, vmj1b);
-
 }
 
 void main_test_mouvement_morpho_SIMD(int argc, char *argv[]){
@@ -423,7 +434,7 @@ void main_test_mouvement_morpho_SIMD(int argc, char *argv[]){
 	// test_mouvement_morpho_SIMD_car(true);
 
 	// test unitaire sur image du set
-	//test_mouvement_morpho_SIMD_car(false);
+	test_mouvement_morpho_SIMD_car(false);
 
-	test_mouvement_morpho_SIMD_dataset();
+	// test_mouvement_morpho_SIMD_dataset();
 }

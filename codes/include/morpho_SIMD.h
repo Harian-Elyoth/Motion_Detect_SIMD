@@ -49,7 +49,8 @@ void dilatation_5_SIMD_opti(vuint8 **X, vuint8 **Y, int mi0, int mj0, int mi1, i
 void morpho_3_SIMD_opti(vuint8 **X, vuint8 **Y, int mi0, int mj0, int mi1, int mj1);
 void morpho_5_SIMD_opti(vuint8 **X, vuint8 **Y, int mi0, int mj0, int mi1, int mj1);
 
-
+void morpho_3_SIMD_pipeline(vuint8 **vX, vuint8 **tmp1, vuint8 **tmp2, vuint8 **tmp3, vuint8 ** vY, int vmi0, int vmi1, int vmj0, int vmj1); 
+void morpho_3_SIMD_pipeline_opti(vuint8 **vX, vuint8 **tmp1, vuint8 **tmp2, vuint8 ** vY, int vmi0, int vmi1, int vmj0, int vmj1);
 
 #ifdef __cplusplus
 }

@@ -220,9 +220,13 @@ void gen_img_bin_test(int type, int kernel_size){
         fprintf(stderr, "Error wrong kernel_size must be 3 or 5 and it's %d\n", kernel_size);
         exit(1);
     }
+
+    int height_test = 24;
+    int width_test = 32;
+
     // indices matrices
-	mi0_test = 0; mi1_test = HEIGHT_TEST-1;
-	mj0_test = 0; mj1_test = WIDTH_TEST-1;
+	mi0_test = 0; mi1_test = height_test-1;
+	mj0_test = 0; mj1_test = width_test-1;
 	
 	// indices matrices avec bord
 	mi0b_test = mi0_test-b_test; mi1b_test = mi1_test+b_test;

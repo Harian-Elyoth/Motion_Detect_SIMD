@@ -7,8 +7,6 @@
 
 #include "test_morpho_SIMD.h"
 
-
-
 void test_erosion_3_SIMD(){
     
     DEBUG(printf("\n===========================  TEST EROSION 3 =================================\n"));
@@ -22,8 +20,6 @@ void test_erosion_3_SIMD(){
     erosion_3_SIMD(vimg_bin_test, vimg_filtered_test , vmi0_test, vmi1_test, vmj0_test, vmj1_test);
 
     DEBUG(display_vui8matrix(vimg_filtered_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "image érodée : ")); DEBUG(puts(""));
-
-    void free_vmatrix();
 }
 
 void test_erosion_5_SIMD(){
@@ -39,8 +35,6 @@ void test_erosion_5_SIMD(){
     erosion_5_SIMD(vimg_bin_test, vimg_filtered_test , vmi0_test, vmi1_test, vmj0_test, vmj1_test);
 
     DEBUG(display_vui8matrix(vimg_filtered_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "image érodée : ")); DEBUG(puts(""));
-
-    void free_vmatrix();
 }
 
 void test_dilatation_3_SIMD(){
@@ -56,8 +50,6 @@ void test_dilatation_3_SIMD(){
     dilatation_3_SIMD(vimg_bin_test, vimg_filtered_test , vmi0_test, vmi1_test, vmj0_test, vmj1_test);
 
     DEBUG(display_vui8matrix(vimg_filtered_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "image dilatée : ")); DEBUG(puts(""));
-
-    void free_vmatrix();
 }
 
 void test_dilatation_5_SIMD(){
@@ -73,25 +65,21 @@ void test_dilatation_5_SIMD(){
     dilatation_5_SIMD(vimg_bin_test, vimg_filtered_test , vmi0_test, vmi1_test, vmj0_test, vmj1_test);
 
     DEBUG(display_vui8matrix(vimg_filtered_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "image dilatée : ")); DEBUG(puts(""));
-
-    void free_vmatrix();
 }
 
 void test_morpho_3_SIMD(){
 
-    DEBUG(printf("\n===========================  TEST MORPHO 3 =================================\n"));
+    DEBUG(printf("\n===========================  TEST MORPHO 3 SIMD =================================\n"));
 
     gen_vimg_bin_test_SIMD(1, 3); //erosion kernel_3
 
 	char * format = "%d ";
 
     DEBUG(display_vui8matrix(vimg_bin_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "image binaire : ")); DEBUG(puts(""));
-    //On recupère vimg_bin de mouvement et on applique une erosion_3 dessus
+    
     morpho_3_SIMD(vimg_bin_test, vimg_filtered_test , vmi0_test, vmi1_test, vmj0_test, vmj1_test);
 
     DEBUG(display_vui8matrix(vimg_filtered_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "image transformée : ")); DEBUG(puts(""));
-
-    void free_vmatrix();
 }
 
 void test_morpho_5_SIMD(){
@@ -108,8 +96,6 @@ void test_morpho_5_SIMD(){
     morpho_5_SIMD(vimg_bin_test, vimg_filtered_test , vmi0_test, vmi1_test, vmj0_test, vmj1_test);
 
     DEBUG(display_vui8matrix(vimg_filtered_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "image transformée : ")); DEBUG(puts(""));
-
-    void free_vmatrix();
 }
 
 void test_erosion_3_SIMD_opti(){
@@ -125,8 +111,6 @@ void test_erosion_3_SIMD_opti(){
     erosion_3_SIMD_opti(vimg_bin_test, vimg_filtered_test , vmi0_test, vmi1_test, vmj0_test, vmj1_test);
 
     DEBUG(display_vui8matrix(vimg_filtered_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "image érodée : ")); DEBUG(puts(""));
-
-    void free_vmatrix();
 }
 
 void test_erosion_5_SIMD_opti(){
@@ -142,8 +126,6 @@ void test_erosion_5_SIMD_opti(){
     erosion_5_SIMD_opti(vimg_bin_test, vimg_filtered_test , vmi0_test, vmi1_test, vmj0_test, vmj1_test);
 
     DEBUG(display_vui8matrix(vimg_filtered_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "image érodée : ")); DEBUG(puts(""));
-
-    void free_vmatrix();
 }
 
 void test_dilatation_3_SIMD_opti(){
@@ -159,8 +141,6 @@ void test_dilatation_3_SIMD_opti(){
     dilatation_3_SIMD_opti(vimg_bin_test, vimg_filtered_test , vmi0_test, vmi1_test, vmj0_test, vmj1_test);
 
     DEBUG(display_vui8matrix(vimg_filtered_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "image dilatée : ")); DEBUG(puts(""));
-
-    void free_vmatrix();
 }
 
 void test_dilatation_5_SIMD_opti(){
@@ -176,8 +156,6 @@ void test_dilatation_5_SIMD_opti(){
     dilatation_5_SIMD_opti(vimg_bin_test, vimg_filtered_test , vmi0_test, vmi1_test, vmj0_test, vmj1_test);
 
     DEBUG(display_vui8matrix(vimg_filtered_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "image dilatée : ")); DEBUG(puts(""));
-
-    void free_vmatrix();
 }
 
 void test_morpho_3_SIMD_opti(){
@@ -193,8 +171,6 @@ void test_morpho_3_SIMD_opti(){
     morpho_3_SIMD_opti(vimg_bin_test, vimg_filtered_test , vmi0_test, vmi1_test, vmj0_test, vmj1_test);
 
     DEBUG(display_vui8matrix(vimg_filtered_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "image transformée : ")); DEBUG(puts(""));
-
-    void free_vmatrix();
 }
 
 void test_morpho_5_SIMD_opti(){
@@ -211,8 +187,65 @@ void test_morpho_5_SIMD_opti(){
     morpho_5_SIMD_opti(vimg_bin_test, vimg_filtered_test , vmi0_test, vmi1_test, vmj0_test, vmj1_test);
 
     DEBUG(display_vui8matrix(vimg_filtered_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "image transformée : ")); DEBUG(puts(""));
+}
 
-    void free_vmatrix();
+void test_morpho_3_SIMD_pipeline(){
+
+    DEBUG(printf("\n===========================  TEST MORPHO 3 SIMD PIPELINE =================================\n"));
+
+    gen_vimg_bin_test_SIMD(1, 3); //erosion kernel_3
+
+    char * format = "%d ";
+
+    int bord = 1;
+    
+    int vmi0b = vmi0_test - bord;
+    int vmi1b = vmi1_test + bord;
+
+    int vmj0b = vmj0_test - bord;
+    int vmj1b = vmj1_test + bord;
+
+    vuint8 ** tmp1 = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
+    vuint8 ** tmp2 = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b); 
+    vuint8 ** tmp3 = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);  
+
+    DEBUG(display_vui8matrix(vimg_bin_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "image binaire : ")); DEBUG(puts(""));
+
+    morpho_3_SIMD_pipeline(vimg_bin_test, tmp1, tmp2, tmp3, vimg_filtered_test , vmi0_test, vmi1_test, vmj0_test, vmj1_test);
+
+    DEBUG(display_vui8matrix(vimg_filtered_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "image transformée : ")); DEBUG(puts(""));
+}
+
+void test_morpho_3_SIMD_pipeline_opti(){
+
+    DEBUG(printf("\n===========================  TEST MORPHO 3 SIMD PIPELINE OPTI =================================\n"));
+
+    gen_vimg_bin_test_SIMD(1, 5);
+
+    char * format = "%d ";
+
+    int bord = 2;
+    
+    int vmi0b = vmi0_test - bord;
+    int vmi1b = vmi1_test + bord;
+
+    int vmj0b = vmj0_test - 1;
+    int vmj1b = vmj1_test + 1;
+
+    vuint8 ** tmp1 = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
+    vuint8 ** tmp2 = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
+
+
+
+    DEBUG(display_vui8matrix(vimg_bin_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "image binaire : ")); DEBUG(puts(""));
+    // DEBUG(display_vui8matrix(vimg_filtered_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "image transformée (before) : ")); DEBUG(puts(""));
+
+    morpho_3_SIMD_pipeline_opti(vimg_bin_test, tmp1, tmp2, vimg_filtered_test , vmi0_test, vmi1_test, vmj0_test, vmj1_test);
+
+    // DEBUG(display_vui8matrix(tmp2, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "tmp2 : ")); DEBUG(puts(""));
+    // DEBUG(display_vui8matrix(tmp1, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "tmp1 : ")); DEBUG(puts(""));
+
+    DEBUG(display_vui8matrix(vimg_filtered_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "image transformée (after) : ")); DEBUG(puts(""));
 }
 
 void gen_vimg_bin_test_SIMD(int type, int kernel_size){
@@ -247,32 +280,47 @@ void gen_vimg_bin_test_SIMD(int type, int kernel_size){
 	// image filtrée
 	vimg_filtered_test = vui8matrix(vmi0b_test, vmi1b_test, vmj0b_test, vmj1b_test);
 
-    srand(time(NULL));
+    // srand(time(NULL));
+    // for(int i = vmi0_test ; i <= vmi1_test ; i++){
+    //     for(int j = vmj0_test ; j <= vmj1_test ; j++){
+    //         VEC_STORE_2D_EPI8(init_vuint8_all(rand()%100 < seuil, rand()%100 < seuil, rand()%100 < seuil, \
+    //         rand()%100 < seuil, rand()%100 < seuil, rand()%100 < seuil, rand()%100 < seuil, \
+    //         rand()%100 < seuil, rand()%100 < seuil, rand()%100 < seuil, rand()%100 < seuil,\
+    //         rand()%100 < seuil, rand()%100 < seuil, rand()%100 < seuil, rand()%100 < seuil, rand()%100 < seuil), i, j, vimg_bin_test);
+            
+    //     }
+    // }
+
     for(int i = vmi0_test ; i <= vmi1_test ; i++){
         for(int j = vmj0_test ; j <= vmj1_test ; j++){
-            VEC_STORE_2D_EPI8(init_vuint8_all(rand()%100 < seuil, rand()%100 < seuil, rand()%100 < seuil, \
-            rand()%100 < seuil, rand()%100 < seuil, rand()%100 < seuil, rand()%100 < seuil, \
-            rand()%100 < seuil, rand()%100 < seuil, rand()%100 < seuil, rand()%100 < seuil,\
-            rand()%100 < seuil, rand()%100 < seuil, rand()%100 < seuil, rand()%100 < seuil, rand()%100 < seuil), i, j, vimg_bin_test);
-            
+                
+            if((i > 1 && i < 7)  && (j > 0 && j < 3))
+            {
+                vimg_bin_test[i][j] = init_vuint8(1); 
+            }
+            else
+            {
+                vimg_bin_test[i][j] = init_vuint8(0); 
+            }      
         }
-    }
-
-	
+    }    	
 }
-
 
 void main_test_morpho_SIMD(int argc, char *argv[])
 {
-    test_erosion_3_SIMD_opti();
-    test_erosion_5_SIMD_opti();
-    test_dilatation_3_SIMD_opti();
-    test_dilatation_5_SIMD_opti();
-    //test_erosion_3_SIMD();
-    //test_erosion_5_SIMD();
-    //test_dilatation_3_SIMD();
-    //test_dilatation_5_SIMD();
-    test_morpho_3_SIMD_opti();
-    test_morpho_5_SIMD_opti();
+    // test_erosion_3_SIMD_opti();
+    // test_erosion_5_SIMD_opti();
+    // test_dilatation_3_SIMD_opti();
+    // test_dilatation_5_SIMD_opti();
+    // test_erosion_3_SIMD();
+    // test_erosion_5_SIMD();
+    // test_dilatation_3_SIMD();
+    // test_dilatation_5_SIMD();
+    // test_morpho_3_SIMD_opti();
+    // test_morpho_5_SIMD_opti();
 
+    test_morpho_3_SIMD();
+
+    // test_morpho_3_SIMD_pipeline();
+    test_morpho_3_SIMD_pipeline_opti();
 }

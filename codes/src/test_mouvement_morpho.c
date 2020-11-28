@@ -101,10 +101,10 @@ void test_mouvement_morpho_car(bool is_visual){
 	SigmaDelta_step4(mi0b, mi1b, mj0b, mj1b, std1, img_diff, img_bin);
 
 	// MORPHOLOGIE
-	morpho_3_opti(img_bin, img_filtered, mi0, mi1, mj0, mj1); 
+	morpho_3(img_bin, img_filtered, mi0, mi1, mj0, mj1); 
 
 	// convert binary img to pgm img
-	bin_to_pgm(mi0, mi1, mj0, mj1, img_bin,"SD_out.pgm");
+	bin_to_pgm(mi0, mi1, mj0, mj1, img_filtered,"SD_out.pgm");
 
 	// ---------- //
   // -- free -- //
@@ -248,8 +248,8 @@ void main_test_mouvement_morpho(int argc, char *argv[])
 	// test_mouvement_morpho_car(true);
 
 	// test unitaire sur image du set
-	// test_mouvement_morpho_car(false);
+	test_mouvement_morpho_car(false);
 
 	// test global sur tout le set
-	test_mouvement_morpho_dataset();	
+	// test_mouvement_morpho_dataset();	
 }
