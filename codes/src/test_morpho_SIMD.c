@@ -233,13 +233,19 @@ void test_morpho_3_SIMD_pipeline_opti(){
     int vmj1b = vmj1_test + 1;
 
     vuint8 ** tmp1 = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
-    vuint8 ** tmp2 = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);  
+    vuint8 ** tmp2 = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
+
+
 
     DEBUG(display_vui8matrix(vimg_bin_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "image binaire : ")); DEBUG(puts(""));
+    // DEBUG(display_vui8matrix(vimg_filtered_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "image transformée (before) : ")); DEBUG(puts(""));
 
     morpho_3_SIMD_pipeline_opti(vimg_bin_test, tmp1, tmp2, vimg_filtered_test , vmi0_test, vmi1_test, vmj0_test, vmj1_test);
 
-    DEBUG(display_vui8matrix(vimg_filtered_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "image transformée : ")); DEBUG(puts(""));
+    // DEBUG(display_vui8matrix(tmp2, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "tmp2 : ")); DEBUG(puts(""));
+    // DEBUG(display_vui8matrix(tmp1, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "tmp1 : ")); DEBUG(puts(""));
+
+    DEBUG(display_vui8matrix(vimg_filtered_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "image transformée (after) : ")); DEBUG(puts(""));
 }
 
 void gen_vimg_bin_test_SIMD(int type, int kernel_size){
@@ -306,13 +312,15 @@ void main_test_morpho_SIMD(int argc, char *argv[])
     // test_erosion_5_SIMD_opti();
     // test_dilatation_3_SIMD_opti();
     // test_dilatation_5_SIMD_opti();
-    //test_erosion_3_SIMD();
-    //test_erosion_5_SIMD();
-    //test_dilatation_3_SIMD();
-    //test_dilatation_5_SIMD();
+    // test_erosion_3_SIMD();
+    // test_erosion_5_SIMD();
+    // test_dilatation_3_SIMD();
+    // test_dilatation_5_SIMD();
     // test_morpho_3_SIMD_opti();
     // test_morpho_5_SIMD_opti();
-    // test_morpho_3_SIMD();
+
+    test_morpho_3_SIMD();
+
     // test_morpho_3_SIMD_pipeline();
     test_morpho_3_SIMD_pipeline_opti();
 }

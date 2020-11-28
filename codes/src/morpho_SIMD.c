@@ -1142,211 +1142,226 @@ void morpho_3_SIMD_pipeline(vuint8 **vX, vuint8 **tmp1, vuint8 **tmp2, vuint8 **
 
     // PROLOGUE GLOBAL
 
-    // 1ere erosion sur les 3 premiere colonnes et toutes les lignes
-    erosion_3_SIMD(vX, tmp3, vmi0, vmi1, vmj0, vmj0 + 2);
+    // 1ere erosion sur les 3 premiere lignes et toutes les colonnes : ligne jaune
+    erosion_3_SIMD(vX, tmp3, vmi0, vmi0 + 2, vmj0, vmj1);
 
-    // 1ere dilation sur les 2 premieres colonnes et toutes les lignes
-    dilatation_3_SIMD(tmp3, tmp2, vmi0, vmi1, vmj0, vmj0 + 1);
+    // 1ere dilation sur les 2 premieres lignes et toutes les colonnes : ligne verte
+    dilatation_3_SIMD(tmp3, tmp2, vmi0, vmi0 + 1, vmj0, vmj1);
 
-    // 2e dilation sur la 1ere colonnes et toutes les lignes
-    dilatation_3_SIMD(tmp2, tmp1, vmi0, vmi1, vmj0, vmj0);
+    // 2e dilation sur la 1ere lignes et toutes les colonnes : ligne bleue
+    dilatation_3_SIMD(tmp2, tmp1, vmi0, vmi0, vmj0, vmj1);
 
     // aa, bb : non alignés
-    // a, b   : alignés
+    // a , b   : alignés
 
     // colonne 0
-    vuint8 aa0, a1, aa2; 
-    vuint8 bb0, b1, bb2;
+    vuint8 a0, aa0, a1, aa2, a2; 
+    vuint8 b0, bb0, b1, bb2, b2;
     vuint8 cc0, c1, cc2; 
 
     // colonne 1
-    vuint8 cc3, c4, cc5; 
+    vuint8 b3, bb3, b4, bb5, b5;
+    vuint8 c3, cc3, c4, cc5, c5; 
     vuint8 dd3, d4, dd5;
-    vuint8 ee3, e4, ee5;
 
     // colonne 2
+    vuint8 c6, cc6, c7, cc8, c8;
+    vuint8 d6, dd6, d7, dd8, d8;
     vuint8 ee6, e7, ee8;
-    vuint8 ff6, f7, ff8;
-    vuint8 gg6, g7, gg8;
 
     // colonne 3
-    vuint8 gg9, g10, gg11;
-    vuint8 hh9, h10, hh11;
-    vuint8 ii9, i10, ii11;
+    vuint8 d9, dd9, d10, dd11, d11;
+    vuint8 e9, ee9, e10, ee11, e11;
+    vuint8 ff9, f10, ff11;
 
     // vecteur de sorties
     vuint8 y0, y1, y2, y3;
 
-    // on commence a j egale 3 (ie : la 4e colonne)
-    for (j = vmj0 + 3; j <= vmj1; ++j){   
+    // on commence a i = 3
+    for (i = vmi0 + 3; i <= vmi1; ++i){   
 
-        // on commence a i = 6 (ie : la 6e ligne)
-        i = vmi0 + 6;
+        // on commence a j = 3
+        j = vmj0 + 3;
 
-        // PROLOGUE BOUCLE EXTERNE
+        // PROLOGUE BOUCLE
 
-        // 1ere erosion sur la 4e colonne et les 6 premières lignes
-        erosion_3_SIMD(vX, tmp3, vmi0, i - 1, j, j);
+        // 1ere erosion sur la 4e ligne et les 3 premières colonnes : ligne jaune
+        erosion_3_SIMD(vX, tmp3, i, i, j - 3, j - 1);
 
-        // 1ere dilation sur la 3e colonnes et les 4 premieres lignes
-        dilatation_3_SIMD(tmp3, tmp2, vmi0, i - 3, j - 1, j - 1);
+        // 1ere dilation sur la 3e ligne et les 2 premieres colonnes : ligne verte
+        dilatation_3_SIMD(tmp3, tmp2, i - 1, i - 1, j - 3, j - 2);
 
-        // 2e dilation sur la 2e colonnes et les 2 premieres lignes
-        dilatation_3_SIMD(tmp2, tmp1, vmi0, i - 5, j - 2, j - 2);
+        // 2e dilation sur la 2e ligne et la premieres colonne : ligne bleue
+        dilatation_3_SIMD(tmp2, tmp1, i - 2, i - 2, j - 3, j - 3);
 
-        // on considère i et j pour la ligne jaune (4e colonne, 6e ligne)
+        // on considère i et j pour la ligne jaune
 
-        // ligne de bord, autour de la colonne 0
-        aa0 = VEC_LOAD_2D_EPI8(i - 7, j - 4, tmp1);
-        a1  = VEC_LOAD_2D_EPI8(i - 7, j - 3, tmp1);
-        aa0 = VEC_LEFT1_EPI8(aa0, a1);
-        aa2 = VEC_LOAD_2D_EPI8(i - 7, j - 2, tmp1);
-        aa2 = VEC_RIGHT1_EPI8(a1, aa2);
+        // ligne -1, autour de la colonne 0
+        a0 = VEC_LOAD_2D_EPI8(i - 4, j - 4, tmp1);
+        a1  = VEC_LOAD_2D_EPI8(i - 4, j - 3, tmp1);
+        
 
         // ligne 0, autour de la colonne 0
-        bb0 = VEC_LOAD_2D_EPI8(i - 6, j - 4, tmp1);
-        b1  = VEC_LOAD_2D_EPI8(i - 6, j - 3, tmp1);
-        bb0 = VEC_LEFT1_EPI8(bb0, b1);
-        bb2 = VEC_LOAD_2D_EPI8(i - 6, j - 2, tmp1);
-        bb2 = VEC_RIGHT1_EPI8(b1, bb2);
+        b0 = VEC_LOAD_2D_EPI8(i - 3, j - 4, tmp1);
+        b1  = VEC_LOAD_2D_EPI8(i - 3, j - 3, tmp1);
+        
+
+        // ligne 0, autour la colonne 1
+        b3 = VEC_LOAD_2D_EPI8(i - 3, j - 3, tmp2);
+        b4  = VEC_LOAD_2D_EPI8(i - 3, j - 2, tmp2);
+        
 
         // ligne 1, autour de la colonne 1
-        cc3 = VEC_LOAD_2D_EPI8(i - 5, j - 3, tmp2);
-        c4  = VEC_LOAD_2D_EPI8(i - 5, j - 2, tmp2);
-        cc3 = VEC_LEFT1_EPI8(cc3, c4);
-        cc5 = VEC_LOAD_2D_EPI8(i - 5, j - 1, tmp2);
-        cc5 = VEC_RIGHT1_EPI8(c4, cc5);
+        c3 = VEC_LOAD_2D_EPI8(i - 2, j - 3, tmp2);
+        c4  = VEC_LOAD_2D_EPI8(i - 2, j - 2, tmp2);
+        
 
-        // ligne 2, autour de la colonne 1
-        dd3 = VEC_LOAD_2D_EPI8(i - 4, j - 3, tmp2);
-        d4  = VEC_LOAD_2D_EPI8(i - 4, j - 2, tmp2);
-        dd3 = VEC_LEFT1_EPI8(dd3, d4);
-        dd5 = VEC_LOAD_2D_EPI8(i - 4, j - 1, tmp2);
-        dd5 = VEC_RIGHT1_EPI8(d4, dd5); 
+        // ligne 1, autour de la colonne 2
+        c6 = VEC_LOAD_2D_EPI8(i - 2, j - 2, tmp3);
+        c7  = VEC_LOAD_2D_EPI8(i - 2, j - 1, tmp3);
+        
 
-        // ligne 3, autour de la colonne 2
-        ee6 = VEC_LOAD_2D_EPI8(i - 3, j - 2, tmp3);
-        e7  = VEC_LOAD_2D_EPI8(i - 3, j - 1, tmp3);
-        ee6 = VEC_LEFT1_EPI8(ee6, e7);
-        ee8 = VEC_LOAD_2D_EPI8(i - 3, j - 0, tmp3);
-        ee8 = VEC_RIGHT1_EPI8(e7, ee8);
+        // ligne 2, autour de la colonne 2
+        d6 = VEC_LOAD_2D_EPI8(i - 1, j - 2, tmp3);
+        d7  = VEC_LOAD_2D_EPI8(i - 1, j - 1, tmp3);
+        
 
-        // ligne 4, autour de la colonne 2
-        ff6 = VEC_LOAD_2D_EPI8(i - 2, j - 2, tmp3);
-        f7  = VEC_LOAD_2D_EPI8(i - 2, j - 1, tmp3);
-        ff6 = VEC_LEFT1_EPI8(ff6, f7);
-        ff8 = VEC_LOAD_2D_EPI8(i - 2, j - 0, tmp3);
-        ff8 = VEC_RIGHT1_EPI8(f7, ff8);
+        // ligne 2, autour de la colonne 3
+        d9  = VEC_LOAD_2D_EPI8(i - 1, j - 1, vX);
+        d10  = VEC_LOAD_2D_EPI8(i - 1, j    , vX);
+        
 
-        // ligne 5, autour de la colonne 3
-        gg9  = VEC_LOAD_2D_EPI8(i - 1, j - 1, vX);
-        g10  = VEC_LOAD_2D_EPI8(i - 1, j - 0, vX);
-        gg9  = VEC_LEFT1_EPI8(gg9, g10);
-        gg11 = VEC_LOAD_2D_EPI8(i - 1, j + 1, vX);
-        gg11 = VEC_RIGHT1_EPI8(g10, gg11);
+        // ligne 3, autour de la colonne 3
+        e9  = VEC_LOAD_2D_EPI8(i , j - 1, vX);
+        e10  = VEC_LOAD_2D_EPI8(i , j    , vX);
+        
 
-        // ligne 6, autour de la colonne 3
-        hh9  = VEC_LOAD_2D_EPI8(i - 0, j - 1, vX);
-        h10  = VEC_LOAD_2D_EPI8(i - 0, j - 0, vX);
-        hh9  = VEC_LEFT1_EPI8(hh9, h10);
-        hh11 = VEC_LOAD_2D_EPI8(i - 0, j + 1, vX);
-        hh11 = VEC_RIGHT1_EPI8(h10, hh11);
-
-        for (i = vmi0 + 6; i <= vmi1; ++i)
+        for (j = vmj0 + 3; j <= vmj1; ++j)
         {
-            // ligne 1, autour de la colonne 0
-            cc0 = VEC_LOAD_2D_EPI8(i - 5, j - 4, tmp1);
-            c1  = VEC_LOAD_2D_EPI8(i - 5, j - 3, tmp1);
-            cc0 = VEC_LEFT1_EPI8(cc0, c1);
-            cc2 = VEC_LOAD_2D_EPI8(i - 5, j - 2, tmp1);
-            cc2 = VEC_RIGHT1_EPI8(c1, cc2);
 
-            // ligne 3, autour de la colonne 1
-            ee3 = VEC_LOAD_2D_EPI8(i - 3, j - 3, tmp2);
-            e4  = VEC_LOAD_2D_EPI8(i - 3, j - 2, tmp2);
-            ee3 = VEC_LEFT1_EPI8(ee3, e4);
-            ee5 = VEC_LOAD_2D_EPI8(i - 3, j - 1, tmp2);
-            ee5 = VEC_RIGHT1_EPI8(e4, ee5); 
+            // ALLOCATION + CALCUL VECTEUR NON ALIGNES
 
-            // ligne 5, autour de la colonne 2
-            gg6 = VEC_LOAD_2D_EPI8(i - 1, j - 2, tmp3);
-            g7  = VEC_LOAD_2D_EPI8(i - 1, j - 1, tmp3);
-            gg6 = VEC_LEFT1_EPI8(gg6, g7);
-            gg8 = VEC_LOAD_2D_EPI8(i - 1, j - 0, tmp3);
-            gg8 = VEC_RIGHT1_EPI8(g7, gg8);
+            aa0 = VEC_LEFT1_EPI8(a0, a1);
+            a2 = VEC_LOAD_2D_EPI8(i - 4, j - 2, tmp1);
+            aa2 = VEC_RIGHT1_EPI8(a1, a2);
 
-            // ligne 7, autour de la colonne 3
-            ii9  = VEC_LOAD_2D_EPI8(i + 1, j - 1, vX);
-            i10  = VEC_LOAD_2D_EPI8(i + 1, j - 0, vX);
-            ii9  = VEC_LEFT1_EPI8(ii9, i10);
-            ii11 = VEC_LOAD_2D_EPI8(i + 1, j + 1, vX);
-            ii11 = VEC_RIGHT1_EPI8(i10, ii11);
+            bb0 = VEC_LEFT1_EPI8(b0, b1);
+            b2 = VEC_LOAD_2D_EPI8(i - 3, j - 2, tmp1);
+            bb2 = VEC_RIGHT1_EPI8(b1, b2);
 
-            // TRAITEMENT
+            bb3 = VEC_LEFT1_EPI8(b3, b4);
+            b5 = VEC_LOAD_2D_EPI8(i - 3, j - 1, tmp2);
+            bb5 = VEC_RIGHT1_EPI8(b4, b5);
 
-            // 1ere erosion 3 : ligne jaune : ligne 6, colonne 3
-            y0 = VEC_AND_9_EPI8(gg9, g10, gg11, hh9, h10, hh11, ii9, i10, ii11);
+            cc3 = VEC_LEFT1_EPI8(c3, c4);
+            c5 = VEC_LOAD_2D_EPI8(i - 2, j - 1, tmp2);
+            cc5 = VEC_RIGHT1_EPI8(c4, c5);
+
+            cc6 = VEC_LEFT1_EPI8(c6, c7);
+            c8 = VEC_LOAD_2D_EPI8(i - 2, j    , tmp3);
+            cc8 = VEC_RIGHT1_EPI8(c7, c8);
+
+            dd6 = VEC_LEFT1_EPI8(d6, d7);
+            d8 = VEC_LOAD_2D_EPI8(i - 1, j    , tmp3);
+            dd8 = VEC_RIGHT1_EPI8(d7, d8);
+
+            dd9  = VEC_LEFT1_EPI8(d9, d10);
+            d11 = VEC_LOAD_2D_EPI8(i - 1, j + 1, vX);
+            dd11 = VEC_RIGHT1_EPI8(d10, d11);
+
+            ee9  = VEC_LEFT1_EPI8(e9, e10);
+            e11 = VEC_LOAD_2D_EPI8(i , j + 1, vX);
+            ee11 = VEC_RIGHT1_EPI8(e10, e11);
+
+            /*----------------------------------------------*/
+
+            // ligne 4, autour de la colonne 3
+            ff9  = VEC_LOAD_2D_EPI8(i + 1, j - 1, vX);
+            f10  = VEC_LOAD_2D_EPI8(i + 1, j    , vX);
+            ff9  = VEC_LEFT1_EPI8(ff9, f10);
+            ff11 = VEC_LOAD_2D_EPI8(i + 1, j + 1, vX);
+            ff11 = VEC_RIGHT1_EPI8(f10, ff11);
+
+            // 1ere erosion 3 : ligne jaune
+            y0 = VEC_AND_9_EPI8(dd9, d10, dd11, ee9, e10, ee11, ff9, f10, ff11);
             VEC_STORE_2D_EPI8(y0, i, j, tmp3);
 
-            // 1ere dilatation 3 : ligne verte : ligne 4, colonne 2
-            y1 = VEC_OR_9_EPI8(ee6, e7, ee8, ff6, f7, ff8, gg6, g7, gg8);
-            VEC_STORE_2D_EPI8(y1, i - 2, j - 1, tmp2);
+            // ligne 3, autour de la colonne 2
+            ee6 = VEC_LOAD_2D_EPI8(i , j - 2, tmp3);
+            e7  = VEC_LOAD_2D_EPI8(i , j - 1, tmp3);
+            ee6 = VEC_LEFT1_EPI8(ee6, e7);
+            ee8 = VEC_LOAD_2D_EPI8(i , j    , tmp3);
+            ee8 = VEC_RIGHT1_EPI8(e7, ee8);
 
-            // 2e dilation 3 : ligne bleue : ligne 2, colonne 1
-            y2 = VEC_OR_9_EPI8(cc3, c4, cc5, dd3, d4, dd5, ee3, e4, ee5);
-            VEC_STORE_2D_EPI8(y2, i - 4, j - 2, tmp1);            
+            // 1ere dilatation 3 : ligne verte 
+            y1 = VEC_OR_9_EPI8(cc6, c7, cc8, dd6, d7, dd8, ee6, e7, ee8);
+            VEC_STORE_2D_EPI8(y1, i - 1, j - 1, tmp2);
 
-            // 2e erosion 3 : ligne rouge : ligne 0, colonne 0
+            // ligne 3, autour de la colonne 1
+            dd3 = VEC_LOAD_2D_EPI8(i - 1, j - 3, tmp2);
+            d4  = VEC_LOAD_2D_EPI8(i - 1, j - 2, tmp2);
+            dd3 = VEC_LEFT1_EPI8(dd3, d4);
+            dd5 = VEC_LOAD_2D_EPI8(i - 1, j - 1, tmp2);
+            dd5 = VEC_RIGHT1_EPI8(d4, dd5);
+
+            // 2e dilation 3 : ligne bleue
+            y2 = VEC_OR_9_EPI8(bb3, b4, bb5, cc3, c4, cc5, dd3, d4, dd5);
+            VEC_STORE_2D_EPI8(y2, i - 2, j - 2, tmp1);   
+
+            // ligne 2, autour de la colonne 0
+            cc0 = VEC_LOAD_2D_EPI8(i - 2, j - 4, tmp1);
+            c1  = VEC_LOAD_2D_EPI8(i - 2, j - 3, tmp1);
+            cc0 = VEC_LEFT1_EPI8(cc0, c1);
+            cc2 = VEC_LOAD_2D_EPI8(i - 2, j - 2, tmp1);
+            cc2 = VEC_RIGHT1_EPI8(c1, cc2);
+
+            // 2e erosion 3 : ligne rouge 
             y3 = VEC_AND_9_EPI8(aa0, a1, aa2, bb0, b1, bb2, cc0, c1, cc2);
-            VEC_STORE_2D_EPI8(y3, i - 6, j - 3, vY);
+            VEC_STORE_2D_EPI8(y3, i - 3, j - 3, vY);
 
             // ROTATION DE REGISTRE  
 
             // colonne 0   
-            aa0 = bb0 ; bb0 = cc0 ;
-            a1  = b1  ; b1  = c1  ;
-            aa2 = bb2 ; bb2 = cc2 ;
+            a0 = a1 ; a1 = a2 ;
+            b0 = b1 ; b1 = b2 ;
 
             // colonne 1
-            cc3 = dd3 ; dd3 = ee3 ; 
-            c4  = d4  ; d4  = e4  ;
-            cc5 = dd5 ; dd5 = ee5  ;
+            b3 = b4 ; b4 = b5 ; 
+            c3 = c4 ; c4 = c5 ;
 
             // colonne 2
-            ee6 = ff6 ; ff6 = gg6 ;
-            e7  = f7  ; f7  = g7  ;
-            ee8 = ff8 ; ff8 = gg8 ;
+            c6 = c7 ; c7 = c8 ;
+            d6 = d7 ; d7 = d8 ;
 
             // colonne 3
-            gg9  = hh9  ; hh9  = ii9 ;
-            g10  = h10  ; h10  = i10 ;
-            gg11 = hh11 ; hh11 = ii11;
+            d9  = d10  ; d10  = d11 ;
+            e9  = e10  ; e10  = e11 ;
         }
 
-        // EPILOGUE BOUCLE EXTERNE
+        // EPILOGUE BOUCLE 
 
-        // dilation sur les 2 derniere ligne de l'avant derniere colonnes de l'iteration courante
-        dilatation_3_SIMD(tmp3, tmp2, vmi1 - 1, vmi1, j - 1, j - 1);
+        // dilation sur l'avant derniere ligne et la derniere colonnes de l'iteration courante : ligne verte
+        dilatation_3_SIMD(tmp3, tmp2, i - 1, i - 1, vmj1, vmj1);
 
-        // dilation sur la 4 dernières lignes de l'avant avant derniere colonne de l'iteration courante
-        dilatation_3_SIMD(tmp2, tmp1, vmi1 - 3, vmi1, j - 2, j - 2);
+        // dilation sur l'avant avant dernière ligne des 2 dernieres colonnes de l'iteration courante : ligne bleue
+        dilatation_3_SIMD(tmp2, tmp1, i - 2, i - 2, vmj1 - 1, vmj1);
 
         // printf("\n\nvmi1 - 6 = %d, vmi1 = %d, j - 3 = %d, j - 3 = %d\n\n", vmi1 - 6, vmi1, j - 3, j - 3);
 
-        // erosion sur la 6 dernières lignes de l'avant avant avant derniere colonne de l'iteration courante
-        erosion_3_SIMD(tmp1, vY, vmi1 - 5, vmi1, j - 3, j - 3);
+        // erosion sur l'avant avant avant derniere lignes des 3 dernieres colonnes de l'iteration courante : ligne rouge
+        erosion_3_SIMD(tmp1, vY, i - 3, i - 3, vmj1 - 2, vmj1);
     }
 
     // EPILOGUE GLOBAL
 
-    // dilation sur toutes lignes de la derniere colonnes
-    dilatation_3_SIMD(tmp3, tmp2, vmi0, vmi1, vmj1, vmj1);
+    // dilation sur la derniere ligne
+    dilatation_3_SIMD(tmp3, tmp2, vmi1, vmi1, vmj0, vmj1);
 
-    // dilation sur toutes les lignes des deux dernieres colonne
-    dilatation_3_SIMD(tmp2, tmp1, vmi0, vmi1, vmj1 - 1, vmj1);
+    // dilation les 2 dernieres lignes
+    dilatation_3_SIMD(tmp2, tmp1, vmi1 - 1, vmi1, vmj0, vmj1);
 
-    // erosion sur sur toutes les lignes des trois dernieres colonne
-    erosion_3_SIMD(tmp1, vY, vmi0, vmi1, vmj1 - 2, vmj1);
+    // erosion sur les 3 derniere lignes
+    erosion_3_SIMD(tmp1, vY, vmi1 - 2, vmi1, vmj0, vmj1);
 }
 
 void morpho_3_SIMD_pipeline_opti(vuint8 **vX, vuint8 **tmp1, vuint8 **tmp2, vuint8 ** vY, int vmi0, int vmi1, int vmj0, int vmj1){
@@ -1362,215 +1377,241 @@ void morpho_3_SIMD_pipeline_opti(vuint8 **vX, vuint8 **tmp1, vuint8 **tmp2, vuin
 
     // PROLOGUE GLOBAL
 
-    printf("1\n");
+    // printf("1\n");
 
-    // 1ere erosion sur les 2 premiere colonnes et toutes les lignes
-    erosion_3_SIMD_opti(vX, tmp2, vmi0, vmi1, vmj0, vmj0 + 1);
+    // 1ere erosion sur les 3 premieres lignes
+    erosion_3_SIMD_opti(vX, tmp2, vmi0, vmi0 + 2, vmj0, vmj1);
 
-    // dilation 5 sur la 1ere colonnes et toutes les lignes
-    dilatation_5_SIMD_opti(tmp2, tmp1, vmi0, vmi1, vmj0, vmj0);
+    // dilation 5 sur la 1ere ligne
+    dilatation_5_SIMD_opti(tmp2, tmp1, vmi0, vmi0, vmj0, vmj1);
 
-    printf("2\n");
+    // printf("2\n");
 
     // aa, bb : non alignés
-    // a, b   : alignés
+    // a , b  : alignés
 
     // colonne 0
-    vuint8 aa0, a1, aa2; 
-    vuint8 bb0, b1, bb2;
+    vuint8 a0, aa0, a1, aa2, a2; 
+    vuint8 b0, bb0, b1, bb2, b2;
     vuint8 cc0, c1, cc2; 
 
     // colonne 1
-    vuint8 bb3, bb4, b5, bb6, bb7;
-    vuint8 cc3, cc4, c5, cc6, cc7;  
-    vuint8 dd3, dd4, d5, dd6, dd7;
+    vuint8 a3, aa3, aa4, a5, aa6, aa7, a7;
+    vuint8 b3, bb3, bb4, b5, bb6, bb7, b7;
+    vuint8 c3, cc3, cc4, c5, cc6, cc7, c7;  
+    vuint8 d3, dd3, dd4, d5, dd6, dd7, d7;
     vuint8 ee3, ee4, e5, ee6, ee7;
-    vuint8 ff3, ff4, f5, ff6, ff7;
 
     // colonne 2
+    vuint8 d8, dd8, d9, dd10, d10;
+    vuint8 e8, ee8, e9, ee10, e10;
     vuint8 ff8, f9, ff10;
-    vuint8 gg8, g9, gg10;
-    vuint8 hh8, h9, hh10;
 
     // vecteur de sorties
     vuint8 y0, y1, y2;
 
-    // on commence a j egale 3 (ie : la 4e colonne)
-    for (j = vmj0 + 2; j <= vmj1; ++j){   
+    // on commence a i egale 3
+    for (i = vmi0 + 3; i <= vmi1; ++i){   
 
-        printf("j = %d\n", j);
+        // printf("i = %d\n", j);
 
-        // on commence a i = 5 (ie : la 6e ligne)
-        i = vmi0 + 5;
+        // on commence a j = 2
+        j = vmj0 + 2;
 
-        // PROLOGUE BOUCLE EXTERNE
+        // PROLOGUE BOUCLE
 
-        // 1ere erosion sur la 3e colonne et les 5 premières lignes
-        erosion_3_SIMD_opti(vX, tmp2, vmi0, i - 1, j, j);
+        // 1ere erosion sur la ligne 3 et la colonne 2
+        erosion_3_SIMD_opti(vX, tmp2, i, i, j - 2, j - 1);
 
-        // dilation sur la 2e colonnes et les 2 premieres lignes
-        dilatation_5_SIMD_opti(tmp2, tmp1, vmi0, i - 4, j - 1, j - 1);
+        // dilation sur la ...
+        dilatation_5_SIMD_opti(tmp2, tmp1, i - 2, i - 2, j - 2, j - 2);
 
-        // on considère i et j pour la ligne jaune (3e colonne, 5e ligne)
+        // on considère i et j pour la ligne jaune
 
         // EROSION 3 - 2 ligne rouge
-        // ligne de bord, autour de la colonne 0
-        aa0 = VEC_LOAD_2D_EPI8(i - 6, j - 3, tmp1);
-        a1  = VEC_LOAD_2D_EPI8(i - 6, j - 2, tmp1);
-        aa0 = VEC_LEFT1_EPI8(aa0, a1);
-        aa2 = VEC_LOAD_2D_EPI8(i - 6, j - 1, tmp1);
-        aa2 = VEC_RIGHT1_EPI8(a1, aa2);
 
+        // ligne -1, autour de la colonne 0
+        a0  = VEC_LOAD_2D_EPI8(i - 4, j - 3, tmp1);
+        a1  = VEC_LOAD_2D_EPI8(i - 4, j - 2, tmp1);
+        
         // ligne 0, autour de la colonne 0
-        bb0 = VEC_LOAD_2D_EPI8(i - 5, j - 3, tmp1);
-        b1  = VEC_LOAD_2D_EPI8(i - 5, j - 2, tmp1);
-        bb0 = VEC_LEFT1_EPI8(bb0, b1);
-        bb2 = VEC_LOAD_2D_EPI8(i - 5, j - 1, tmp1);
-        bb2 = VEC_RIGHT1_EPI8(b1, bb2);
+        b0  = VEC_LOAD_2D_EPI8(i - 3, j - 3, tmp1);
+        b1  = VEC_LOAD_2D_EPI8(i - 3, j - 2, tmp1);
+        
+        /*---------------------------------------------*/
 
-        // DILATAION 5 ligne cyan
+        // DILATAION 5 ligne bleue
+
+        a3  = VEC_LOAD_2D_EPI8(i - 4, j - 2, tmp2);
+        a5  = VEC_LOAD_2D_EPI8(i - 4, j - 1, tmp2);
+
         // ligne 0 autour de la colonne 1
-        bb3 = VEC_LOAD_2D_EPI8(i - 5, j - 2, tmp2);
-        b5  = VEC_LOAD_2D_EPI8(i - 5, j - 1, tmp2);
-        bb4 = VEC_LEFT1_EPI8(bb3, b5);
-        bb3 = VEC_LEFT2_EPI8(bb3, b5);
-        bb7 = VEC_LOAD_2D_EPI8(i - 5, j - 0, tmp2);
-        bb6 = VEC_RIGHT1_EPI8(b5, bb7);
-        bb7 = VEC_RIGHT2_EPI8(b5, bb7);
+        b3  = VEC_LOAD_2D_EPI8(i - 3, j - 2, tmp2);
+        b5  = VEC_LOAD_2D_EPI8(i - 3, j - 1, tmp2);
 
         // ligne 1 autour de colonne 1
-        cc3 = VEC_LOAD_2D_EPI8(i - 4, j - 2, tmp2);
-        c5  = VEC_LOAD_2D_EPI8(i - 4, j - 1, tmp2);
-        cc4 = VEC_LEFT1_EPI8(cc3, c5);
-        cc3 = VEC_LEFT2_EPI8(cc3, c5);
-        cc7 = VEC_LOAD_2D_EPI8(i - 4, j - 0, tmp2);
-        cc6 = VEC_RIGHT1_EPI8(c5, cc7);
-        cc7 = VEC_RIGHT2_EPI8(c5, cc7);
+        c3  = VEC_LOAD_2D_EPI8(i - 2, j - 2, tmp2);
+        c5  = VEC_LOAD_2D_EPI8(i - 2, j - 1, tmp2);
 
         // ligne 2 autour de la colonne 1
-        dd3 = VEC_LOAD_2D_EPI8(i - 3, j - 2, tmp2);
-        d5  = VEC_LOAD_2D_EPI8(i - 3, j - 1, tmp2);
-        dd4 = VEC_LEFT1_EPI8(dd3, d5);
-        dd3 = VEC_LEFT2_EPI8(dd3, d5);
-        dd7 = VEC_LOAD_2D_EPI8(i - 3, j - 0, tmp2);
-        dd6 = VEC_RIGHT1_EPI8(d5, dd7);
-        dd7 = VEC_RIGHT2_EPI8(d5, dd7);
+        d3  = VEC_LOAD_2D_EPI8(i - 1, j - 2, tmp2);
+        d5  = VEC_LOAD_2D_EPI8(i - 1, j - 1, tmp2);
 
-        // ligne 3 autour de la colonne 1
-        ee3 = VEC_LOAD_2D_EPI8(i - 2, j - 2, tmp2);
-        e5  = VEC_LOAD_2D_EPI8(i - 2, j - 1, tmp2);
-        ee4 = VEC_LEFT1_EPI8(ee3, e5);
-        ee3 = VEC_LEFT2_EPI8(ee3, e5);
-        ee7 = VEC_LOAD_2D_EPI8(i - 2, j - 0, tmp2);
-        ee6 = VEC_RIGHT1_EPI8(e5, ee7);
-        ee7 = VEC_RIGHT2_EPI8(e5, ee7);
+        /*---------------------------------------------*/
 
-        // EROSION 3 - 1 ligne jaune
-        // ligne 4, autour de la colonne 2
-        ff8  = VEC_LOAD_2D_EPI8(i - 1, j - 1, vX);
-        f9   = VEC_LOAD_2D_EPI8(i - 1, j - 0, vX);
-        ff8  = VEC_LEFT1_EPI8(ff8, f9);
-        ff10 = VEC_LOAD_2D_EPI8(i - 1, j + 1, vX);
-        ff10 = VEC_RIGHT1_EPI8(f9, ff10);
+        // EROSION 3 - 1, ligne jaune
 
-        // ligne 5, autour de la colonne 2
-        gg8  = VEC_LOAD_2D_EPI8(i - 0, j - 1, vX);
-        g9   = VEC_LOAD_2D_EPI8(i - 0, j - 0, vX);
-        gg8  = VEC_LEFT1_EPI8(gg8, g9);
-        gg10 = VEC_LOAD_2D_EPI8(i - 0, j + 1, vX);
-        gg10 = VEC_RIGHT1_EPI8(g9, gg10);
-
-        for (i = vmi0 + 5; i <= vmi1; ++i)
+        // ligne 2, autour de la colonne 2
+        d8 = VEC_LOAD_2D_EPI8(i - 1, j - 1, vX);
+        d9 = VEC_LOAD_2D_EPI8(i - 1, j    , vX);
+        
+        // ligne 3, autour de la colonne 2
+        e8 = VEC_LOAD_2D_EPI8(i , j - 1, vX);
+        e9 = VEC_LOAD_2D_EPI8(i , j    , vX);
+        
+        for (j = vmj0 + 2; j <= vmj1; ++j)
         {
 
-            printf("i = %d\n", i);
+            // printf("i = %d\n", i);
+
+            // ALLOCATION + CALCUL VECTEUR NON ALIGNES
+
+            // EROSION 3 - 2 ligne rouge
+            aa0 = VEC_LEFT1_EPI8(a0, a1);
+            a2  = VEC_LOAD_2D_EPI8(i - 4, j - 1, tmp1);
+            aa2 = VEC_RIGHT1_EPI8(a1, a2);
+
+            bb0 = VEC_LEFT1_EPI8(b0, b1);
+            b2  = VEC_LOAD_2D_EPI8(i - 3, j - 1, tmp1);
+            bb2 = VEC_RIGHT1_EPI8(b1, b2);
+
+            /*---------------------------------------------*/
+
+            // DILATAION 5 ligne bleue
+            aa3 = VEC_LEFT2_EPI8(a3, a5);
+            aa4 = VEC_LEFT1_EPI8(a3, a5);
+            a7  = VEC_LOAD_2D_EPI8(i - 4, j , tmp2);
+            aa6 = VEC_RIGHT1_EPI8(a5, a7);
+            aa7 = VEC_RIGHT2_EPI8(a5, a7);
+
+            bb3 = VEC_LEFT2_EPI8(b3, b5);
+            bb4 = VEC_LEFT1_EPI8(b3, b5);
+            b7  = VEC_LOAD_2D_EPI8(i - 3, j , tmp2);
+            bb6 = VEC_RIGHT1_EPI8(b5, b7);
+            bb7 = VEC_RIGHT2_EPI8(b5, b7);
+
+            cc3 = VEC_LEFT2_EPI8(c3, c5);
+            cc4 = VEC_LEFT1_EPI8(c3, c5);
+            c7  = VEC_LOAD_2D_EPI8(i - 2, j , tmp2);
+            cc6 = VEC_RIGHT1_EPI8(c5, c7);
+            cc7 = VEC_RIGHT2_EPI8(c5, c7);
+
+            dd3 = VEC_LEFT2_EPI8(d3, d5);
+            dd4 = VEC_LEFT1_EPI8(d3, d5);
+            d7  = VEC_LOAD_2D_EPI8(i - 1, j , tmp2);
+            dd6 = VEC_RIGHT1_EPI8(d5, d7);
+            dd7 = VEC_RIGHT2_EPI8(d5, d7);
+
+            /*---------------------------------------------*/
+
+            // EROSION 3 - 1, ligne jaune
+            dd8  = VEC_LEFT1_EPI8(d8, d9);
+            d10  = VEC_LOAD_2D_EPI8(i - 1, j + 1, vX);
+            dd10 = VEC_RIGHT1_EPI8(d9, d10);
+
+            ee8  = VEC_LEFT1_EPI8(e8, e9);
+            e10  = VEC_LOAD_2D_EPI8(i , j + 1, vX);
+            ee10 = VEC_RIGHT1_EPI8(e9, e10);
+
+            /*---------------------------------------------*/
+            /*---------------------------------------------*/
+
+            // TRAITEMENTS
+
+            // EROSION 3 - 1
+            // ligne 4, autour de la colonne 2
+            ff8  = VEC_LOAD_2D_EPI8(i + 1, j - 1, vX);
+            f9   = VEC_LOAD_2D_EPI8(i + 1, j    , vX);
+            ff8  = VEC_LEFT1_EPI8(ff8, f9);
+            ff10 = VEC_LOAD_2D_EPI8(i + 1, j + 1, vX);
+            ff10 = VEC_RIGHT1_EPI8(f9, ff10);
+
+            // CALCUL
+            // 1ere erosion 3 : ligne jaune 
+            y0 = VEC_AND_9_EPI8(dd8, d9, dd10, ee8, e9, ee10, ff8, f9, ff10);
+            VEC_STORE_2D_EPI8(y0, i, j, tmp2);
+
+            // DILATAION 5
+            // ligne 3 autour de la colonne 1
+            ee3 = VEC_LOAD_2D_EPI8(i , j - 2, tmp2);
+            e5  = VEC_LOAD_2D_EPI8(i , j - 1, tmp2);
+            ee3 = VEC_LEFT2_EPI8(ee3, e5);
+            ee4 = VEC_LEFT1_EPI8(ee3, e5);
+            ee7 = VEC_LOAD_2D_EPI8(i , j    , tmp2);
+            ee6 = VEC_RIGHT1_EPI8(e5, ee7);
+            ee7 = VEC_RIGHT2_EPI8(e5, ee7);
+
+            // CALCUL
+            // dilatation 5 : ligne bleue
+            y1 = VEC_OR_25_EPI8(aa3, aa4, a5, aa6, aa7, bb3, bb4, b5, bb6, bb7, cc3, cc4, c5, cc6, cc7, dd3, dd4, d5, dd6, dd7, ee3, ee4, e5, ee6, ee7);
+            VEC_STORE_2D_EPI8(y1, i - 2, j - 1, tmp1);
 
             // EROSION 3 - 2
             // ligne 1, autour de la colonne 0
-            cc0 = VEC_LOAD_2D_EPI8(i - 4, j - 3, tmp1);
-            c1  = VEC_LOAD_2D_EPI8(i - 4, j - 2, tmp1);
+            cc0 = VEC_LOAD_2D_EPI8(i - 2, j - 3, tmp1);
+            c1  = VEC_LOAD_2D_EPI8(i - 2, j - 2, tmp1);
             cc0 = VEC_LEFT1_EPI8(cc0, c1);
-            cc2 = VEC_LOAD_2D_EPI8(i - 4, j - 1, tmp1);
-            cc2 = VEC_RIGHT1_EPI8(c1, cc2);
+            cc2 = VEC_LOAD_2D_EPI8(i - 2, j - 1, tmp1);
+            cc2 = VEC_RIGHT1_EPI8(c1, cc2);            
 
-            // DILATAION 5
-            // ligne 4 autour de la colonne 1
-            ff3 = VEC_LOAD_2D_EPI8(i - 1, j - 2, tmp2);
-            f5  = VEC_LOAD_2D_EPI8(i - 1, j - 1, tmp2);
-            ff4 = VEC_LEFT1_EPI8(ff3, f5);
-            ff3 = VEC_LEFT2_EPI8(ff3, f5);
-            ff7 = VEC_LOAD_2D_EPI8(i - 1, j - 0, tmp2);
-            ff6 = VEC_RIGHT1_EPI8(f5, ff7);
-            ff7 = VEC_RIGHT2_EPI8(f5, ff7);
-
-            // EROSION 3 - 1
-            // ligne 6, autour de la colonne 3
-            hh8  = VEC_LOAD_2D_EPI8(i + 1, j - 1, vX);
-            h9   = VEC_LOAD_2D_EPI8(i + 1, j - 0, vX);
-            hh8  = VEC_LEFT1_EPI8(hh8, h9);
-            hh10 = VEC_LOAD_2D_EPI8(i + 1, j + 1, vX);
-            hh10 = VEC_RIGHT1_EPI8(h9, hh10);
-
-            // TRAITEMENT
-
-            // 1ere erosion 3 : ligne jaune : ligne 5, colonne 2
-            y0 = VEC_AND_9_EPI8(ff8, f9, ff10, gg8, g9, gg10, hh8, h9, hh10);
-            VEC_STORE_2D_EPI8(y0, i, j, tmp2);
-      
-            // dilatation 5 : ligne cyan : ligne 2, colonne 1
-            y1 = VEC_OR_25_EPI8(bb3, bb4, b5, bb6, bb7, cc3, cc4, c5, cc6, cc7, dd3, dd4, d5, dd6, dd7, ee3, ee4, e5, ee6, ee7, ff3, ff4, f5, ff6, ff7);
-            VEC_STORE_2D_EPI8(y1, i - 3, j - 1, tmp1);
-
-            // 2e erosion 3 : ligne rouge : ligne 0, colonne 0
+            // CALCUL
+            // 2e erosion 3 : ligne rouge 
             y2 = VEC_AND_9_EPI8(aa0, a1, aa2, bb0, b1, bb2, cc0, c1, cc2);
-            VEC_STORE_2D_EPI8(y2, i - 5, j - 2, vY);
+            VEC_STORE_2D_EPI8(y2, i - 3, j - 2, vY);
 
             // ROTATION DE REGISTRE  
 
             // colonne 0   
-            aa0 = bb0 ; bb0 = cc0 ;
-            a1  = b1  ; b1  = c1  ;
-            aa2 = bb2 ; bb2 = cc2 ;
+            a0 = a1 ; a1 = a2 ;
+            b0 = b1 ; b1 = b2 ;
 
             // colonne 1
-            bb3 = cc3 ; cc3 = dd3 ; dd3 = ee3 ; ee3 = ff3 ;
-            bb4 = cc4 ; cc4 = dd4 ; dd4 = ee4 ; ee4 = ff4 ;
-            b5  = c5  ; c5  = d5  ; d5  = e5  ; e5  = f5  ;
-            bb6 = cc6 ; cc6 = dd6 ; dd6 = ee6 ; ee6 = ff6 ;
-            bb7 = cc7 ; cc7 = dd7 ; dd7 = ee7 ; ee7 = ff7 ;
+            a3 = a5 ; a5 = a7 ; 
+            b3 = b5 ; b5 = b7 ;
+            c3 = c5 ; c5 = c7 ;
+            d3 = d5 ; d5 = d7 ;
 
             // colonne 2
-            ff8  = gg8  ; gg8  = hh8  ;
-            f9   = g9   ; g9   = h9   ;
-            ff10 = gg10 ; gg10 = hh10 ;
+            d8 = d9 ; d9 = d10 ;
+            e8 = e9 ; e9 = e10 ;
         }
 
-        // EPILOGUE BOUCLE EXTERNE
+        // EPILOGUE BOUCLE
 
-        printf("3\n");
+        // printf("3\n");
 
-        // dilataion 5 sur les 2 dernieres ligne de la 2 colonnes
-        dilatation_5_SIMD_opti(tmp2, tmp1, vmi1 - 1, vmi1, j - 1, j - 1);
+        // dilataion 5 sur l'avant avant derniere ligne et la derniere colonne de l'iteration courante
+        dilatation_5_SIMD_opti(tmp2, tmp1, i - 2, i - 2, vmj1, vmj1);
 
-        printf("\n\nvmi1 - 3 = %d, vmi1 = %d, j - 2 = %d, j - 2 = %d\n\n", vmi1 - 3, vmi1, j - 2, j - 2);
+        // printf("\n\nvmi1 - 3 = %d, vmi1 = %d, j - 2 = %d, j - 2 = %d\n\n", vmi1 - 3, vmi1, j - 2, j - 2);
 
-        printf("4\n");
+        // printf("4\n");
 
-        // erosion sur les 4 dernières lignes de l'avant avant derniere colonne de l'iteration courante
-        erosion_3_SIMD_opti(tmp1, vY, vmi1 - 3, vmi1, j - 2, j - 2);
+        // erosion 3 sur l'avant avant avant derniere ligne et les 2 dernières colonnes de l'iteration courante
+        erosion_3_SIMD_opti(tmp1, vY, i - 3, i - 3, vmj1 - 1, vmj1);
     }
 
     // EPILOGUE GLOBAL
 
-    printf("5\n");
+    // printf("5\n");
 
-    // dilatation 5 sur toutes les lignes de la derniere colonne
-    dilatation_5_SIMD_opti(tmp2, tmp1, vmi0, vmi1, vmj1, vmj1);
+    // dilatation 5 sur les 2 dernieres lignes
+    dilatation_5_SIMD_opti(tmp2, tmp1, vmi1 - 1, vmi1, vmj0, vmj1);
 
-    printf("6\n");
+    // printf("6\n");
 
-    // erosion sur sur toutes les lignes des 2 dernieres colonnes
-    erosion_3_SIMD_opti(tmp1, vY, vmi0, vmi1, vmj1 - 1, vmj1);
+    // erosion 3 sur les 3 dernieres lignes
+    erosion_3_SIMD_opti(tmp1, vY, vmi1 - 2, vmi1, vmj0, vmj1);
 }
 
 

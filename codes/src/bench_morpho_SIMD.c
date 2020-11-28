@@ -470,12 +470,12 @@ void gen_vimg_bin_bench_SIMD(int kernel_size){
 
 void main_bench_morpho_SIMD(int argc, char *argv[]){
     
-    // bench_morpho_3_SIMD();
+    bench_morpho_3_SIMD();
     // bench_morpho_5_SIMD();
     
-    // bench_morpho_3_SIMD_opti();
+    bench_morpho_3_SIMD_opti();
 
     bench_morpho_3_SIMD_pipeline();
 
-    bench_morpho_3_SIMD_pipeline_opti();
+    // bench_morpho_3_SIMD_pipeline_opti();
 }
