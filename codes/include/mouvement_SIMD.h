@@ -28,6 +28,7 @@ extern "C" {
 
 #include "mouvement.h"
 
+void copy_vui8matrix(int vmi0, int vmi1, int vmj0, int vmj1, vuint8** src, vuint8** dest);
 
 void duplicate_vborder();
 void gen_pgm_img_simd(int mi0, int mi1, int mj0, int mj1, int vmi0, int vmi1, int vmj0, int vmj1, int card, vuint8** image, vuint8** mean0, vuint8** std0);

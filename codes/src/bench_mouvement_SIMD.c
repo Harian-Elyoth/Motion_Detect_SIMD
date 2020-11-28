@@ -4,22 +4,13 @@
 
 #include "bench_mouvement_SIMD.h"
 
-void bench_mouvement_SIMD_car(bool is_visual){
+void bench_mouvement_SIMD_car(){
 
 	int width, height;
 
-	if (is_visual)
-	{
-		// img test size
-		width  = 32; // correspond au nb de colonne  => indice boucle j
-		height = 16; // correspond au nb de ligne    => indice boucle i
-	}
-	else{
-
-		// img reel size
-		width  = 320; // correspond au nb de colonne  => indice boucle j
-		height = 240; // correspond au nb de ligne    => indice boucle i
-	}
+	// img reel size
+	width  = 320; // correspond au nb de colonne  => indice boucle j
+	height = 240; // correspond au nb de ligne    => indice boucle i
 
 	// chronometrie
 	int iter, niter = 4;
@@ -47,13 +38,6 @@ void bench_mouvement_SIMD_car(bool is_visual){
 	puts("=== benchmark mouvement unitaire SIMD ===");
 	puts("=========================================");
 
-	// BORD
-	// 1 for 3x3 
-	int b = 1; 
-
-	// 2 for 5x5
-	//int b = 2;
-
 	// cardinalité des registres
 	int card = card_vuint8(); // = 16 ici
 
@@ -65,34 +49,26 @@ void bench_mouvement_SIMD_car(bool is_visual){
 	int mi0 = 0; int mi1 = height-1;
 	int mj0 = 0; int mj1 = width-1;
 
-	// indices scalaires matrices avec bord
-	int mi0b = mi0-b; int mi1b = mi1+b;
-	int mj0b = mj0-b; int mj1b = mj1+b;
-
 	// indices vectoriels matrices
 	int vmi0 = 0; int vmi1 = (height)-1;
 	int vmj0 = 0; int vmj1 = (width/card)-1;
 
-	// indices vectoriels matrices avec bord
-	int vmi0b = vmi0-b; int vmi1b = vmi1+b;
-	int vmj0b = vmj0-1; int vmj1b = vmj1+1;
-
 	// images
-	vuint8** image = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
+	vuint8** image 				= vui8matrix(vmi0, vmi1, vmj0, vmj1);
 
 	// moyennes
-	vuint8** mean0 = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
-	vuint8** mean1 = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);		
+	vuint8** mean0				= vui8matrix(vmi0, vmi1, vmj0, vmj1);
+	vuint8** mean1 				= vui8matrix(vmi0, vmi1, vmj0, vmj1);		
 
 	// ecart-types
-	vuint8** std0 = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
-	vuint8** std1 = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);			
+	vuint8** std0 				= vui8matrix(vmi0, vmi1, vmj0, vmj1);
+	vuint8** std1 				= vui8matrix(vmi0, vmi1, vmj0, vmj1);			
 
 	// image de différence
-	vuint8 ** img_diff = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);	
+	vuint8 ** img_diff 			= vui8matrix(vmi0, vmi1, vmj0, vmj1);	
 
 	// image binaire (sortie)
-	vuint8 ** img_bin = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
+	vuint8 ** img_bin 			= vui8matrix(vmi0, vmi1, vmj0, vmj1);
 
 
 	/*---------------------------------------------------*/
@@ -101,61 +77,27 @@ void bench_mouvement_SIMD_car(bool is_visual){
 	// -- chargement et conversion -- //
 	// ------------------------------ //
 
-	uint8 ** img_temp = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8 ** img_temp = ui8matrix(mi0, mi1, mj0, mj1);
 
-	if (is_visual)
-    {
-    	// gen img visuel
-		// gen_pgm_img_simd();
+	MLoadPGM_ui8matrix("../car3/car_3037.pgm", mi0, mi1, mj0, mj1, img_temp);
 
-		MLoadPGM_ui8matrix("pgm_imgs/my_pgm1.pgm", mi0b, mi1b, mj0b, mj1b, img_temp);
+	// transfert ui8matrix à vui8matrix init
+	ui8matrix_to_vui8matrix(card, vmi0, vmi1, vmj0, vmj1, img_temp, image);
 
-		duplicate_border(mi0, mi1, mj0, mj1, b, img_temp);
-
-		// transfert ui8matrix à vui8matrix init
-		ui8matrix_to_vui8matrix(card, vmi0b, vmi1b, vmj0b, vmj1b, img_temp, image);
-
-		// initiate mean0 et std0 for first iteration
-		for (int i = vmi0b; i <= vmi1b; ++i)
+	// initiate mean0 et std0 for first iteration
+	for (int i = vmi0; i <= vmi1; ++i)
+	{
+		for (int j = vmj0; j <= vmj1; ++j)
 		{
-			for (int j = vmj0b; j <= vmj1b; ++j)
-			{
-				mean0[i][j] = image[i][j];
-				std0[i][j]  = init_vuint8(VMIN);
-			}
+			mean0[i][j] = image[i][j];
+			std0[i][j]  = init_vuint8(VMIN);
 		}
+	}
 
-		MLoadPGM_ui8matrix("pgm_imgs/my_pgm2.pgm", mi0b, mi1b, mj0b, mj1b, img_temp);
-
-		duplicate_border(mi0, mi1, mj0, mj1, b, img_temp);
-    }
-    else
-    {
-		MLoadPGM_ui8matrix("../car3/car_3037.pgm", mi0b, mi1b, mj0b, mj1b, img_temp);
-
-		duplicate_border(mi0, mi1, mj0, mj1, b, img_temp);
-
-		// transfert ui8matrix à vui8matrix init
-
-		ui8matrix_to_vui8matrix(card, vmi0b, vmi1b, vmj0b, vmj1b, img_temp, image);
-
-		// initiate mean0 et std0 for first iteration
-		for (int i = vmi0b; i <= vmi1b; ++i)
-		{
-			for (int j = vmj0b; j <= vmj1b; ++j)
-			{
-				mean0[i][j] = image[i][j];
-				std0[i][j]  = init_vuint8(VMIN);
-			}
-		}
-
-		MLoadPGM_ui8matrix("../car3/car_3038.pgm", mi0b, mi1b, mj0b, mj1b, img_temp);
-
-		duplicate_border(mi0, mi1, mj0, mj1, b, img_temp);
-    }
+	MLoadPGM_ui8matrix("../car3/car_3038.pgm", mi0, mi1, mj0, mj1, img_temp);
 
 	// transfert ui8matrix à vui8matrix real
-	ui8matrix_to_vui8matrix(card, vmi0b, vmi1b, vmj0b, vmj1b, img_temp, image);
+	ui8matrix_to_vui8matrix(card, vmi0, vmi1, vmj0, vmj1, img_temp, image);
 
 
 	/*---------------------------------------------------*/
@@ -170,7 +112,7 @@ void bench_mouvement_SIMD_car(bool is_visual){
 	/*----------------------------------------------------------------------------------------------*/
 
 	// STEP 1
-	CHRONO(SigmaDelta_step1_simd(vmi0b, vmi1b, vmj0b, vmj1b, mean0, mean1, image), cycles_step1);
+	CHRONO(SigmaDelta_step1_simd(vmi0, vmi1, vmj0, vmj1, mean0, mean1, image), cycles_step1);
 	time_step1 = (double)(cycles_step1/CLK_PROC);
 	debit_step1 = (width*height) / time_step1;	
 
@@ -180,7 +122,7 @@ void bench_mouvement_SIMD_car(bool is_visual){
 	BENCH(printf("debit (pixel/sec)   = %0.2f", debit_step1)); BENCH(puts("")); BENCH(puts(""));
 
 	// STEP 1 OPTI
-	CHRONO(SigmaDelta_step1_simd_opti(vmi0b, vmi1b, vmj0b, vmj1b, mean0, mean1, image), cycles_step1_opti);
+	CHRONO(SigmaDelta_step1_simd_opti(vmi0, vmi1, vmj0, vmj1, mean0, mean1, image), cycles_step1_opti);
 	time_step1_opti = (double)(cycles_step1_opti/CLK_PROC);
 	debit_step1_opti = (WIDTH*HEIGHT) / time_step1_opti;
 
@@ -193,7 +135,7 @@ void bench_mouvement_SIMD_car(bool is_visual){
 	/*----------------------------------------------------------------------------------------------*/
 
 	// STEP 2
-	CHRONO(SigmaDelta_step2_simd(vmi0b, vmi1b, vmj0b, vmj1b, image, mean1, img_diff), cycles_step2);
+	CHRONO(SigmaDelta_step2_simd(vmi0, vmi1, vmj0, vmj1, image, mean1, img_diff), cycles_step2);
 	time_step2 = (double)(cycles_step2/CLK_PROC);
 	debit_step2 = (width*height) / time_step2;
 
@@ -203,7 +145,7 @@ void bench_mouvement_SIMD_car(bool is_visual){
 	BENCH(printf("debit (pixel/sec)   = %0.2f", debit_step2)); BENCH(puts("")); BENCH(puts(""));
 
 	// STEP 2 OPTI
-	CHRONO(SigmaDelta_step2_simd_opti(vmi0b, vmi1b, vmj0b, vmj1b, image, mean1, img_diff), cycles_step2_opti);
+	CHRONO(SigmaDelta_step2_simd_opti(vmi0, vmi1, vmj0, vmj1, image, mean1, img_diff), cycles_step2_opti);
 	time_step2_opti = (double)(cycles_step2_opti/CLK_PROC);
 	debit_step2_opti = (WIDTH*HEIGHT) / time_step2_opti;
 
@@ -216,7 +158,7 @@ void bench_mouvement_SIMD_car(bool is_visual){
 	/*----------------------------------------------------------------------------------------------*/
 
 	// STEP 3
-	CHRONO(SigmaDelta_step3_simd(vmi0b, vmi1b, vmj0b, vmj1b, std0, std1, img_diff), cycles_step3);
+	CHRONO(SigmaDelta_step3_simd(vmi0, vmi1, vmj0, vmj1, std0, std1, img_diff), cycles_step3);
 	time_step3 = (double)(cycles_step3/CLK_PROC);
 	debit_step3 = (width*height) / time_step3;
 
@@ -226,7 +168,7 @@ void bench_mouvement_SIMD_car(bool is_visual){
 	BENCH(printf("debit (pixel/sec)   = %0.2f", debit_step3)); BENCH(puts("")); BENCH(puts(""));
 
 	// STEP 3 OPTI
-	CHRONO(SigmaDelta_step3_simd_opti(vmi0b, vmi1b, vmj0b, vmj1b, std0, std1, img_diff), cycles_step3_opti);
+	CHRONO(SigmaDelta_step3_simd_opti(vmi0, vmi1, vmj0, vmj1, std0, std1, img_diff), cycles_step3_opti);
 	time_step3_opti = (double)(cycles_step3_opti/CLK_PROC);
 	debit_step3_opti = (WIDTH*HEIGHT) / time_step3_opti;
 
@@ -239,7 +181,7 @@ void bench_mouvement_SIMD_car(bool is_visual){
 	/*----------------------------------------------------------------------------------------------*/
 
 	// STEP 4
-	CHRONO(SigmaDelta_step4_simd( vmi0b, vmi1b, vmj0b, vmj1b, std1, img_diff, img_bin), cycles_step4);
+	CHRONO(SigmaDelta_step4_simd(vmi0, vmi1, vmj0, vmj1, std1, img_diff, img_bin), cycles_step4);
 	time_step4 = (double)(cycles_step4/CLK_PROC);
 	debit_step4 = (width*height) / time_step4;
 
@@ -249,7 +191,7 @@ void bench_mouvement_SIMD_car(bool is_visual){
 	BENCH(printf("debit (pixel/sec)   = %0.2f", debit_step4)); BENCH(puts("")); BENCH(puts(""));
 
 	// STEP 4 OPTI
-	CHRONO(SigmaDelta_step4_simd_opti(vmi0b, vmi1b, vmj0b, vmj1b, std1, img_diff, img_bin), cycles_step4_opti);
+	CHRONO(SigmaDelta_step4_simd_opti(vmi0, vmi1, vmj0, vmj1, std1, img_diff, img_bin), cycles_step4_opti);
 	time_step4_opti = (double)(cycles_step4_opti/CLK_PROC);
 	debit_step4_opti = (WIDTH*HEIGHT) / time_step4_opti;
 
@@ -285,7 +227,7 @@ void bench_mouvement_SIMD_car(bool is_visual){
 	/*----------------------------------------------------------------------------------------------*/
 
 	// FULL
-	CHRONO(SigmaDelta_simd_full(vmi0b, vmi1b, vmj0b, vmj1b, image, mean0, std0, img_bin), cycles_total_full);
+	CHRONO(SigmaDelta_simd_full(vmi0, vmi1, vmj0, vmj1, image, mean0, std0, img_bin), cycles_total_full);
 	time_total_full = (double)(cycles_total_full/CLK_PROC);
 	debit_total_full = (WIDTH*HEIGHT) / time_total_full;
 	time_total_full *= 1000;
@@ -296,7 +238,7 @@ void bench_mouvement_SIMD_car(bool is_visual){
 	BENCH(printf("debit (pixel/sec)   = %0.2f", debit_total_full)); BENCH(puts("")); BENCH(puts(""));	
 
 	// FULL OPTI
-	CHRONO(SigmaDelta_simd_full_opti(vmi0b, vmi1b, vmj0b, vmj1b, image, mean0, std0, img_bin), cycles_total_full_opti);
+	CHRONO(SigmaDelta_simd_full_opti(vmi0, vmi1, vmj0, vmj1, image, mean0, std0, img_bin), cycles_total_full_opti);
 	time_total_full_opti = (double)(cycles_total_full_opti/CLK_PROC);
 	debit_total_full_opti = (WIDTH*HEIGHT) / time_total_full_opti;
 	time_total_full_opti *= 1000;
@@ -312,16 +254,16 @@ void bench_mouvement_SIMD_car(bool is_visual){
 	// -- free -- //
 	// ---------- //
 
-	free_vui8matrix(image, vmi0b, vmi1b, vmj0b, vmj1b);
+	free_vui8matrix(image   , vmi0, vmi1, vmj0, vmj1);
 
-	free_vui8matrix(mean0, vmi0b, vmi1b, vmj0b, vmj1b);
-	free_vui8matrix(mean1, vmi0b, vmi1b, vmj0b, vmj1b);
+	free_vui8matrix(mean0   , vmi0, vmi1, vmj0, vmj1);
+	free_vui8matrix(mean1   , vmi0, vmi1, vmj0, vmj1);
 
-	free_vui8matrix(std0, vmi0b, vmi1b, vmj0b, vmj1b);
-	free_vui8matrix(std1, vmi0b, vmi1b, vmj0b, vmj1b);
+	free_vui8matrix(std0    , vmi0, vmi1, vmj0, vmj1);
+	free_vui8matrix(std1    , vmi0, vmi1, vmj0, vmj1);
 
-	free_vui8matrix(img_diff, vmi0b, vmi1b, vmj0b, vmj1b);
-	free_vui8matrix(img_bin, vmi0b, vmi1b, vmj0b, vmj1b);
+	free_vui8matrix(img_diff, vmi0, vmi1, vmj0, vmj1);
+	free_vui8matrix(img_bin , vmi0, vmi1, vmj0, vmj1);
 }
 
 void bench_mouvement_SIMD_dataset(){
@@ -697,7 +639,7 @@ void bench_mouvement_SIMD_graphic(){
 void main_bench_mouvement_SIMD(int argc, char *argv[]){
 
 	// benchmark unitaire sur petite images test generer
-	// bench_mouvement_SIMD_car(true);
+	bench_mouvement_SIMD_car();
 
 	// benchmark unitaire sur image du set
 	// bench_mouvement_SIMD_car(false);

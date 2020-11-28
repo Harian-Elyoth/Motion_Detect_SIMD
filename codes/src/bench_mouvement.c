@@ -433,6 +433,13 @@ void bench_mouvement_dataset(){
 		/*----------------------------------------------------------------------------------------------*/
 		/*----------------------------------------------------------------------------------------------*/
 
+		// rotate mean and std matrix
+		copy_ui8matrix(mi0, mi1, mj0, mj1, mean1, mean0);
+		copy_ui8matrix(mi0, mi1, mj0, mj1, std1 , std0 );
+
+		/*----------------------------------------------------------------------------------------------*/
+		/*----------------------------------------------------------------------------------------------*/
+
 		cycles_step1_mean 			+= cycles_step1;
 		time_step1_mean  			+= time_step1;
 		debit_step1_mean 			+= debit_step1;
@@ -738,7 +745,7 @@ void main_bench_mouvement(int argc, char *argv[]){
 	bench_mouvement_car();
 
 	// benchmark global sur tout le dataset
-	bench_mouvement_dataset();
+	// bench_mouvement_dataset();
 
 	// benchmark sur images generees pour fichier csv
 	//bench_mouvement_graphic();

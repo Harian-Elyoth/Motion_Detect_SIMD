@@ -16,12 +16,6 @@ void test_mouvement_SIMD_unit(){
 	puts("=== test mouvement unitaire SIMD ===");
 	puts("====================================");
 
-	// BORD
-	// 1 for 3x3 
-	int b = 1; 
-
-	// 2 for 5x5
-	//int b = 2;
 
 	// cardinalité des registres
 	int card = card_vuint8(); // 16
@@ -34,30 +28,22 @@ void test_mouvement_SIMD_unit(){
 	int mi0 = 0; int mi1 = height-1;
 	int mj0 = 0; int mj1 = width-1;
 
-	// indices scalaires matrices avec bord
-	int mi0b = mi0-b; int mi1b = mi1+b;
-	int mj0b = mj0-b; int mj1b = mj1+b;
-
 	// indices vectoriels matrices
 	int vmi0 = 0; int vmi1 = (height)-1;
 	int vmj0 = 0; int vmj1 = (width/card)-1;
 
-	// indices vectoriels matrices avec bord
-	int vmi0b = vmi0-b; int vmi1b = vmi1+b;
-	int vmj0b = vmj0-1; int vmj1b = vmj1+1;
-
 	DEBUG(puts("")); 
-	DEBUG(printf("mi0b : %d\n", mi0b)); 
-	DEBUG(printf("mi1b : %d\n", mi1b)); 
-	DEBUG(printf("mj0b : %d\n", mj0b)); 
-	DEBUG(printf("mj1b : %d\n", mj1b));
+	DEBUG(printf("mi0 : %d\n", mi0)); 
+	DEBUG(printf("mi1 : %d\n", mi1)); 
+	DEBUG(printf("mj0 : %d\n", mj0)); 
+	DEBUG(printf("mj1 : %d\n", mj1));
 	DEBUG(puts("")); 
 
 	DEBUG(puts("")); 
-	DEBUG(printf("vmi0b : %d\n", vmi0b)); 
-	DEBUG(printf("vmi1b : %d\n", vmi1b)); 
-	DEBUG(printf("vmj0b : %d\n", vmj0b)); 
-	DEBUG(printf("vmj1b : %d\n", vmj1b));
+	DEBUG(printf("vmi0 : %d\n", vmi0)); 
+	DEBUG(printf("vmi1 : %d\n", vmi1)); 
+	DEBUG(printf("vmj0 : %d\n", vmj0)); 
+	DEBUG(printf("vmj1 : %d\n", vmj1));
 	DEBUG(puts("")); 
 
 	// images
@@ -99,7 +85,7 @@ void test_mouvement_SIMD_unit(){
 	DEBUG(display_vui8matrix(mean0, vmi0, vmi1, vmj0, vmj1, format, "\nmean0 :\n"));
 	DEBUG(display_vui8matrix(image, vmi0, vmi1, vmj0, vmj1, format, "\nimage :\n"));
 
-	SigmaDelta_step1_simd(vmi0, vmi1, vmj0, vmj1, mean0, mean1, image);
+	SigmaDelta_step1_simd_opti(vmi0, vmi1, vmj0, vmj1, mean0, mean1, image);
 
 	vuint8** mean1_correct 	= vui8matrix(vmi0, vmi1, vmj0, vmj1);
 	mean1_correct[0][0]    	= init_vuint8_all(0, 10, 21, 32, 43, 54, 65, 76, 87, 98 , 109, 120, 131, 142, 153, 164); 
@@ -166,6 +152,8 @@ void test_mouvement_SIMD_unit(){
     DEBUG(display_vui8matrix(std1, vmi0, vmi1, vmj0, vmj1, format, "\nstd1 :\n"));
 
 	SigmaDelta_step4_simd_opti(vmi0, vmi1, vmj0, vmj1, std1, img_diff, img_bin);
+	// SigmaDelta_simd_full(vmi0, vmi1, vmj0, vmj1, image, mean0, std0, img_bin);
+	// SigmaDelta_simd_full_opti(vmi0, vmi1, vmj0, vmj1, image, mean0, std0, img_bin);
 
 	vuint8** img_bin_correct		= vui8matrix(vmi0, vmi1, vmj0, vmj1);
 	img_bin_correct[0][0]    		= init_vuint8_all(0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1); 
@@ -477,6 +465,10 @@ void test_mouvement_SIMD_dataset(){
 
 		// free temp ui8matrix
 		free_ui8matrix(img_print, mi0, mi1, mj0, mj1);
+
+		// rotate mean and std vmatrix
+		copy_vui8matrix(vmi0, vmi1, vmj0, vmj1, mean1, mean0);
+		copy_vui8matrix(vmi0, vmi1, vmj0, vmj1, std1 , std0 );
 	}
 
 	/*---------------------------------------------------*/
@@ -502,11 +494,11 @@ void main_test_mouvement_SIMD(int argc, char *argv[]){
 	// Genere les images pgm dans pgm_imgs/
 
 	// test unitaire sur petite image generer
-	// test_mouvement_SIMD_unit();
+	test_mouvement_SIMD_unit();
 
 	// test unitaire sur image du set
 	// test_mouvement_SIMD_car();
 
 	// test global sur tout le set
-	test_mouvement_SIMD_dataset();	
+	// test_mouvement_SIMD_dataset();	
 }

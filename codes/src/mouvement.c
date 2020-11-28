@@ -830,3 +830,15 @@ void bin_to_pgm(int mi0, int mi1, int mj0, int mj1, uint8** img, char* filename)
 	// save result on pgm file
 	SavePGM_ui8matrix(pgm_out, mi0, mi1, mj0, mj1, Fname);
 }
+
+void copy_ui8matrix(int mi0, int mi1, int mj0, int mj1, uint8** src, uint8** dest){
+	
+	for (int i = mi0; i <= mi1; ++i)
+	{
+		for (int j = mj0; j <= mj1; ++j)
+		{
+			dest[i][j] = src[i][j];
+		}
+	}
+}
+

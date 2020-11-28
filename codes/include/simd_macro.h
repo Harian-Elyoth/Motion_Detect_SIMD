@@ -68,39 +68,24 @@
 							 _mm_extract_epi16(x2, 0), _mm_extract_epi16(x2, 1), _mm_extract_epi16(x2, 2), _mm_extract_epi16(x2, 3),	\
 							 _mm_extract_epi16(x2, 4), _mm_extract_epi16(x2, 5), _mm_extract_epi16(x2, 6), _mm_extract_epi16(x2, 7));	\
 
+// MIN MAX UNSIGNED EPI8
+#define VEC_MIN_EPU8(x, y) _mm_min_epu8(x, y)
+#define VEC_MAX_EPU8(x, y) _mm_max_epu8(x, y)
+
 // COMPARE EPI8
 #define VEC_CMPEQ_EPI8(x, y) _mm_cmpeq_epi8(x, y) // if x = y => 255 else 0
 #define VEC_CMPGT_EPI8(x, y) _mm_cmpgt_epi8(x, y) // if x > y => 255 else 0
 #define VEC_CMPLT_EPI8(x, y) _mm_cmplt_epi8(x, y) // if x < y => 255 else 0
 
 // COMPARE EPI8 UNSIGNED
-#define VEC_CMPGTU_EPI8(x, y, cmpgt) 			\
-		EPI8_TO_EPI16(x, x1_gt, x2_gt);			\
-		EPI8_TO_EPI16(y, y1_gt, y2_gt);			\
-		cmpgt1 = _mm_cmpgt_epi16(x1_gt, y1_gt);	\
-		cmpgt2 = _mm_cmpgt_epi16(x2_gt, y2_gt);	\
-		EPI16_TO_EPI8(cmpgt, cmpgt1, cmpgt2);	\
 
-#define VEC_CMPLTU_EPI8(x, y, cmplt) 			\
-		EPI8_TO_EPI16(x, x1_lt, x2_lt);			\
-		EPI8_TO_EPI16(y, y1_lt, y2_lt);			\
-		cmplt1 = _mm_cmplt_epi16(x1_lt, y1_lt);	\
-		cmplt2 = _mm_cmplt_epi16(x2_lt, y2_lt);	\
-		EPI16_TO_EPI8(cmplt, cmplt1, cmplt2);	\
+#define VEC_CMPGE_EPU8(a, b) VEC_CMPEQ_EPI8(VEC_MAX_EPU8(a, b), a)
 
-#define VEC_MINU_EPI8(x, y, min) 					\
-		EPI8_TO_EPI16(x, x1_min, x2_min);			\
-		EPI8_TO_EPI16(y, y1_min, y2_min);			\
-		min1 = _mm_min_epi16(x1_min, y1_min);		\
-		min2 = _mm_min_epi16(x2_min, y2_min);		\
-		EPI16_TO_EPI8(min, min1, min2);				\
+#define VEC_CMPLE_EPU8(a, b) VEC_CMPGE_EPU8(b, a)
 
-#define VEC_MAXU_EPI8(x, y, max) 					\
-		EPI8_TO_EPI16(x, x1_max, x2_max);			\
-		EPI8_TO_EPI16(y, y1_max, y2_max);			\
-		max1 = _mm_max_epi16(x1_max, y1_max);		\
-		max2 = _mm_max_epi16(x2_max, y2_max);		\
-		EPI16_TO_EPI8(max, max1, max2);				\
+#define VEC_CMPGT_EPU8(a, b) _mm_xor_si128(VEC_CMPLE_EPU8(a, b), _mm_set1_epi8(-1))
+
+#define VEC_CMPLT_EPU8(a, b) VEC_CMPGT_EPU8(b, a)
 
 // COMPARE EPI16
 #define VEC_CMPEQ_EPI16(x, y) _mm_cmpeq_epi16(x, y) // if x = y => 255 else 0
@@ -140,6 +125,8 @@
 		res1_abs = _mm_abs_epi16(sub1_abs);			\
 		res2_abs = _mm_abs_epi16(sub2_abs);			\
 		EPI16_TO_EPI8(z, res1_abs, res2_abs);		\
+
+#define VEC_ABS_SUB_EPU8(x, y) _mm_or_si128(_mm_subs_epu8(x,  y), _mm_subs_epu8(y, x))
 
 // CALCULS SUR 9 VECTEURS
 #define VEC_AND_9_EPI8(x1, x2, x3, x4, x5, x6, x7, x8, x9) _mm_and_si128(x1, _mm_and_si128(x2, _mm_and_si128(x3, _mm_and_si128(x4, _mm_and_si128(x5, _mm_and_si128(x6, _mm_and_si128(x7, _mm_and_si128(x8, x9))))))))

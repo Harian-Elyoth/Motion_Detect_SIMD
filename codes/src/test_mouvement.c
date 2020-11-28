@@ -406,6 +406,10 @@ void test_mouvement_dataset(){
 
 		// convert binary img to pgm img
 		bin_to_pgm(mi0, mi1, mj0, mj1, img_bin, filename_out);
+
+		// rotate mean and std matrix
+		copy_ui8matrix(mi0, mi1, mj0, mj1, mean1, mean0);
+		copy_ui8matrix(mi0, mi1, mj0, mj1, std1 , std0 );
 	}
 
 	// ---------- //

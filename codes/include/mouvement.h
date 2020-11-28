@@ -70,6 +70,7 @@ void gen_pgm_img(int mi0, int mi1, int mj0, int mj1, uint8** mean0, uint8** std0
 
 void bin_to_pgm(int mi0, int mi1, int mj0, int mj1, uint8** img_bin, char* filename);
 
+void copy_ui8matrix(int mi0, int mi1, int mj0, int mj1, uint8** src, uint8** dest);
 
 #ifdef __cplusplus
 }
