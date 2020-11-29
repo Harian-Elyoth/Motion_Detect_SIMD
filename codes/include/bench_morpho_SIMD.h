@@ -37,6 +37,8 @@ int b_bench;
 
 vuint8 ** vimg_bin_bench;
 vuint8 ** vimg_filtered_bench;
+vuint8 ** tmp1_SIMD;
+vuint8 ** tmp2_SIMD;
 
 int vmi0_bench, vmi1_bench, vmj0_bench, vmj1_bench; 	// indices scalaire
 int vmi0b_bench, vmi1b_bench, vmj0b_bench, vmj1b_bench; // indices scalaires avec bord

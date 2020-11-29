@@ -109,8 +109,10 @@ void bench_morpho_3_SIMD(){
     double time;
     double debit;
     
+
     CHRONO(morpho_3_SIMD(vimg_bin_bench, vimg_filtered_bench , vmi0_bench, vmi1_bench, vmj0_bench, vmj1_bench), cycles);
     time = (double)(cycles/CLK_PROC);
+
     debit = (WIDTH_BENCH * HEIGHT_BENCH) / time;
 
     BENCH(printf("Bench morpho SIMD 3 :\n"));
@@ -131,8 +133,10 @@ void bench_morpho_5_SIMD(){
     double time;
     double debit;
 
+
     CHRONO(morpho_5_SIMD(vimg_bin_bench, vimg_filtered_bench , vmi0_bench, vmi1_bench, vmj0_bench, vmj1_bench), cycles);
     time = (double)(cycles/CLK_PROC);
+
     debit = (WIDTH_BENCH * HEIGHT_BENCH) / time;
 
     BENCH(printf("Bench morpho SIMD 5 :\n"));
@@ -243,8 +247,10 @@ void bench_morpho_3_SIMD_opti(){
     double time;
     double debit;
     
+
     CHRONO(morpho_3_SIMD_opti(vimg_bin_bench, vimg_filtered_bench , vmi0_bench, vmi1_bench, vmj0_bench, vmj1_bench), cycles);
     time = (double)(cycles/CLK_PROC);
+
     debit = (WIDTH_BENCH * HEIGHT_BENCH) / time;
 
     BENCH(printf("Bench morpho SIMD 3 opti:\n"));
@@ -265,8 +271,10 @@ void bench_morpho_5_SIMD_opti(){
     double time;
     double debit;
 
+
     CHRONO(morpho_5_SIMD_opti(vimg_bin_bench, vimg_filtered_bench , vmi0_bench, vmi1_bench, vmj0_bench, vmj1_bench), cycles);
     time = (double)(cycles/CLK_PROC);
+
     debit = (WIDTH_BENCH * HEIGHT_BENCH) / time;
 
     BENCH(printf("Bench morpho SIMD 5 opti:\n"));
@@ -405,7 +413,11 @@ void gen_vimg_bin_bench_SIMD(int kernel_size){
 	vimg_bin_bench = vui8matrix(vmi0b_bench, vmi1b_bench, vmj0b_bench, vmj1b_bench);
 
 	// image filtré par morpho
-	vimg_filtered_bench = vui8matrix(vmi0b_bench, vmi1b_bench, vmj0b_bench, vmj1b_bench);
+
+	vimg_filtered_bench = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
+    tmp1_SIMD = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
+    tmp2_SIMD = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
+
 
 	/*---------------------------------------------------*/
 
