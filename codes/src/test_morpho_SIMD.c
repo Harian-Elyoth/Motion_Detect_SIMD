@@ -27,10 +27,10 @@ void gen_img_bin_test_SIMD(type_morpho_t type){
             break;
     }
     // indices matrices
-	vmi0_test = 0; vmi1_test = HEIGHT_TEST-1;
-	vmj0_test = 0; vmj1_test = WIDTH_TEST/16-1;
-	mi0_test = 0; mi1_test = HEIGHT_TEST-1;
-	mj0_test = 0; mj1_test = WIDTH_TEST-1;
+	vmi0_test = 0; vmi1_test = HEIGHT_TEST_SIMD-1;
+	vmj0_test = 0; vmj1_test = WIDTH_TEST_SIMD/16-1;
+	mi0_test = 0; mi1_test = HEIGHT_TEST_SIMD-1;
+	mj0_test = 0; mj1_test = WIDTH_TEST_SIMD-1;
 	// indices matrices avec bord
 	vmi0b_test = vmi0_test-b_test; vmi1b_test = vmi1_test+b_test;
 	vmj0b_test = vmj0_test-b_test + k; vmj1b_test = vmj1_test+b_test - k;
@@ -59,7 +59,7 @@ void gen_img_bin_test_SIMD(type_morpho_t type){
     srand(time(NULL));
     for(int i = mi0_test ; i <= mi1_test ; i++){
         for(int j = mj0_test ; j <= mj1_test ; j++){
-            if((i >= HEIGHT_TEST/4 && i <= HEIGHT_TEST*3/4) || (j >= WIDTH_TEST/4 && j <= WIDTH_TEST*3/4)){
+            if((i >= HEIGHT_TEST_SIMD/4 && i <= HEIGHT_TEST_SIMD*3/4) || (j >= WIDTH_TEST_SIMD/4 && j <= WIDTH_TEST_SIMD*3/4)){
                 img_bin_test[i][j] = 1;
             }
             else {
@@ -73,7 +73,7 @@ void gen_img_bin_test_SIMD(type_morpho_t type){
         case EROSION5 :
             for(int i = mi0_test + b_test; i <= mi1_test - b_test; i++){
                 for(int j = mj0_test + b_test; j <= mj1_test - b_test; j++){
-                    if((i >= (HEIGHT_TEST/4 + b_test) && i <= (HEIGHT_TEST*3/4 - b_test) || (j >= WIDTH_TEST/4 + b_test && j <= (WIDTH_TEST*3/4 - b_test)))){
+                    if((i >= (HEIGHT_TEST_SIMD/4 + b_test) && i <= (HEIGHT_TEST_SIMD*3/4 - b_test) || (j >= WIDTH_TEST_SIMD/4 + b_test && j <= (WIDTH_TEST_SIMD*3/4 - b_test)))){
                         assertion[i][j] = 1;
                     }
                     else {
@@ -86,7 +86,7 @@ void gen_img_bin_test_SIMD(type_morpho_t type){
         case DILATATION5 :
             for(int i = mi0_test ; i <= mi1_test ; i++){
                 for(int j = mj0_test ; j <= mj1_test ; j++){
-                    if((i >= (HEIGHT_TEST/4 - b_test) && i <= (HEIGHT_TEST*3/4 + b_test) || (j >= WIDTH_TEST/4 - b_test && j <= (WIDTH_TEST*3/4 + b_test)))){
+                    if((i >= (HEIGHT_TEST_SIMD/4 - b_test) && i <= (HEIGHT_TEST_SIMD*3/4 + b_test) || (j >= WIDTH_TEST_SIMD/4 - b_test && j <= (WIDTH_TEST_SIMD*3/4 + b_test)))){
                         assertion[i][j] = 1;
                     }
                     else {

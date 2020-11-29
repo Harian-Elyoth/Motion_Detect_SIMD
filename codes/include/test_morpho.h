@@ -30,6 +30,9 @@ extern "C" {
 
 #include "morpho.h"
 
+#define HEIGHT_TEST 24
+#define WIDTH_TEST 32
+
 int b_test;
 
 uint8 ** img_bin_test;
