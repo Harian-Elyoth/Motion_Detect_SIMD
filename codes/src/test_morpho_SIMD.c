@@ -7,6 +7,7 @@
 
 #include "test_morpho_SIMD.h"
 
+
 void gen_img_bin_test_SIMD(type_morpho_t type){
     int k;
     switch(type){
@@ -45,6 +46,7 @@ void gen_img_bin_test_SIMD(type_morpho_t type){
 
     assertion = ui8matrix(mi0_test, mi1_test, mj0_test, mj1_test);
     img_bin_test = ui8matrix(mi0b_test, mi1b_test, mj0b_test, mj1b_test);
+
 
 
     
@@ -124,7 +126,7 @@ void gen_img_bin_test_SIMD(type_morpho_t type){
     
     // BENCH(display_ui8matrix(img_bin_test, mi0_test, mi1_test, mj0_test, mj1_test, format, "image binaire : ")); DEBUG(puts(""));
     ui8matrix_to_vui8matrix_wb_morpho(16, vmi0b_test, vmi1b_test, vmj0b_test, vmj1b_test, img_bin_test, vimg_bin_test);
-    
+
 }
 
 void test_unitaire_SIMD(type_morpho_t MORPHO, type_opti_t OPTI){
@@ -192,6 +194,7 @@ void test_unitaire_SIMD(type_morpho_t MORPHO, type_opti_t OPTI){
         DEBUG(display_ui8matrix(assertion, mi0_test, mi1_test, mj0_test, mj1_test, format, "assertion matrix : ")); DEBUG(puts(""));
     }
     DEBUG(display_ui8matrix(img_filtered_test, mi0_test, mi1_test, mj0_test, mj1_test, format, "returned matrix : ")); DEBUG(puts(""));
+
 }
 
 
@@ -228,6 +231,7 @@ void tests_unitaires_SIMD(){
     test_unitaire_SIMD(MORPHO3, SIMD_OPTI);
     test_unitaire_SIMD(MORPHO5, SIMD_OPTI);
     printf("===============================\n");
+
 }
 
 
@@ -272,6 +276,7 @@ void vui8matrix_to_ui8matrix_morpho(int card, int vmi0, int vmi1, int vmj0, int 
             img[i][j * card + 15] = (uint8)(_mm_extract_epi8(img_simd[i][j], 15));
 		} 
 	}
+
 }
 
 // conversion avec bord
@@ -297,9 +302,12 @@ void ui8matrix_to_vui8matrix_wb_morpho(int card, int vmi0b, int vmi1b, int vmj0b
             }
         } 
     }
+
 }
 
 void main_test_morpho_SIMD(int argc, char *argv[])
 {
+
     tests_unitaires_SIMD();
+
 }

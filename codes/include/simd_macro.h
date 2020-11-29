@@ -51,9 +51,9 @@
 #define SWITCH_4_EPI8(x)  _mm_shuffle_epi8(x, init_vuint8_all(4, 5, 6, 7, 0, 1, 2, 3, 12, 13, 14, 15, 8, 9, 10, 11)) // abcdefghijklmnop -> efghabcdmnopijkl
 #define SWITCH_8_EPI8(x)  _mm_shuffle_epi8(x, init_vuint8_all(8, 9, 10, 11, 12, 13, 14, 15, 0, 1, 2, 3, 4, 5, 6, 7)) // abcdefghijklmnop -> ijklmnopabcdefgh
 
-//VEC LEFT AND RIGHT
+// VEC LEFT AND RIGHT
 #define VEC_LEFT1_EPI8(x1, x2) _mm_add_epi8(_mm_bslli_si128(x2, 1), _mm_bsrli_si128(x1, 15)) // x1 abcdefghijklmnop ; x2 qrstuvwxyz012345 -> pqrstuvwxyz01234
-#define VEC_RIGHT1_EPI8(x1, x2) _mm_add_epi8(_mm_bslli_si128(x2, 15), _mm_bsrli_si128(x1, 1)) // x1 abcdefghijklmnop ; x2 qrstuvwxyz012345 -> bcdefghijklmnop0
+#define VEC_RIGHT1_EPI8(x1, x2) _mm_add_epi8(_mm_bslli_si128(x2, 15), _mm_bsrli_si128(x1, 1)) // x1 abcdefghijklmnop ; x2 qrstuvwxyz012345 -> bcdefghijklmnopq
 #define VEC_LEFT2_EPI8(x1, x2) _mm_add_epi8(_mm_bslli_si128(x2, 2), _mm_bsrli_si128(x1, 14))
 #define VEC_RIGHT2_EPI8(x1, x2) _mm_add_epi8(_mm_bslli_si128(x2, 14), _mm_bsrli_si128(x1, 2))
 
@@ -75,7 +75,7 @@
 #define VEC_AND_9_EPI8(x1, x2, x3, x4, x5, x6, x7, x8, x9) _mm_and_si128(x1, _mm_and_si128(x2, _mm_and_si128(x3, _mm_and_si128(x4, _mm_and_si128(x5, _mm_and_si128(x6, _mm_and_si128(x7, _mm_and_si128(x8, x9))))))))
 #define VEC_OR_9_EPI8(x1, x2, x3, x4, x5, x6, x7, x8, x9) _mm_or_si128(x1, _mm_or_si128(x2, _mm_or_si128(x3, _mm_or_si128(x4, _mm_or_si128(x5, _mm_or_si128(x6, _mm_or_si128(x7, _mm_or_si128(x8, x9))))))))
 
-//CALCULS SUR 25 VECTEURS
+// CALCULS SUR 25 VECTEURS
 #define VEC_AND_25_EPI8(x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17, x18, x19, x20, x21, x22, x23, x24, x25) \
 _mm_and_si128(x1, _mm_and_si128(x2, _mm_and_si128(x3, _mm_and_si128(x4,_mm_and_si128(x5,\
 _mm_and_si128(x6, _mm_and_si128(x7, _mm_and_si128(x8, _mm_and_si128(x9, _mm_and_si128(x10, \
