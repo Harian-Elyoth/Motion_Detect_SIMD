@@ -347,11 +347,7 @@ void SigmaDelta_step3_simd(int vmi0, int vmi1, int vmj0, int vmj1, vuint8** std0
 	vuint8 N_reg, img_diff_reg, N_img_diff_reg, VMAX_reg, VMIN_reg;
 	vuint8 cmplt, cmpgt, reslt, resgt, ones;
 
-	vuint16 x1_mul, x2_mul, y1_mul, y2_mul;
-	vuint16 mullo_1, mullo_2;
-	vuint16 cmpgt1_mul, cmpgt2_mul, res1, res2;
-
-	vuint16 full = init_vuint16(255);
+	__m128i zero = _mm_setzero_si128();
 
 	N_reg 		= init_vuint8(N);
 	ones  		= init_vuint8(1);
@@ -366,7 +362,7 @@ void SigmaDelta_step3_simd(int vmi0, int vmi1, int vmj0, int vmj1, vuint8** std0
 
 			// DEBUG(display_vuint8(img_diff_reg, "%03d ", "img_diff_reg : ")); DEBUG(printf("\n\n"));
 
-			VEC_MULU_EPI8(img_diff_reg, N_reg, N_img_diff_reg);
+			VEC_MULLO_EPU8(img_diff_reg, N_reg, N_img_diff_reg);
 
 			// DEBUG(display_vuint8(N_img_diff_reg, "%03d ", "N_img_diff_reg : ")); DEBUG(printf("\n\n"));
 
@@ -404,11 +400,7 @@ void SigmaDelta_step3_simd_opti(int vmi0, int vmi1, int vmj0, int vmj1, vuint8**
 	vuint8 N_reg, N_img_diff_reg, VMAX_reg, VMIN_reg;
 	vuint8 cmplt, cmpgt, reslt, resgt, ones;
 
-	vuint16 x1_mul, x2_mul, y1_mul, y2_mul;
-	vuint16 mullo_1, mullo_2;
-	vuint16 cmpgt1_mul, cmpgt2_mul, res1, res2;
-
-	vuint16 full = init_vuint16(255);
+	__m128i zero = _mm_setzero_si128();
 
 	N_reg 		= init_vuint8(N);
 	ones  		= init_vuint8(1);
@@ -421,7 +413,7 @@ void SigmaDelta_step3_simd_opti(int vmi0, int vmi1, int vmj0, int vmj1, vuint8**
 		{
 			N_img_diff_reg = VEC_LOAD_2D_EPI8(i, j + 0, img_diff);
 
-			VEC_MULU_EPI8(N_img_diff_reg, N_reg, N_img_diff_reg);	
+			VEC_MULLO_EPU8(N_img_diff_reg, N_reg, N_img_diff_reg);	
 
 			std0_reg = VEC_LOAD_2D_EPI8(i, j, std0);
 
@@ -440,7 +432,7 @@ void SigmaDelta_step3_simd_opti(int vmi0, int vmi1, int vmj0, int vmj1, vuint8**
 
 			N_img_diff_reg = VEC_LOAD_2D_EPI8(i, j + 1, img_diff);
 
-			VEC_MULU_EPI8(N_img_diff_reg, N_reg, N_img_diff_reg);	
+			VEC_MULLO_EPU8(N_img_diff_reg, N_reg, N_img_diff_reg);	
 
 			std0_reg = VEC_LOAD_2D_EPI8(i, j + 1, std0);
 
@@ -459,7 +451,7 @@ void SigmaDelta_step3_simd_opti(int vmi0, int vmi1, int vmj0, int vmj1, vuint8**
 
 			N_img_diff_reg = VEC_LOAD_2D_EPI8(i, j + 2, img_diff);
 
-			VEC_MULU_EPI8(N_img_diff_reg, N_reg, N_img_diff_reg);	
+			VEC_MULLO_EPU8(N_img_diff_reg, N_reg, N_img_diff_reg);	
 
 			std0_reg = VEC_LOAD_2D_EPI8(i, j + 2, std0);
 
@@ -478,7 +470,7 @@ void SigmaDelta_step3_simd_opti(int vmi0, int vmi1, int vmj0, int vmj1, vuint8**
 
 			N_img_diff_reg = VEC_LOAD_2D_EPI8(i, j + 3, img_diff);
 
-			VEC_MULU_EPI8(N_img_diff_reg, N_reg, N_img_diff_reg);	
+			VEC_MULLO_EPU8(N_img_diff_reg, N_reg, N_img_diff_reg);	
 
 			std0_reg = VEC_LOAD_2D_EPI8(i, j + 3, std0);
 
@@ -500,7 +492,7 @@ void SigmaDelta_step3_simd_opti(int vmi0, int vmi1, int vmj0, int vmj1, vuint8**
 			case 3:
 				N_img_diff_reg = VEC_LOAD_2D_EPI8(i, vmj1 - 2, img_diff);
 
-				VEC_MULU_EPI8(N_img_diff_reg, N_reg, N_img_diff_reg);	
+				VEC_MULLO_EPU8(N_img_diff_reg, N_reg, N_img_diff_reg);	
 
 				std0_reg = VEC_LOAD_2D_EPI8(i, vmj1 - 2, std0);
 
@@ -518,7 +510,7 @@ void SigmaDelta_step3_simd_opti(int vmi0, int vmi1, int vmj0, int vmj1, vuint8**
 			case 2:
 				N_img_diff_reg = VEC_LOAD_2D_EPI8(i, vmj1 - 1, img_diff);
 
-				VEC_MULU_EPI8(N_img_diff_reg, N_reg, N_img_diff_reg);	
+				VEC_MULLO_EPU8(N_img_diff_reg, N_reg, N_img_diff_reg);	
 
 				std0_reg = VEC_LOAD_2D_EPI8(i, vmj1 - 1, std0);
 
@@ -536,7 +528,7 @@ void SigmaDelta_step3_simd_opti(int vmi0, int vmi1, int vmj0, int vmj1, vuint8**
 			case 1:
 				N_img_diff_reg = VEC_LOAD_2D_EPI8(i, vmj1 - 0, img_diff);
 
-				VEC_MULU_EPI8(N_img_diff_reg, N_reg, N_img_diff_reg);	
+				VEC_MULLO_EPU8(N_img_diff_reg, N_reg, N_img_diff_reg);	
 
 				std0_reg = VEC_LOAD_2D_EPI8(i, vmj1 - 0, std0);
 
@@ -696,11 +688,7 @@ void SigmaDelta_simd_full(int vmi0, int vmi1, int vmj0, int vmj1,  vuint8** imag
 	vuint8 cmplt, cmpgt;
 	vuint8 ones, reslt, resgt;
 
-	vuint16 x1_mul, x2_mul, y1_mul, y2_mul;
-	vuint16 mullo_1, mullo_2;
-	vuint16 cmpgt1_mul, cmpgt2_mul, res1, res2;
-
-	vuint16 full = init_vuint16(255);
+	__m128i zero = _mm_setzero_si128();
 
 	N_reg 		= init_vuint8(N);
 	ones  		= init_vuint8(1);
@@ -732,7 +720,7 @@ void SigmaDelta_simd_full(int vmi0, int vmi1, int vmj0, int vmj1,  vuint8** imag
 
 			// STEP 3
 
-			VEC_MULU_EPI8(img_diff_reg, N_reg, N_img_diff_reg);
+			VEC_MULLO_EPU8(img_diff_reg, N_reg, N_img_diff_reg);
 
 			std0_reg = VEC_LOAD_2D_EPI8(i, j, std0);
 
@@ -770,11 +758,7 @@ void SigmaDelta_simd_full_opti(int vmi0, int vmi1, int vmj0, int vmj1,  vuint8**
 	vuint8 cmplt, cmpgt;
 	vuint8 ones, reslt, resgt;
 
-	vuint16 x1_mul, x2_mul, y1_mul, y2_mul;
-	vuint16 mullo_1, mullo_2;
-	vuint16 cmpgt1_mul, cmpgt2_mul, res1, res2;
-
-	vuint16 full = init_vuint16(255);
+	__m128i zero = _mm_setzero_si128();
 
 	N_reg 		= init_vuint8(N);
 	ones  		= init_vuint8(1);
@@ -810,7 +794,7 @@ void SigmaDelta_simd_full_opti(int vmi0, int vmi1, int vmj0, int vmj1,  vuint8**
 
 			// STEP 3
 
-			VEC_MULU_EPI8(img_diff_reg, N_reg, N_img_diff_reg);
+			VEC_MULLO_EPU8(img_diff_reg, N_reg, N_img_diff_reg);
 
 			std0_reg = VEC_LOAD_2D_EPI8(i, j, std0);
 
@@ -854,7 +838,7 @@ void SigmaDelta_simd_full_opti(int vmi0, int vmi1, int vmj0, int vmj1,  vuint8**
 
 			// STEP 3
 
-			VEC_MULU_EPI8(img_diff_reg, N_reg, N_img_diff_reg);
+			VEC_MULLO_EPU8(img_diff_reg, N_reg, N_img_diff_reg);
 
 			std0_reg = VEC_LOAD_2D_EPI8(i, j + 1, std0);
 
@@ -898,7 +882,7 @@ void SigmaDelta_simd_full_opti(int vmi0, int vmi1, int vmj0, int vmj1,  vuint8**
 
 			// STEP 3
 
-			VEC_MULU_EPI8(img_diff_reg, N_reg, N_img_diff_reg);
+			VEC_MULLO_EPU8(img_diff_reg, N_reg, N_img_diff_reg);
 
 			std0_reg = VEC_LOAD_2D_EPI8(i, j + 2, std0);
 
@@ -942,7 +926,7 @@ void SigmaDelta_simd_full_opti(int vmi0, int vmi1, int vmj0, int vmj1,  vuint8**
 
 			// STEP 3
 
-			VEC_MULU_EPI8(img_diff_reg, N_reg, N_img_diff_reg);
+			VEC_MULLO_EPU8(img_diff_reg, N_reg, N_img_diff_reg);
 
 			std0_reg = VEC_LOAD_2D_EPI8(i, j + 3, std0);
 
@@ -986,8 +970,7 @@ void SigmaDelta_simd_full_opti(int vmi0, int vmi1, int vmj0, int vmj1,  vuint8**
 				/*----------------------------------------------------------------*/
 
 				// STEP 3
-
-				VEC_MULU_EPI8(img_diff_reg, N_reg, N_img_diff_reg);
+				VEC_MULLO_EPU8(img_diff_reg, N_reg, N_img_diff_reg);
 
 				std0_reg = VEC_LOAD_2D_EPI8(i, vmj1 - 2, std0);
 
@@ -1027,8 +1010,7 @@ void SigmaDelta_simd_full_opti(int vmi0, int vmi1, int vmj0, int vmj1,  vuint8**
 				/*----------------------------------------------------------------*/
 
 				// STEP 3
-
-				VEC_MULU_EPI8(img_diff_reg, N_reg, N_img_diff_reg);
+				VEC_MULLO_EPU8(img_diff_reg, N_reg, N_img_diff_reg);
 
 				std0_reg = VEC_LOAD_2D_EPI8(i, vmj1 - 1, std0);
 
@@ -1068,8 +1050,7 @@ void SigmaDelta_simd_full_opti(int vmi0, int vmi1, int vmj0, int vmj1,  vuint8**
 				/*----------------------------------------------------------------*/
 
 				// STEP 3
-
-				VEC_MULU_EPI8(img_diff_reg, N_reg, N_img_diff_reg);
+				VEC_MULLO_EPU8(img_diff_reg, N_reg, N_img_diff_reg);
 
 				std0_reg = VEC_LOAD_2D_EPI8(i, vmj1 , std0);
 

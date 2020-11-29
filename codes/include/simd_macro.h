@@ -111,22 +111,15 @@
 		res1 = _mm_and_si128(cmpgt1_mul, full); 		\
 		res2 = _mm_and_si128(cmpgt2_mul, full); 		\
 		EPI16_TO_EPI8(res, res1, res2);	 				\
+
+#define VEC_MULLO_EPU8(a, b, res) _mm_or_si128(_mm_slli_epi16(_mm_mullo_epi16(_mm_srli_epi16(a, 8),_mm_srli_epi16(b, 8)), 8), _mm_srli_epi16(_mm_slli_epi16(_mm_mullo_epi16(a, b),8), 8))
+
  
 #define VEC_ABS_EPI8(x) _mm_abs_epi8(x)			// Valeur absolue
 #define VEC_MAX_EPI8(x, y) _mm_max_epi8(x, y) 	// Max 8 bits
 #define VEC_MIN_EPI8(x, y) _mm_min_epi8(x, y) 	// Min 8 bits
 
-// SOUSTRACTION + VALEUR ABSOLUE EPI8 UNISIGNED
-#define VEC_ABS_SUB_EPI8(x, y, z)					\
-		EPI8_TO_EPI16(x, x1_abs, x2_abs);			\
-		EPI8_TO_EPI16(y, y1_abs, y2_abs);			\
-		sub1_abs = _mm_subs_epi16(x1_abs, y1_abs);	\
-		sub2_abs = _mm_subs_epi16(x2_abs, y2_abs);	\
-		res1_abs = _mm_abs_epi16(sub1_abs);			\
-		res2_abs = _mm_abs_epi16(sub2_abs);			\
-		EPI16_TO_EPI8(z, res1_abs, res2_abs);		\
-
-#define VEC_ABS_SUB_EPU8(x, y) _mm_or_si128(_mm_subs_epu8(x,  y), _mm_subs_epu8(y, x))
+#define VEC_ABS_SUB_EPU8(a, b) _mm_or_si128(_mm_subs_epu8(a,  b), _mm_subs_epu8(b, a))
 
 // CALCULS SUR 9 VECTEURS
 #define VEC_AND_9_EPI8(x1, x2, x3, x4, x5, x6, x7, x8, x9) _mm_and_si128(x1, _mm_and_si128(x2, _mm_and_si128(x3, _mm_and_si128(x4, _mm_and_si128(x5, _mm_and_si128(x6, _mm_and_si128(x7, _mm_and_si128(x8, x9))))))))

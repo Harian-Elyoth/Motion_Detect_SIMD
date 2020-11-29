@@ -460,308 +460,308 @@ void SigmaDelta_full_opti(int mi0, int mi1, int mj0, int mj1,  uint8** image, ui
 	int k = 4; 
 	int r = (mj1+1) % k;
 
+	// printf("r = %d \n", r);
+
+	uint8 mean0_reg, mean1_reg, image_reg;
+	uint8 std0_reg, std1_reg;
+	uint8 img_diff_reg, img_bin_reg;
+
 	for (int i = mi0; i <= mi1; ++i)
 	{
 		for (int j = mj0; j <= mj1 - r; j = j + k)
 		{
+			/*---------------------------------------------------*/
+			/*-------------------ITERATION J + 0-----------------*/
+			/*---------------------------------------------------*/
+
 			// STEP 1
-			uint8 mean0_j0 = mean0[i][j];
-			uint8 mean1_j0;
-			uint8 image_j0 = image[i][j];
+			mean0_reg = mean0[i][j];
+			image_reg = image[i][j];
 
-			if (mean0_j0 < image_j0){
-				mean1_j0 = mean0_j0 + 1;
+			if (mean0_reg < image_reg){
+				mean1_reg = mean0_reg + 1;
 			}
-			else if (mean0_j0 > image_j0){
-				mean1_j0 = mean0_j0 - 1;
+			else if (mean0_reg > image_reg){
+				mean1_reg = mean0_reg - 1;
 			}
 			else{
-				mean1_j0 = mean0_j0;
+				mean1_reg = mean0_reg;
 			}
 
-			/*---------------------------------------------------*/
-
-			uint8 mean0_j1 = mean0[i][j+1];
-			uint8 mean1_j1;
-			uint8 image_j1 = image[i][j+1];
-
-			if (mean0_j1 < image_j1){
-				mean1_j1 = mean0_j1 + 1;
-			}
-			else if (mean0_j1 > image_j1){
-				mean1_j1 = mean0_j1 - 1;
-			}
-			else{
-				mean1_j1 = mean0_j1;
-			}
-
-			/*---------------------------------------------------*/
-
-			uint8 mean0_j2 = mean0[i][j+2];
-			uint8 mean1_j2;
-			uint8 image_j2 = image[i][j+2];
-
-			if (mean0_j2 < image_j2){
-				mean1_j2 = mean0_j2 + 1;
-			}
-			else if (mean0_j2 > image_j2){
-				mean1_j2 = mean0_j2 - 1;
-			}
-			else{
-				mean1_j2 = mean0_j2;
-			}
-
-			/*---------------------------------------------------*/
-
-			uint8 mean0_j3 = mean0[i][j+3];
-			uint8 mean1_j3;
-			uint8 image_j3 = image[i][j+3];
-
-			if (mean0_j3 < image_j3){
-				mean1_j3 = mean0_j3 + 1;
-			}
-			else if (mean0_j3 > image_j3){
-				mean1_j3 = mean0_j3 - 1;
-			}
-			else{
-				mean1_j3 = mean0_j3;
-			}
-
-			/*---------------------------------------------------*/
 			/*---------------------------------------------------*/
 
 			// STEP 2
-			uint8 img_diff_j0;
-			uint8 img_diff_j1;
-			uint8 img_diff_j2;
-			uint8 img_diff_j3;
+			img_diff_reg = abs(mean1_reg - image_reg);
 
-			img_diff_j0 = abs(mean1_j0 - image_j0);
-			img_diff_j1 = abs(mean1_j1 - image_j1);
-			img_diff_j2 = abs(mean1_j2 - image_j2);
-			img_diff_j3 = abs(mean1_j3 - image_j3);
-
-			/*---------------------------------------------------*/
 			/*---------------------------------------------------*/
 
 			// STEP 3
-			uint8 std0_j0 = std0[i][j + 0];
-			uint8 std1_j0;
+			std0_reg = std0[i][j];
 
-			if (std0_j0 < N * img_diff_j0){
-				std1_j0 = std0_j0 + 1;
+			if (std0_reg < N * img_diff_reg){
+				std1_reg = std0_reg + 1;
 			}
-			else if (std0_j0 > N * img_diff_j0){
-				std1_j0 = std0_j0 - 1;
+			else if (std0_reg > N * img_diff_reg){
+				std1_reg = std0_reg - 1;
 			}
-			else{ std1_j0 = std0_j0; }
+			else{ std1_reg = std0_reg; }
 
-			/*---------------------------------------------------*/
-
-			uint8 std0_j1 = std0[i][j + 1];
-			uint8 std1_j1;
-
-			if (std0_j1 < N * img_diff_j1){
-				std1_j1 = std0_j1 + 1;
-			}
-			else if (std0_j1 > N * img_diff_j1){
-				std1_j1 = std0_j1 - 1;
-			}
-			else{ std1_j1 = std0_j1; }
-
-			/*---------------------------------------------------*/
-			
-			uint8 std0_j2 = std0[i][j + 2];
-			uint8 std1_j2;
-
-			if (std0_j2 < N * img_diff_j2){
-				std1_j2 = std0_j2 + 1;
-			}
-			else if (std0_j2 > N * img_diff_j2){
-				std1_j2 = std0_j2 - 1;
-			}
-			else{ std1_j2 = std0_j2; }
-
-			/*---------------------------------------------------*/
-			
-			uint8 std0_j3 = std0[i][j + 3];
-			uint8 std1_j3;
-
-			if (std0_j3 < N * img_diff_j3){
-				std1_j3 = std0_j3 + 1;
-			}
-			else if (std0_j3 > N * img_diff_j3){
-				std1_j3 = std0_j3 - 1;
-			}
-			else{ std1_j3 = std0_j3; }
-
-			/*---------------------------------------------------*/
-			
 			// clamp to [Vmin,Vmax]
-			std1_j0 = MAX(MIN(std1_j0, VMAX), VMIN);
-			std1_j1 = MAX(MIN(std1_j1, VMAX), VMIN);
-			std1_j2 = MAX(MIN(std1_j2, VMAX), VMIN);
-			std1_j3 = MAX(MIN(std1_j3, VMAX), VMIN);
+			std1_reg = MAX(MIN(std1_reg, VMAX), VMIN);
 
-			/*---------------------------------------------------*/
 			/*---------------------------------------------------*/
 
 			// STEP 4
-			if (img_diff_j0 < std1_j0){
-				img_bin[i][j + 0] = 0;
+			if (img_diff_reg < std1_reg){
+				img_bin[i][j] = 0;
 			}
-			else{ img_bin[i][j + 0] = 1; }
+			else{ img_bin[i][j] = 1; }
+
+			/*---------------------------------------------------*/
+			/*-------------------ITERATION J + 1-----------------*/
+			/*---------------------------------------------------*/
+			
+			// STEP 1
+			mean0_reg = mean0[i][j + 1];
+			image_reg = image[i][j + 1];
+
+			if (mean0_reg < image_reg){
+				mean1_reg = mean0_reg + 1;
+			}
+			else if (mean0_reg > image_reg){
+				mean1_reg = mean0_reg - 1;
+			}
+			else{ mean1_reg = mean0_reg; }
 
 			/*---------------------------------------------------*/
 
-			if (img_diff_j1 < std1_j1){
+			// STEP 2
+			img_diff_reg = abs(mean1_reg - image_reg);
+
+			/*---------------------------------------------------*/
+
+			// STEP 3
+			std0_reg = std0[i][j + 1];
+
+			if (std0_reg < N * img_diff_reg){
+				std1_reg = std0_reg + 1;
+			}
+			else if (std0_reg > N * img_diff_reg){
+				std1_reg = std0_reg - 1;
+			}
+			else{ std1_reg = std0_reg; }
+
+			// clamp to [Vmin,Vmax]
+			std1_reg = MAX(MIN(std1_reg, VMAX), VMIN);
+
+			/*---------------------------------------------------*/
+
+			// STEP 4
+			if (img_diff_reg < std1_reg){
 				img_bin[i][j + 1] = 0;
 			}
-			else{ img_bin[i][j + 1] = 1; } 
+			else{ img_bin[i][j + 1] = 1; }
+
+			/*---------------------------------------------------*/
+			/*-------------------ITERATION J + 2-----------------*/
+			/*---------------------------------------------------*/
+
+			// STEP 1
+			mean0_reg = mean0[i][j + 2];
+			image_reg = image[i][j + 2];
+
+			if (mean0_reg < image_reg){
+				mean1_reg = mean0_reg + 1;
+			}
+			else if (mean0_reg > image_reg){
+				mean1_reg = mean0_reg - 1;
+			}
+			else{ mean1_reg = mean0_reg; }
 
 			/*---------------------------------------------------*/
 
-			if (img_diff_j2 < std1_j2){
+			// STEP 2
+			img_diff_reg = abs(mean1_reg - image_reg);
+
+			/*---------------------------------------------------*/
+
+			// STEP 3
+			std0_reg = std0[i][j + 2];
+
+			if (std0_reg < N * img_diff_reg){
+				std1_reg = std0_reg + 1;
+			}
+			else if (std0_reg > N * img_diff_reg){
+				std1_reg = std0_reg - 1;
+			}
+			else{ std1_reg = std0_reg; }
+
+			// clamp to [Vmin,Vmax]
+			std1_reg = MAX(MIN(std1_reg, VMAX), VMIN);
+
+			/*---------------------------------------------------*/
+
+			// STEP 4
+			if (img_diff_reg < std1_reg){
 				img_bin[i][j + 2] = 0;
 			}
-			else{ img_bin[i][j + 2] = 1 ; }
+			else{ img_bin[i][j + 2] = 1; }
+
+			/*---------------------------------------------------*/
+			/*-------------------ITERATION J + 3-----------------*/
+			/*---------------------------------------------------*/
+
+			// STEP 1
+			mean0_reg = mean0[i][j + 3];
+			image_reg = image[i][j + 3];
+
+			if (mean0_reg < image_reg){
+				mean1_reg = mean0_reg + 1;
+			}
+			else if (mean0_reg > image_reg){
+				mean1_reg = mean0_reg - 1;
+			}
+			else{
+				mean1_reg = mean0_reg;
+			}
 
 			/*---------------------------------------------------*/
 
-			if (img_diff_j3 < std1_j3){
+			// STEP 2
+			img_diff_reg = abs(mean1_reg - image_reg);
+
+			/*---------------------------------------------------*/
+
+			// STEP 3
+			std0_reg = std0[i][j + 3];
+
+			if (std0_reg < N * img_diff_reg){
+				std1_reg = std0_reg + 1;
+			}
+			else if (std0_reg > N * img_diff_reg){
+				std1_reg = std0_reg - 1;
+			}
+			else{ std1_reg = std0_reg; }
+
+			// clamp to [Vmin,Vmax]
+			std1_reg = MAX(MIN(std1_reg, VMAX), VMIN);
+
+			/*---------------------------------------------------*/
+
+			// STEP 4
+			if (img_diff_reg < std1_reg){
 				img_bin[i][j + 3] = 0;
 			}
 			else{ img_bin[i][j + 3] = 1; }
 		}
 
 		// EPILOGUE
-		uint8 mean0_j2;
-		uint8 mean1_j2;
-		uint8 image_j2;
-		uint8 img_diff_j2;
-		uint8 std0_j2;
-		uint8 std1_j2;
-
-		uint8 mean0_j1;
-		uint8 mean1_j1;
-		uint8 image_j1;
-		uint8 img_diff_j1;
-		uint8 std0_j1;
-		uint8 std1_j1;
-
-		uint8 mean0_j0;
-		uint8 mean1_j0;
-		uint8 image_j0;
-		uint8 img_diff_j0;
-		uint8 std0_j0;
-		uint8 std1_j0;
-
 		switch(r){
 
 			case 3:
 				// STEP 1
-				mean0_j2 = mean0[i][mj1 - 2];
-				image_j2 = image[i][mj1 - 2];
+				mean0_reg = mean0[i][mj1 - 2];
+				image_reg = image[i][mj1 - 2];
 
-				if (mean0_j2 < image_j2){
-					mean1_j2 = mean0_j2 + 1;
+				if (mean0_reg < image_reg){
+					mean1_reg = mean0_reg + 1;
 				}
-				else if (mean0_j2 > image_j2){
-					mean1_j2 = mean0_j2 - 1;
+				else if (mean0_reg > image_reg){
+					mean1_reg = mean0_reg - 1;
 				}
-				else{ mean1_j2 = mean0_j2; }
+				else{ mean1_reg = mean0_reg; }
 
 				// STEP 2
-				img_diff_j2 = abs(mean1_j2 - image_j2);
+				img_diff_reg = abs(mean1_reg - image_reg);
 
 				// STEP 3
-				std0_j2 = std0[i][mj1 - 2];
+				std0_reg = std0[i][mj1 - 2];
 
-				if (std0_j2 < N * img_diff_j2){
-					std1_j2 = std0_j2 + 1;
+				if (std0_reg < N * img_diff_reg){
+					std1_reg = std0_reg + 1;
 				}
-				else if (std0_j2 > N * img_diff_j2){
-					std1_j2 = std0_j2 - 1;
+				else if (std0_reg > N * img_diff_reg){
+					std1_reg = std0_reg - 1;
 				}
-				else{ std1_j2 = std0_j2; }
+				else{ std1_reg = std0_reg; }
 
-				std1_j2 = MAX(MIN(std1_j2, VMAX), VMIN);
+				std1_reg = MAX(MIN(std1_reg, VMAX), VMIN);
 
 				// STEP 4
-				if (img_diff_j2 < std1_j2){
+				if (img_diff_reg < std1_reg){
 					img_bin[i][mj1 - 2] = 0;
 				}
 				else{ img_bin[i][mj1 - 2] = 1; }
 
 			case 2:
 				// STEP 1
-				mean0_j1 = mean0[i][mj1 - 1];
-				image_j1 = image[i][mj1 - 1];
+				mean0_reg = mean0[i][mj1 - 1];
+				image_reg = image[i][mj1 - 1];
 
-				if (mean0_j1 < image_j1){
-					mean1_j1 = mean0_j1 + 1;
+				if (mean0_reg < image_reg){
+					mean1_reg = mean0_reg + 1;
 				}
-				else if (mean0_j1 > image_j1){
-					mean1_j1 = mean0_j1 - 1;
+				else if (mean0_reg > image_reg){
+					mean1_reg = mean0_reg - 1;
 				}
-				else{ mean1_j1 = mean0_j1; }
+				else{ mean1_reg = mean0_reg; }
 
 				// STEP 2
-				img_diff_j1 = abs(mean1_j1 - image_j1);
+				img_diff_reg = abs(mean1_reg - image_reg);
 
 				// STEP 3
-				std0_j1 = std0[i][mj1 - 1];
+				std0_reg = std0[i][mj1 - 1];
 
-				if (std0_j1 < N * img_diff_j1){
-					std1_j1 = std0_j1 + 1;
+				if (std0_reg < N * img_diff_reg){
+					std1_reg = std0_reg + 1;
 				}
-				else if (std0_j1 > N * img_diff_j1){
-					std1_j1 = std0_j1 - 1;
+				else if (std0_reg > N * img_diff_reg){
+					std1_reg = std0_reg - 1;
 				}
-				else{ std1_j1 = std0_j1; }
+				else{ std1_reg = std0_reg; }
 
-				std1_j1 = MAX(MIN(std1_j1, VMAX), VMIN);
+				std1_reg = MAX(MIN(std1_reg, VMAX), VMIN);
 
 				// STEP 4
-				if (img_diff_j1 < std1_j1){
+				if (img_diff_reg < std1_reg){
 					img_bin[i][mj1 - 1] = 0;
 				}
-				else{ img_bin[i][mj1 - 1] = 1 ; }
+				else{ img_bin[i][mj1 - 1] = 1; }
 
 			case 1:
 				// STEP 1
-				mean0_j0 = mean0[i][mj1 - 0];
-				image_j0 = image[i][mj1 - 0];
+				mean0_reg = mean0[i][mj1];
+				image_reg = image[i][mj1];
 
-				if (mean0_j0 < image_j0){
-					mean1_j0 = mean0_j0 + 1;
+				if (mean0_reg < image_reg){
+					mean1_reg = mean0_reg + 1;
 				}
-				else if (mean0_j0 > image_j0){
-					mean1_j0 = mean0_j0 - 1;
+				else if (mean0_reg > image_reg){
+					mean1_reg = mean0_reg - 1;
 				}
-				else{ mean1_j0 = mean0_j0; }
+				else{ mean1_reg = mean0_reg; }
 
 				// STEP 2
-				img_diff_j0 = abs(mean1_j0 - image_j0);
+				img_diff_reg = abs(mean1_reg - image_reg);
 
 				// STEP 3
-				std0_j0 = std0[i][mj1 - 0];
+				std0_reg = std0[i][mj1];
 
-				if (std0_j0 < N * img_diff_j0){
-					std1_j0 = std0_j0 + 1;
+				if (std0_reg < N * img_diff_reg){
+					std1_reg = std0_reg + 1;
 				}
-				else if (std0_j0 > N * img_diff_j0){
-					std1_j0 = std0_j0 - 1;
+				else if (std0_reg > N * img_diff_reg){
+					std1_reg = std0_reg - 1;
 				}
-				else{ std1_j0 = std0_j0; }
+				else{ std1_reg = std0_reg; }
 
-				std1_j0 = MAX(MIN(std1_j0, VMAX), VMIN);
+				std1_reg = MAX(MIN(std1_reg, VMAX), VMIN);
 
 				// STEP 4
-				if (img_diff_j0 < std1_j0){
-					img_bin[i][mj1 - 0] = 0;
+				if (img_diff_reg < std1_reg){
+					img_bin[i][mj1 - 2] = 0;
 				}
-				else{ img_bin[i][mj1 - 0] = 1 ; }
+				else{ img_bin[i][mj1] = 1; }
 
 			default:
 				break;
