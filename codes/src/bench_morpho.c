@@ -327,69 +327,68 @@ void gen_img_bin_bench(int type, int kernel_size){
     // -- allocation -- //
     // ---------------- //
     
-	uint8** image 		= ui8matrix(mi0b_bench, mi1b_bench, mj0b_bench, mj1b_bench);
+	uint8** image 		= ui8matrix(mi0_bench, mi1_bench, mj0_bench, mj1_bench);
 
-	uint8** mean0 		= ui8matrix(mi0b_bench, mi1b_bench, mj0b_bench, mj1b_bench);
-	uint8** mean1 		= ui8matrix(mi0b_bench, mi1b_bench, mj0b_bench, mj1b_bench);
+	uint8** mean0 		= ui8matrix(mi0_bench, mi1_bench, mj0_bench, mj1_bench);
+	uint8** mean1 		= ui8matrix(mi0_bench, mi1_bench, mj0_bench, mj1_bench);
 
-	uint8** std0 		= ui8matrix(mi0b_bench, mi1b_bench, mj0b_bench, mj1b_bench);
-	uint8** std1 		= ui8matrix(mi0b_bench, mi1b_bench, mj0b_bench, mj1b_bench);
+	uint8** std0 		= ui8matrix(mi0_bench, mi1_bench, mj0_bench, mj1_bench);
+	uint8** std1 		= ui8matrix(mi0_bench, mi1_bench, mj0_bench, mj1_bench);
 
-	uint8** img_diff 	= ui8matrix(mi0b_bench, mi1b_bench, mj0b_bench, mj1b_bench);
-	img_bin_bench 	    = ui8matrix(mi0b_bench, mi1b_bench, mj0b_bench, mj1b_bench);
-	img_filtered_bench 	= ui8matrix(mi0b_bench, mi1b_bench, mj0b_bench, mj1b_bench);
-    tmp1                = ui8matrix(mi0b_bench, mi1b_bench, mj0b_bench, mj1b_bench);
-    tmp2                = ui8matrix(mi0b_bench, mi1b_bench, mj0b_bench, mj1b_bench);
+	uint8** img_diff 	= ui8matrix(mi0_bench, mi1_bench, mj0_bench, mj1_bench);
+	img_bin_bench 	    = ui8matrix(mi0_bench, mi1_bench, mj0_bench, mj1_bench);
+	img_filtered_bench 	= ui8matrix(mi0_bench, mi1_bench, mj0_bench, mj1_bench);
+    tmp1                = ui8matrix(mi0_bench, mi1_bench, mj0_bench, mj1_bench);
+    tmp2                = ui8matrix(mi0_bench, mi1_bench, mj0_bench, mj1_bench);
    
 	// -------------- //
     // -- prologue -- //
     // -------------- //
 
 
-    MLoadPGM_ui8matrix("../car3/car_3037.pgm", mi0b_bench, mi1b_bench, mj0b_bench, mj1b_bench, image);
+    MLoadPGM_ui8matrix("../car3/car_3037.pgm", mi0_bench, mi1_bench, mj0_bench, mj1_bench, image);
 
-    duplicate_border(mi0_bench, mi1_bench, mj0_bench, mj1_bench, b_bench, image);
 
     // initiate mean0 et std0 for first iteration
-    for (int i = mi0b_bench; i <= mi1b_bench; ++i)
+    for (int i = mi0_bench; i <= mi1_bench; ++i)
     {
-        for (int j = mj0b_bench; j <= mj1b_bench; ++j)
+        for (int j = mj0_bench; j <= mj1_bench; ++j)
         {
             mean0[i][j] = image[i][j];
             std0[i][j]  = VMIN;
         }
     }
 
-    MLoadPGM_ui8matrix("../car3/car_3038.pgm", mi0b_bench, mi1b_bench, mj0b_bench, mj1b_bench, image);
+    MLoadPGM_ui8matrix("../car3/car_3038.pgm", mi0_bench, mi1_bench, mj0_bench, mj1_bench, image);
 
-    duplicate_border(mi0_bench, mi1_bench, mj0_bench, mj1_bench, b_bench, image);
     
 
 	// ----------------- //
     // -- traitements -- //
     // ----------------- //
 
-    SigmaDelta_step1(mi0b_bench, mi1b_bench, mj0b_bench, mj1b_bench, mean0, mean1, image);
-	SigmaDelta_step2(mi0b_bench, mi1b_bench, mj0b_bench, mj1b_bench, image, mean1, img_diff);
-	SigmaDelta_step3(mi0b_bench, mi1b_bench, mj0b_bench, mj1b_bench, std0, std1, img_diff);
-	SigmaDelta_step4(mi0b_bench, mi1b_bench, mj0b_bench, mj1b_bench, std1, img_diff, img_bin_bench);
+    SigmaDelta_step1(mi0_bench, mi1_bench, mj0_bench, mj1_bench, mean0, mean1, image);
+	SigmaDelta_step2(mi0_bench, mi1_bench, mj0_bench, mj1_bench, image, mean1, img_diff);
+	SigmaDelta_step3(mi0_bench, mi1_bench, mj0_bench, mj1_bench, std0, std1, img_diff);
+	SigmaDelta_step4(mi0_bench, mi1_bench, mj0_bench, mj1_bench, std1, img_diff, img_bin_bench);
 
-	// convert binary img to pgm img
-	//bin_to_pgm(mi0b_bench, mi1b_bench, mj0b_bench, mj1b_bench, img_bin_bench,"SD_out.pgm");
+    duplicate_border(mi0b_bench, mi1b_bench, mj0b_bench, mj1b_bench, b_bench, img_bin_bench);
+
+
 
 	// ---------- //
     // -- free -- //
     // ---------- //
 
-	free_ui8matrix(image, mi0b_bench, mi1b_bench, mj0b_bench, mj1b_bench);
+	free_ui8matrix(image, mi0_bench, mi1_bench, mj0_bench, mj1_bench);
 
-	free_ui8matrix(mean0, mi0b_bench, mi1b_bench, mj0b_bench, mj1b_bench);
-	free_ui8matrix(mean1, mi0b_bench, mi1b_bench, mj0b_bench, mj1b_bench);
+	free_ui8matrix(mean0, mi0_bench, mi1_bench, mj0_bench, mj1_bench);
+	free_ui8matrix(mean1, mi0_bench, mi1_bench, mj0_bench, mj1_bench);
 
-	free_ui8matrix(std0, mi0b_bench, mi1b_bench, mj0b_bench, mj1b_bench);
-	free_ui8matrix(std1, mi0b_bench, mi1b_bench, mj0b_bench, mj1b_bench);
+	free_ui8matrix(std0, mi0_bench, mi1_bench, mj0_bench, mj1_bench);
+	free_ui8matrix(std1, mi0_bench, mi1_bench, mj0_bench, mj1_bench);
 
-	free_ui8matrix(img_diff, mi0b_bench, mi1b_bench, mj0b_bench, mj1b_bench);
+	free_ui8matrix(img_diff, mi0_bench, mi1_bench, mj0_bench, mj1_bench);
 }
 
 void main_bench_morpho(int argc, char *argv[])

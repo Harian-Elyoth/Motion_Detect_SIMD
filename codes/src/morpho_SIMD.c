@@ -34,7 +34,7 @@ void erosion_3_SIMD(vuint8 ** vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0, in
         
 
         for(j = vmj0 ; j <= vmj1 ; j++){
-            //printf("indice i, j : %d, %d\n", i, j);
+
             aa0 = VEC_LEFT1_EPI8(a0, a1);
             a2 = VEC_LOAD_2D_EPI8(i - 1, j + 1, vX);
             aa2 = VEC_RIGHT1_EPI8(a1, a2);
@@ -138,7 +138,6 @@ void erosion_3_SIMD_opti(vuint8 ** vX, vuint8 ** vY, int vmi0, int vmi1, int vmj
 
         switch(r) {
             case 1 :
-                printf("Je fais la derniere colonne\n");
                 aa0 = VEC_LEFT1_EPI8(a0, a1);
                 a4 = VEC_LOAD_2D_EPI8(i - 1, j + 1, vX);
                 aa2 = VEC_RIGHT1_EPI8(a1, a4);
@@ -233,7 +232,7 @@ void erosion_5_SIMD(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0, int
         
 
         for(j = vmj0 ; j <= vmj1 ; j++){
-            //printf("indice i, j : %d, %d\n", i, j);
+
             aa0 = VEC_LEFT2_EPI8(a0, a2);
             aa1 = VEC_LEFT1_EPI8(a0, a2);
             a4 = VEC_LOAD_2D_EPI8(i - 2, j + 1, vX);
@@ -300,8 +299,7 @@ void erosion_5_SIMD_opti(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0
     int i, j;
 
     int bord = 2;
-    
-    printf("r = %d\n", r);
+
     for(i = vmi0 ; i <= vmi1 ; i++){
         j = vmj0;
         
@@ -944,7 +942,7 @@ void dilatation_3_SIMD(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0, 
         
 
         for(j = vmj0 ; j <= vmj1 ; j++){
-            //printf("indice i, j : %d, %d\n", i, j);
+
             aa0 = VEC_LEFT1_EPI8(a0, a1);
             a2 = VEC_LOAD_2D_EPI8(i - 1, j + 1, vX);
             aa2 = VEC_RIGHT1_EPI8(a1, a2);
@@ -1143,7 +1141,7 @@ void dilatation_5_SIMD(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0, 
         
 
         for(j = vmj0 ; j <= vmj1 ; j++){
-            //printf("indice i, j : %d, %d\n", i, j);
+
             aa0 = VEC_LEFT2_EPI8(a0, a2);
             aa1 = VEC_LEFT1_EPI8(a0, a2);
             a4 = VEC_LOAD_2D_EPI8(i - 2, j + 1, vX);

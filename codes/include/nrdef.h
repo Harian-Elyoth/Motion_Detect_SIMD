@@ -24,4 +24,23 @@ typedef float         float32;
 typedef double        float64;
 typedef struct { byte r; byte g; byte b;} rgb8;
 
+typedef enum {
+    EROSION3,
+    DILATATION3,
+    EROSION5,
+    DILATATION5,
+    MORPHO3,
+    MORPHO5
+} type_morpho_t;
+
+typedef enum {
+    SIMD,
+    SIMD_OPTI,
+    SCALAIRE,
+    SCALAIRE_OPTI
+} type_opti_t;
+
+void display_type_morpho(type_morpho_t MORPHO);
+void display_type_opti(type_opti_t OPTI);
+
 #endif // __DEF_H__

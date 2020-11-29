@@ -178,44 +178,6 @@ void test_unitaire(type_morpho_t MORPHO, type_opti_t OPTI){
     DEBUG(display_ui8matrix(img_filtered_test, mi0_test, mi1_test, mj0_test, mj1_test, format, "returned matrix : ")); DEBUG(puts(""));
 }
 
-void display_type_morpho(type_morpho_t MORPHO){
-    switch(MORPHO){
-        case EROSION3 :
-            printf("EROSION 3");
-            break;
-        case EROSION5 :
-            printf("EROSION 5");
-            break;
-        case DILATATION3 : 
-            printf("DILATATION 3");
-            break;
-        case DILATATION5 :
-            printf("DILATATION 5");
-            break;
-        case MORPHO3 :
-            printf("MORPHO 3");
-            break;
-        case MORPHO5 : 
-            printf("MORPHO 5");
-            break;
-        default : 
-            break;
-    }
-} 
-
-void display_type_opti(type_opti_t OPTI){
-    switch(OPTI){
-        case SCALAIRE :
-            printf("SCALAIRE");
-            break;
-        case SCALAIRE_OPTI :
-            printf("SCALAIRE OPTI");
-            break;
-        default : 
-            break;
-    }
-} 
-
 //Compare deux matrices de meme taille renvoi 1 si elles sont égales 0 sinon
 int equal(uint8 ** A, uint8 ** B, int mi0, int mi1, int mj0, int mj1){
     for(int i = mi0 ; i <= mi1 ; i++){

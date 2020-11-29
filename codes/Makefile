@@ -6,10 +6,10 @@
 # with a little help of Stephane Piskorski and Joel Falcou
 
 # -- File list ----------
-FILE = 	main.c nrutil.c vnrutil.c mutil.c mouvement.c morpho.c test_mouvement.c test_mouvement_morpho.c \
+FILE = 	main.c nrutil.c nrdef.c vnrutil.c mutil.c mouvement.c morpho.c test_mouvement.c test_mouvement_morpho.c \
 		test_morpho.c mouvement_SIMD.c test_mouvement_SIMD.c bench_mouvement.c bench_mouvement_SIMD.c \
 		morpho_SIMD.c test_morpho_SIMD.c test_mouvement_morpho_SIMD.c bench_morpho.c bench_morpho_SIMD.c \
-		bench_mouvement_morpho.c bench_mouvement_morpho_SIMD.c 
+		bench_mouvement_morpho.c bench_mouvement_morpho_SIMD.c
 
 
 # -- Paths ----------
