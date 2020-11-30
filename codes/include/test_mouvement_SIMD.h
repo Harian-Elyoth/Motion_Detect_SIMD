@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <assert.h>
 
 #include "nrdef.h"
 #include "nrutil.h"
@@ -29,8 +30,8 @@
 extern "C" {
 #endif
 
-void test_mouvement_SIMD_car(bool is_visual);
-
+void test_mouvement_SIMD_unit();
+void test_mouvement_SIMD_car();
 void test_mouvement_SIMD_dataset();
 
 // fonction principale     

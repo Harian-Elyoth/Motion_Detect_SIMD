@@ -29,7 +29,7 @@
 extern "C" {
 #endif
 
-void bench_mouvement_car(bool is_visual);
+void bench_mouvement_car();
 void bench_mouvement_dataset();
 void bench_mouvement_graphic();
 
