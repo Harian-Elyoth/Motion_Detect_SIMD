@@ -34,6 +34,8 @@ int b_bench;
 
 uint8 ** img_bin_bench;
 uint8 ** img_filtered_bench;
+uint8 ** tmp1;
+uint8 ** tmp2;
 
 int mi0_bench, mi1_bench, mj0_bench, mj1_bench; 	// indices scalaire
 int mi0b_bench, mi1b_bench, mj0b_bench, mj1b_bench; // indices scalaires avec bord

@@ -52,6 +52,8 @@ void test_mouvement_morpho_car(){
 	uint8** img_diff 		= ui8matrix(mi0 , mi1, mj0, mj1);
 	uint8** img_bin 		= ui8matrix(mi0b, mi1b, mj0b, mj1b);
 	uint8** img_filtered	= ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** tmp1			= ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** tmp2 			= ui8matrix(mi0b, mi1b, mj0b, mj1b);
 
 	// -------------- //
     // -- prologue -- //
@@ -91,10 +93,7 @@ void test_mouvement_morpho_car(){
 	duplicate_border(mi0, mi1, mj0, mj1, b, img_bin);
 
 	// MORPHOLOGIE
-	morpho_3(img_bin, img_filtered, mi0, mi1, mj0, mj1); 
-
-	// MORPHOLOGIE OPTI
-	morpho_3_opti(img_bin, img_filtered, mi0, mi1, mj0, mj1); 
+	morpho_3_opti(img_bin, img_filtered, tmp1, tmp2, mi0, mi1, mj0, mj1); 
 
 	// convert binary img to pgm img
 	bin_to_pgm(mi0, mi1, mj0, mj1, img_filtered,"SD_out.pgm");
@@ -124,23 +123,23 @@ void test_mouvement_morpho_dataset(){
 
 	int mi0, mi1, mj0, mj1; 	// indices scalaire
 	int mi0b, mi1b, mj0b, mj1b; // indices scalaires avec bord
-  	char *format = "%d ";
+  char *format = "%d ";
 
-  	puts("=======================================");
+  puts("=======================================");
 	puts("=== test mouvement + morpho dataset ===");
 	puts("=======================================");
 
-    // ------------------------- //
-    // -- calculs des indices -- //
-    // ------------------------- //
+  // ------------------------- //
+  // -- calculs des indices -- //
+  // ------------------------- //
 
-    // 1 for 3x3 / 2 for 5x5
-    b = 1; 
+  // 1 for 3x3 / 2 for 5x5
+  b = 1; 
 
-    // 1 for 3x3 / 2 for 5x5
-    // b = 2;
+  // 1 for 3x3 / 2 for 5x5
+  // b = 2;
 
-    // indices matrices
+  // indices matrices
 	mi0 = 0; mi1 = HEIGHT - 1;
 	mj0 = 0; mj1 = WIDTH  - 1;
 	
@@ -164,6 +163,9 @@ void test_mouvement_morpho_dataset(){
 
 	uint8 ** img_bin 		= ui8matrix(mi0b, mi1b, mj0b, mj1b);
 	uint8 ** img_filtered 	= ui8matrix(mi0b, mi1b, mj0b, mj1b);
+
+	uint8** tmp1			= ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** tmp2 			= ui8matrix(mi0b, mi1b, mj0b, mj1b);
 
 	// -------------- //
   	// -- prologue -- //
@@ -216,10 +218,7 @@ void test_mouvement_morpho_dataset(){
 		duplicate_border(mi0, mi1, mj0, mj1, b, img_bin);
 
 		// MORPHOLOGIE
-		// morpho_3(img_bin, img_filtered, mi0, mi1, mj0, mj1); 
-
-		// MORPHOLOGIE OPTI
-		// morpho_3_opti(img_bin, img_filtered, mi0, mi1, mj0, mj1); 
+		morpho_5_opti(img_bin, img_filtered, tmp1, tmp2, mi0, mi1, mj0, mj1); 
 
 		// built pgm filename out
 		char filename_out[25] = "";
@@ -255,5 +254,5 @@ void main_test_mouvement_morpho(int argc, char *argv[])
 	// test_mouvement_morpho_car();
 
 	// test global sur tout le set
-	test_mouvement_morpho_dataset();	
+	// test_mouvement_morpho_dataset();	
 }

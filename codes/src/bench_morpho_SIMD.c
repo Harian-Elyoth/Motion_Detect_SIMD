@@ -4,7 +4,6 @@
 
 #include "bench_morpho_SIMD.h"
 
-
 void bench_erosion_3_SIMD(){
     
     gen_vimg_bin_bench_SIMD(3);
@@ -110,8 +109,10 @@ void bench_morpho_3_SIMD(){
     double time;
     double debit;
     
+
     CHRONO(morpho_3_SIMD(vimg_bin_bench, vimg_filtered_bench , vmi0_bench, vmi1_bench, vmj0_bench, vmj1_bench), cycles);
     time = (double)(cycles/CLK_PROC);
+
     debit = (WIDTH_BENCH * HEIGHT_BENCH) / time;
 
     BENCH(printf("Bench morpho SIMD 3 :\n"));
@@ -132,8 +133,10 @@ void bench_morpho_5_SIMD(){
     double time;
     double debit;
 
+
     CHRONO(morpho_5_SIMD(vimg_bin_bench, vimg_filtered_bench , vmi0_bench, vmi1_bench, vmj0_bench, vmj1_bench), cycles);
     time = (double)(cycles/CLK_PROC);
+
     debit = (WIDTH_BENCH * HEIGHT_BENCH) / time;
 
     BENCH(printf("Bench morpho SIMD 5 :\n"));
@@ -244,8 +247,10 @@ void bench_morpho_3_SIMD_opti(){
     double time;
     double debit;
     
+
     CHRONO(morpho_3_SIMD_opti(vimg_bin_bench, vimg_filtered_bench , vmi0_bench, vmi1_bench, vmj0_bench, vmj1_bench), cycles);
     time = (double)(cycles/CLK_PROC);
+
     debit = (WIDTH_BENCH * HEIGHT_BENCH) / time;
 
     BENCH(printf("Bench morpho SIMD 3 opti:\n"));
@@ -266,11 +271,84 @@ void bench_morpho_5_SIMD_opti(){
     double time;
     double debit;
 
+
     CHRONO(morpho_5_SIMD_opti(vimg_bin_bench, vimg_filtered_bench , vmi0_bench, vmi1_bench, vmj0_bench, vmj1_bench), cycles);
     time = (double)(cycles/CLK_PROC);
+
     debit = (WIDTH_BENCH * HEIGHT_BENCH) / time;
 
     BENCH(printf("Bench morpho SIMD 5 opti:\n"));
+    BENCH(printf("temps (ms) \t    = %0.6f", time*1000)); BENCH(puts(""));
+    BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles/(WIDTH_BENCH * HEIGHT_BENCH))); BENCH(puts(""));
+    BENCH(printf("debit (pixel/sec)   = %0.2f", debit)); BENCH(puts("")); BENCH(puts(""));
+}
+
+void bench_morpho_3_SIMD_pipeline(){
+
+    gen_vimg_bin_bench_SIMD(3);
+
+    int iter, niter = 4;
+    int run, nrun = 5;
+    double t0, t1, dt, tmin, t;
+
+    char * format = "%d ";
+    double cycles;
+    double time;
+    double debit;
+
+    int bord = 1;
+    
+    int vmi0b = vmi0_bench - bord;
+    int vmi1b = vmi1_bench + bord;
+
+    int vmj0b = vmj0_bench - bord;
+    int vmj1b = vmj1_bench + bord;
+
+    vuint8 ** tmp1 = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
+    vuint8 ** tmp2 = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b); 
+    vuint8 ** tmp3 = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);   
+
+
+    CHRONO(morpho_3_SIMD_pipeline(vimg_bin_bench, tmp1, tmp2, tmp3, vimg_filtered_bench , vmi0_bench, vmi1_bench, vmj0_bench, vmj1_bench), cycles);
+    time = (double)(cycles/CLK_PROC);
+    debit = (WIDTH_BENCH * HEIGHT_BENCH) / time;
+
+    BENCH(printf("Bench morpho SIMD 3 pipeline:\n"));
+    BENCH(printf("temps (ms) \t    = %0.6f", time*1000)); BENCH(puts(""));
+    BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles/(WIDTH_BENCH * HEIGHT_BENCH))); BENCH(puts(""));
+    BENCH(printf("debit (pixel/sec)   = %0.2f", debit)); BENCH(puts("")); BENCH(puts(""));
+}
+
+void bench_morpho_3_SIMD_pipeline_opti(){
+
+    gen_vimg_bin_bench_SIMD(3);
+
+    int iter, niter = 4;
+    int run, nrun = 5;
+    double t0, t1, dt, tmin, t;
+
+    char * format = "%d ";
+    double cycles;
+    double time;
+    double debit;
+
+    int bord = 1;
+    
+    int vmi0b = vmi0_bench - bord;
+    int vmi1b = vmi1_bench + bord;
+
+    int vmj0b = vmj0_bench - bord;
+    int vmj1b = vmj1_bench + bord;
+
+    vuint8 ** tmp1 = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
+    vuint8 ** tmp2 = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b); 
+
+
+    CHRONO(morpho_3_SIMD_pipeline_opti(vimg_bin_bench, tmp1, tmp2, vimg_filtered_bench , vmi0_bench, vmi1_bench, vmj0_bench, vmj1_bench), cycles);
+    time = (double)(cycles/CLK_PROC);
+    debit = (WIDTH_BENCH * HEIGHT_BENCH) / time;
+
+    BENCH(printf("Bench morpho SIMD 3 pipeline opti:\n"));
     BENCH(printf("temps (ms) \t    = %0.6f", time*1000)); BENCH(puts(""));
     BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles/(WIDTH_BENCH * HEIGHT_BENCH))); BENCH(puts(""));
     BENCH(printf("debit (pixel/sec)   = %0.2f", debit)); BENCH(puts("")); BENCH(puts(""));
@@ -335,7 +413,11 @@ void gen_vimg_bin_bench_SIMD(int kernel_size){
 	vimg_bin_bench = vui8matrix(vmi0b_bench, vmi1b_bench, vmj0b_bench, vmj1b_bench);
 
 	// image filtré par morpho
-	vimg_filtered_bench = vui8matrix(vmi0b_bench, vmi1b_bench, vmj0b_bench, vmj1b_bench);
+
+	vimg_filtered_bench = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
+    tmp1_SIMD = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
+    tmp2_SIMD = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
+
 
 	/*---------------------------------------------------*/
 
@@ -398,25 +480,14 @@ void gen_vimg_bin_bench_SIMD(int kernel_size){
 	free_vui8matrix(img_diff, vmi0b_bench, vmi1b_bench, vmj0b_bench, vmj1b_bench);
 }
 
-void main_bench_morpho_SIMD(int argc, char *argv[])
-{
-    // bench_erosion_3_SIMD();
-    // bench_erosion_5();
-    // bench_dilatation_3_SIMD();
-    // bench_dilatation_3_SIMD_opti();
-    // bench_erosion_5_SIMD();
+void main_bench_morpho_SIMD(int argc, char *argv[]){
     
-    // bench_dilatation_5_SIMD();
-    // bench_erosion_3_SIMD_opti();
-    // bench_dilatation_5();
-    // bench_morpho_3_SIMD();
+    bench_morpho_3_SIMD();
     // bench_morpho_5_SIMD();
     
-    // bench_erosion_3_SIMD_opti();
-    // bench_dilatation_3_SIMD_opti();
-    
-    // bench_erosion_5_SIMD_opti();
-    // bench_dilatation_5_SIMD_opti();
-    
-    // bench_morpho_3_SIMD_opti();
+    bench_morpho_3_SIMD_opti();
+
+    bench_morpho_3_SIMD_pipeline();
+
+    // bench_morpho_3_SIMD_pipeline_opti();
 }

@@ -93,6 +93,8 @@ void bench_mouvement_morpho_SIMD_car(bool is_visual){
 
 	// image filtrée après morpho
 	vuint8 ** img_filtered = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
+	vuint8** tmp1_SIMD	= vui8matrix(mi0b, mi1b, mj0b, mj1b);
+	vuint8** tmp2_SIMD	= vui8matrix(mi0b, mi1b, mj0b, mj1b);
 
 	/*---------------------------------------------------*/
 
@@ -221,7 +223,7 @@ void bench_mouvement_morpho_SIMD_car(bool is_visual){
 	BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_step4/(WIDTH*HEIGHT))); BENCH(puts(""));
 	BENCH(printf("debit (pixel/sec)   = %0.2f", debit_step4)); BENCH(puts("")); BENCH(puts(""));
 
-	CHRONO(morpho_3_SIMD(img_bin, img_filtered, vmi0, vmi1, vmj0, vmj1), cycles_morpho); 
+	CHRONO(morpho_3_SIMD(img_bin, img_filtered, tmp1_SIMD, tmp2_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_morpho); 
 	time_morpho = (double)(cycles_morpho/CLK_PROC);
 	debit_morpho = (width*height) / time_morpho;
 	time_morpho *= 1000;
@@ -343,6 +345,8 @@ void bench_mouvement_morpho_SIMD_dataset(){
 
 	// image filtrée après morpho
 	vuint8 ** img_filtered = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
+	vuint8** tmp1_SIMD	= vui8matrix(mi0b, mi1b, mj0b, mj1b);
+	vuint8** tmp2_SIMD	= vui8matrix(mi0b, mi1b, mj0b, mj1b);
 
 	/*---------------------------------------------------*/
 
@@ -414,7 +418,7 @@ void bench_mouvement_morpho_SIMD_dataset(){
 		time_step4 = (double)(cycles_step4/CLK_PROC);
 		time_step4 *= 1000;
 
-		CHRONO(morpho_3_SIMD(img_bin, img_filtered, vmi0, vmi1, vmj0, vmj1), cycles_morpho); 
+		CHRONO(morpho_3_SIMD(img_bin, img_filtered, tmp1_SIMD, tmp2_SIMD,vmi0, vmi1, vmj0, vmj1), cycles_morpho); 
 		time_morpho = (double)(cycles_morpho/CLK_PROC);
 		time_morpho *= 1000;
 

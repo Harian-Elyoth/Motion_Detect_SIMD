@@ -72,6 +72,8 @@ void bench_mouvement_morpho_car(bool is_visual){
 	uint8** img_diff 		= ui8matrix(mi0b, mi1b, mj0b, mj1b);
 	uint8** img_bin 		= ui8matrix(mi0b, mi1b, mj0b, mj1b);
 	uint8** img_filtered	= ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** tmp1 			= ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** tmp2 			= ui8matrix(mi0b, mi1b, mj0b, mj1b);
 
 	// -------------- //
     // -- prologue -- //
@@ -149,7 +151,7 @@ void bench_mouvement_morpho_car(bool is_visual){
 	BENCH(printf("debit (pixel/sec)   = %0.2f", debit_step4)); BENCH(puts("")); BENCH(puts(""));
 
 
-	CHRONO(morpho_3(img_bin, img_filtered, mi0, mi1, mj0, mj1), cycles_morpho); 
+	CHRONO(morpho_3(img_bin, img_filtered, tmp1, tmp2, mi0, mi1, mj0, mj1), cycles_morpho); 
 	time_morpho = (double)(cycles_morpho/CLK_PROC);
 	debit_morpho = (WIDTH*HEIGHT) / time_morpho;
 	time_morpho *= 1000;
@@ -246,6 +248,9 @@ void bench_mouvement_morpho_dataset(){
 	uint8** img_bin 		= ui8matrix(mi0b, mi1b, mj0b, mj1b);
 
 	uint8** img_filtered 	= ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** tmp1 			= ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** tmp2 			= ui8matrix(mi0b, mi1b, mj0b, mj1b);
+
 
 	// -------------- //
     // -- prologue -- //
@@ -309,7 +314,7 @@ void bench_mouvement_morpho_dataset(){
 		time_step4 *= 1000;
 
 		// MORPHOLOGIE
-		CHRONO(morpho_3(img_bin, img_filtered, mi0, mi1, mj0, mj1), cycles_morpho); 
+		CHRONO(morpho_3(img_bin, img_filtered, tmp1, tmp2, mi0, mi1, mj0, mj1), cycles_morpho); 
 		time_morpho = (double)(cycles_morpho/CLK_PROC);
 		debit_morpho = (WIDTH*HEIGHT) / time_morpho;
 		time_morpho *= 1000;
