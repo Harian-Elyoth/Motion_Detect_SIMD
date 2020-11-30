@@ -343,11 +343,18 @@ void SigmaDelta_step2_simd_opti(int vmi0, int vmi1, int vmj0, int vmj1, vuint8**
 
 void SigmaDelta_step3_simd(int vmi0, int vmi1, int vmj0, int vmj1, vuint8** std0, vuint8** std1, vuint8** img_diff){
 
-	vuint8 std0_reg, std1_reg;
-	vuint8 N_reg, img_diff_reg, N_img_diff_reg, VMAX_reg, VMIN_reg;
-	vuint8 cmplt, cmpgt, reslt, resgt, ones;
+	__m128i std0_reg, std1_reg;
+	__m128i N_reg, img_diff_reg, N_img_diff_reg, VMAX_reg, VMIN_reg;
+	__m128i cmplt, cmpgt, reslt, resgt, ones;
 
-	__m128i zero = _mm_setzero_si128();
+	__m128i zero 	= _mm_setzero_si128();
+	__m128i full 	= _mm_set_epi16(0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF);
+	__m128i maskLo 	= _mm_set_epi8(0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 14, 12, 10, 8, 6, 4, 2, 0);
+	__m128i maskHi 	= _mm_set_epi8(14, 12, 10, 8, 6, 4, 2, 0, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80);
+
+	__m128i x1_mul, x2_mul, y1_mul, y2_mul;
+	__m128i mullo_1, mullo_2, cmpgt1_mul, cmpgt2_mul;
+	__m128i res1, res2;
 
 	N_reg 		= init_vuint8(N);
 	ones  		= init_vuint8(1);
@@ -360,11 +367,12 @@ void SigmaDelta_step3_simd(int vmi0, int vmi1, int vmj0, int vmj1, vuint8** std0
 		{
 			img_diff_reg = VEC_LOAD_2D_EPI8(i, j, img_diff);
 
-			// DEBUG(display_vuint8(img_diff_reg, "%03d ", "img_diff_reg : ")); DEBUG(printf("\n\n"));
+			// DEBUG(display_vuint8(img_diff_reg, "%03d ", "img_diff_reg (before): ")); DEBUG(printf("\n\n"));
+			// DEBUG(display_vuint8(N_reg, "%03d ", "N_reg (before): ")); DEBUG(printf("\n\n"));
 
 			VEC_MULLO_EPU8(img_diff_reg, N_reg, N_img_diff_reg);
 
-			// DEBUG(display_vuint8(N_img_diff_reg, "%03d ", "N_img_diff_reg : ")); DEBUG(printf("\n\n"));
+			// DEBUG(display_vuint16(res, "%03d ", "res : ")); DEBUG(printf("\n\n"));
 
 			std0_reg = VEC_LOAD_2D_EPI8(i, j, std0);
 
@@ -400,7 +408,14 @@ void SigmaDelta_step3_simd_opti(int vmi0, int vmi1, int vmj0, int vmj1, vuint8**
 	vuint8 N_reg, N_img_diff_reg, VMAX_reg, VMIN_reg;
 	vuint8 cmplt, cmpgt, reslt, resgt, ones;
 
-	__m128i zero = _mm_setzero_si128();
+	__m128i zero 	= _mm_setzero_si128();
+	__m128i full 	= _mm_set_epi16(0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF);
+	__m128i maskLo 	= _mm_set_epi8(0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 14, 12, 10, 8, 6, 4, 2, 0);
+	__m128i maskHi 	= _mm_set_epi8(14, 12, 10, 8, 6, 4, 2, 0, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80);
+
+	__m128i x1_mul, x2_mul, y1_mul, y2_mul;
+	__m128i mullo_1, mullo_2, cmpgt1_mul, cmpgt2_mul;
+	__m128i res1, res2;
 
 	N_reg 		= init_vuint8(N);
 	ones  		= init_vuint8(1);
@@ -688,7 +703,14 @@ void SigmaDelta_simd_full(int vmi0, int vmi1, int vmj0, int vmj1,  vuint8** imag
 	vuint8 cmplt, cmpgt;
 	vuint8 ones, reslt, resgt;
 
-	__m128i zero = _mm_setzero_si128();
+	__m128i zero 	= _mm_setzero_si128();
+	__m128i full 	= _mm_set_epi16(0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF);
+	__m128i maskLo 	= _mm_set_epi8(0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 14, 12, 10, 8, 6, 4, 2, 0);
+	__m128i maskHi 	= _mm_set_epi8(14, 12, 10, 8, 6, 4, 2, 0, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80);
+
+	__m128i x1_mul, x2_mul, y1_mul, y2_mul;
+	__m128i mullo_1, mullo_2, cmpgt1_mul, cmpgt2_mul;
+	__m128i res1, res2;
 
 	N_reg 		= init_vuint8(N);
 	ones  		= init_vuint8(1);
@@ -758,7 +780,14 @@ void SigmaDelta_simd_full_opti(int vmi0, int vmi1, int vmj0, int vmj1,  vuint8**
 	vuint8 cmplt, cmpgt;
 	vuint8 ones, reslt, resgt;
 
-	__m128i zero = _mm_setzero_si128();
+	__m128i zero 	= _mm_setzero_si128();
+	__m128i full 	= _mm_set_epi16(0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF);
+	__m128i maskLo 	= _mm_set_epi8(0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 14, 12, 10, 8, 6, 4, 2, 0);
+	__m128i maskHi 	= _mm_set_epi8(14, 12, 10, 8, 6, 4, 2, 0, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80);
+
+	__m128i x1_mul, x2_mul, y1_mul, y2_mul;
+	__m128i mullo_1, mullo_2, cmpgt1_mul, cmpgt2_mul;
+	__m128i res1, res2;
 
 	N_reg 		= init_vuint8(N);
 	ones  		= init_vuint8(1);

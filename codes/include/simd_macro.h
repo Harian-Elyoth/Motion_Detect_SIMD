@@ -58,15 +58,12 @@
 #define VEC_RIGHT2_EPI8(x1, x2) _mm_add_epi8(_mm_bslli_si128(x2, 14), _mm_bsrli_si128(x1, 2))
 
 // CAST EPI8 EPI16
-#define EPI8_TO_EPI16(x, x1, x2) \
-		x1 = init_vuint16_all(_mm_extract_epi8(x, 0), _mm_extract_epi8(x, 1), _mm_extract_epi8(x, 2)  , _mm_extract_epi8(x, 3)  , _mm_extract_epi8(x, 4)  , _mm_extract_epi8(x, 5)  , _mm_extract_epi8(x, 6)  , _mm_extract_epi8(x, 7)); \
-		x2 = init_vuint16_all(_mm_extract_epi8(x, 8), _mm_extract_epi8(x, 9), _mm_extract_epi8(x, 10) , _mm_extract_epi8(x, 11) , _mm_extract_epi8(x, 12) , _mm_extract_epi8(x, 13) , _mm_extract_epi8(x, 14) , _mm_extract_epi8(x, 15)); \
+#define EPI8_TO_EPI16(x, x1, x2) 			\
+		x1 = _mm_cvtepu8_epi16(x); 			\
+		x2 = _mm_unpackhi_epi8(x, zero); 	\
 
-#define EPI16_TO_EPI8(x, x1, x2) \
-		x = init_vuint8_all( _mm_extract_epi16(x1, 0), _mm_extract_epi16(x1, 1), _mm_extract_epi16(x1, 2), _mm_extract_epi16(x1, 3),	\
-							 _mm_extract_epi16(x1, 4), _mm_extract_epi16(x1, 5), _mm_extract_epi16(x1, 6), _mm_extract_epi16(x1, 7),	\
-							 _mm_extract_epi16(x2, 0), _mm_extract_epi16(x2, 1), _mm_extract_epi16(x2, 2), _mm_extract_epi16(x2, 3),	\
-							 _mm_extract_epi16(x2, 4), _mm_extract_epi16(x2, 5), _mm_extract_epi16(x2, 6), _mm_extract_epi16(x2, 7));	\
+#define EPI16_TO_EPI8(x1, x2) _mm_or_si128(_mm_shuffle_epi8(x1, maskLo), _mm_shuffle_epi8(x2, maskHi))
+					
 
 // MIN MAX UNSIGNED EPI8
 #define VEC_MIN_EPU8(x, y) _mm_min_epu8(x, y)
@@ -99,20 +96,21 @@
 #define VEC_SUBU_EPI8(x, y) _mm_sub_epi8(x, y)		// Soustraction non signé 8 bits
 #define VEC_SUB_EPI8(x, y)  _mm_subs_epi8(x, y)		// Soustraction signé 8 bits 
 
-#define VEC_MULU_EPI8(x, y, res)						\
-		EPI8_TO_EPI16(x, x1_mul, x2_mul);				\
-		EPI8_TO_EPI16(y, y1_mul, y2_mul);				\
-		mullo_1 = _mm_mullo_epi16(x1_mul, y1_mul);		\
-		mullo_2 = _mm_mullo_epi16(x2_mul, y2_mul);		\
-		cmpgt1_mul = _mm_cmpgt_epi16(mullo_1, full);	\
-		cmpgt2_mul = _mm_cmpgt_epi16(mullo_2, full);	\
-		cmpgt1_mul = _mm_or_si128(mullo_1, cmpgt1_mul); \
-		cmpgt2_mul = _mm_or_si128(mullo_2, cmpgt2_mul); \
-		res1 = _mm_and_si128(cmpgt1_mul, full); 		\
-		res2 = _mm_and_si128(cmpgt2_mul, full); 		\
-		EPI16_TO_EPI8(res, res1, res2);	 				\
 
-#define VEC_MULLO_EPU8(a, b, res) _mm_or_si128(_mm_slli_epi16(_mm_mullo_epi16(_mm_srli_epi16(a, 8),_mm_srli_epi16(b, 8)), 8), _mm_srli_epi16(_mm_slli_epi16(_mm_mullo_epi16(a, b),8), 8))
+#define VEC_MULLO_EPU8(x, y, res)							\
+		EPI8_TO_EPI16(x, x1_mul, x2_mul);					\
+		EPI8_TO_EPI16(y, y1_mul, y2_mul);					\
+		mullo_1 	= _mm_mullo_epi16(x1_mul, y1_mul);		\
+		mullo_2 	= _mm_mullo_epi16(x2_mul, y2_mul);		\
+		cmpgt1_mul 	= _mm_cmpgt_epi16(mullo_1, full);		\
+		cmpgt2_mul 	= _mm_cmpgt_epi16(mullo_2, full);		\
+		cmpgt1_mul 	= _mm_or_si128(mullo_1, cmpgt1_mul); 	\
+		cmpgt2_mul 	= _mm_or_si128(mullo_2, cmpgt2_mul); 	\
+		res1 		= _mm_and_si128(cmpgt1_mul, full); 		\
+		res2 		= _mm_and_si128(cmpgt2_mul, full); 		\
+		res 		= EPI16_TO_EPI8(_mm_and_si128(cmpgt1_mul, full), _mm_and_si128(cmpgt2_mul, full));	 		\
+
+// #define VEC_MULLO_EPU8(a, b, res) _mm_or_si128(_mm_slli_epi16(_mm_mullo_epi16(_mm_srli_epi16(a, 8),_mm_srli_epi16(b, 8)), 8), _mm_srli_epi16(_mm_slli_epi16(_mm_mullo_epi16(a, b),8), 8))
 
  
 #define VEC_ABS_EPI8(x) _mm_abs_epi8(x)			// Valeur absolue

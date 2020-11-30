@@ -51,7 +51,7 @@ void gen_img_bin_test(type_morpho_t type){
     srand(time(NULL));
     for(int i = mi0_test ; i <= mi1_test ; i++){
         for(int j = mj0_test ; j <= mj1_test ; j++){
-            if((i >= HEIGHT_TEST/4 && i <= HEIGHT_TEST*3/4) || (j >= WIDTH_TEST/4 && j <= WIDTH_TEST*3/4)){
+            if((i >= height_test/4 && i <= height_test*3/4) || (j >= width_test/4 && j <= width_test*3/4)){
                 img_bin_test[i][j] = 1;
             }
             else {
@@ -65,7 +65,7 @@ void gen_img_bin_test(type_morpho_t type){
         case EROSION5 :
             for(int i = mi0_test + b_test; i <= mi1_test - b_test; i++){
                 for(int j = mj0_test + b_test; j <= mj1_test - b_test; j++){
-                    if((i >= (HEIGHT_TEST/4 + b_test) && i <= (HEIGHT_TEST*3/4 - b_test) || (j >= WIDTH_TEST/4 + b_test && j <= (WIDTH_TEST*3/4 - b_test)))){
+                    if((i >= (height_test/4 + b_test) && i <= (height_test*3/4 - b_test) || (j >= width_test/4 + b_test && j <= (width_test*3/4 - b_test)))){
                         assertion[i][j] = 1;
                     }
                     else {
@@ -78,7 +78,7 @@ void gen_img_bin_test(type_morpho_t type){
         case DILATATION5 :
             for(int i = mi0_test ; i <= mi1_test ; i++){
                 for(int j = mj0_test ; j <= mj1_test ; j++){
-                    if((i >= (HEIGHT_TEST/4 - b_test) && i <= (HEIGHT_TEST*3/4 + b_test) || (j >= WIDTH_TEST/4 - b_test && j <= (WIDTH_TEST*3/4 + b_test)))){
+                    if((i >= (height_test/4 - b_test) && i <= (height_test*3/4 + b_test) || (j >= width_test/4 - b_test && j <= (width_test*3/4 + b_test)))){
                         assertion[i][j] = 1;
                     }
                     else {

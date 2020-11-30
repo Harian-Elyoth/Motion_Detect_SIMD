@@ -129,7 +129,7 @@ void test_mouvement_SIMD_unit(){
 
     DEBUG(display_vui8matrix(img_diff, vmi0, vmi1, vmj0, vmj1, format, "\nimg_diff :\n"));
 
-	SigmaDelta_step3_simd_opti(vmi0, vmi1, vmj0, vmj1, std0, std1, img_diff);
+	SigmaDelta_step3_simd(vmi0, vmi1, vmj0, vmj1, std0, std1, img_diff);
 
 	vuint8** std1_correct	= vui8matrix(vmi0, vmi1, vmj0, vmj1);
 	std1_correct[0][0]    	= init_vuint8_all(1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2); 
@@ -151,29 +151,29 @@ void test_mouvement_SIMD_unit(){
 
     DEBUG(display_vui8matrix(std1, vmi0, vmi1, vmj0, vmj1, format, "\nstd1 :\n"));
 
-	SigmaDelta_step4_simd_opti(vmi0, vmi1, vmj0, vmj1, std1, img_diff, img_bin);
+	// SigmaDelta_step4_simd_opti(vmi0, vmi1, vmj0, vmj1, std1, img_diff, img_bin);
 	// SigmaDelta_simd_full(vmi0, vmi1, vmj0, vmj1, image, mean0, std0, img_bin);
 	// SigmaDelta_simd_full_opti(vmi0, vmi1, vmj0, vmj1, image, mean0, std0, img_bin);
 
-	vuint8** img_bin_correct		= vui8matrix(vmi0, vmi1, vmj0, vmj1);
-	img_bin_correct[0][0]    		= init_vuint8_all(0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1); 
-	img_bin_correct[1][0]    		= init_vuint8_all(1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1); 
-    img_bin_correct[2][0]    		= init_vuint8_all(1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
-    img_bin_correct[3][0]    		= init_vuint8_all(1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+	// vuint8** img_bin_correct		= vui8matrix(vmi0, vmi1, vmj0, vmj1);
+	// img_bin_correct[0][0]    		= init_vuint8_all(0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1); 
+	// img_bin_correct[1][0]    		= init_vuint8_all(1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1); 
+ //    img_bin_correct[2][0]    		= init_vuint8_all(1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+ //    img_bin_correct[3][0]    		= init_vuint8_all(1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
 
-    for (int i = vmi0; i <= vmi1; ++i)
-    {
-    	for (int j = vmj0; j <= vmj1; ++j)
-    	{
-    		for (int k = 0; k < card; ++k)
-    		{
-    			assert(img_bin[i][j][k] == img_bin_correct[i][j][k]);
-    		}
-    	}
-    }
-    printf("\nStep 4 : \033[32mOK\033[00m\n");
+ //    for (int i = vmi0; i <= vmi1; ++i)
+ //    {
+ //    	for (int j = vmj0; j <= vmj1; ++j)
+ //    	{
+ //    		for (int k = 0; k < card; ++k)
+ //    		{
+ //    			assert(img_bin[i][j][k] == img_bin_correct[i][j][k]);
+ //    		}
+ //    	}
+ //    }
+ //    printf("\nStep 4 : \033[32mOK\033[00m\n");
 	
-    DEBUG(display_vui8matrix(img_bin, vmi0, vmi1, vmj0, vmj1, format, "\nimg_bin :\n"));
+ //    DEBUG(display_vui8matrix(img_bin, vmi0, vmi1, vmj0, vmj1, format, "\nimg_bin :\n"));
 
 	/*---------------------------------------------------*/
 
