@@ -372,7 +372,7 @@ void SigmaDelta_step3_simd(int vmi0, int vmi1, int vmj0, int vmj1, vuint8** std0
 
 			VEC_MULLO_EPU8(img_diff_reg, N_reg, N_img_diff_reg);
 
-			// DEBUG(display_vuint16(res, "%03d ", "res : ")); DEBUG(printf("\n\n"));
+			// DEBUG(display_vuint8(N_img_diff_reg, "%03d ", "N_img_diff_reg : ")); DEBUG(printf("\n\n"));
 
 			std0_reg = VEC_LOAD_2D_EPI8(i, j, std0);
 

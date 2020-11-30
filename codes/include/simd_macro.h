@@ -109,9 +109,6 @@
 		res1 		= _mm_and_si128(cmpgt1_mul, full); 		\
 		res2 		= _mm_and_si128(cmpgt2_mul, full); 		\
 		res 		= EPI16_TO_EPI8(_mm_and_si128(cmpgt1_mul, full), _mm_and_si128(cmpgt2_mul, full));	 		\
-
-// #define VEC_MULLO_EPU8(a, b, res) _mm_or_si128(_mm_slli_epi16(_mm_mullo_epi16(_mm_srli_epi16(a, 8),_mm_srli_epi16(b, 8)), 8), _mm_srli_epi16(_mm_slli_epi16(_mm_mullo_epi16(a, b),8), 8))
-
  
 #define VEC_ABS_EPI8(x) _mm_abs_epi8(x)			// Valeur absolue
 #define VEC_MAX_EPI8(x, y) _mm_max_epi8(x, y) 	// Max 8 bits
