@@ -40,6 +40,11 @@ void display_type_opti(type_opti_t OPTI){
         case SCALAIRE_OPTI :
             printf("SCALAIRE OPTI");
             break;
+        case PIPELINE :
+            printf("PIPELINE");
+            break;
+        case PIPELINE_OPTI :
+            printf("PIPELINE_OPTI");
         default : 
             break;
     }

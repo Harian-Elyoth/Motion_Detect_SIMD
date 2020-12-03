@@ -8,7 +8,7 @@
 #include "test_morpho_SIMD.h"
 
 
-void gen_img_bin_test_SIMD(type_morpho_t type){
+void gen_img_bin_test_SIMD(type_morpho_t type, type_opti_t OPTI){
     int k;
     switch(type){
         case EROSION3:
@@ -26,6 +26,9 @@ void gen_img_bin_test_SIMD(type_morpho_t type){
         default :
             break;
     }
+    if(type == MORPHO3 && OPTI == PIPELINE_OPTI){
+        b_test = 2;
+    }
     // indices matrices
 	vmi0_test = 0; vmi1_test = HEIGHT_TEST_SIMD-1;
 	vmj0_test = 0; vmj1_test = WIDTH_TEST_SIMD/16-1;
@@ -37,10 +40,12 @@ void gen_img_bin_test_SIMD(type_morpho_t type){
 
     mi0b_test = mi0_test-b_test; mi1b_test = mi1_test+b_test;
 	mj0b_test = mj0_test-b_test; mj1b_test = mj1_test+b_test;
-
+    printf("vmi0b_test = %d, vmi1b_test = %d, vmj0b_test = %d, vmj1b_test = %d\n", vmi0b_test, vmi1b_test, vmj0b_test, vmj1b_test);
     if(type == MORPHO3 || type == MORPHO5){
         tmp1_SIMD = vui8matrix(vmi0b_test, vmi1b_test, vmj0b_test, vmj1b_test);
         tmp2_SIMD = vui8matrix(vmi0b_test, vmi1b_test, vmj0b_test, vmj1b_test);
+        tmp3_SIMD = vui8matrix(vmi0b_test, vmi1b_test, vmj0b_test, vmj1b_test);
+
     }
 
 
@@ -130,7 +135,7 @@ void gen_img_bin_test_SIMD(type_morpho_t type){
 }
 
 void test_unitaire_SIMD(type_morpho_t MORPHO, type_opti_t OPTI){
-    gen_img_bin_test_SIMD(MORPHO);
+    gen_img_bin_test_SIMD(MORPHO, OPTI);
     char * format = " %d";
     DEBUG(display_vui8matrix(vimg_bin_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "image binaire : ")); DEBUG(puts(""));
     switch(OPTI){
@@ -181,9 +186,18 @@ void test_unitaire_SIMD(type_morpho_t MORPHO, type_opti_t OPTI){
                 default :
                     break;
             }
+            break;
+        case PIPELINE :
+            morpho_3_SIMD_pipeline(vimg_bin_test, tmp1_SIMD, tmp2_SIMD, tmp3_SIMD, vimg_filtered_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test);
+            break;
+        case PIPELINE_OPTI :
+            morpho_3_SIMD_pipeline_opti(vimg_bin_test, tmp1_SIMD, tmp2_SIMD, vimg_filtered_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test);
+            break;
+        default :
+            break;
     }
-    
     display_type_morpho(MORPHO);
+    //display_vui8matrix(vimg_filtered_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "TEST\n");
     vui8matrix_to_ui8matrix_morpho(16, vmi0_test, vmi1_test, vmj0_test, vmj1_test, img_filtered_test, vimg_filtered_test);
     if(equal_SIMD(img_filtered_test, assertion, mi0_test, mi1_test, mj0_test, mj1_test)){
         printf(" :\n\x1B[32mOK\x1B[0m\n\n");
@@ -216,7 +230,7 @@ int equal_SIMD(uint8 ** A, uint8 ** B, int mi0, int mi1, int mj0, int mj1){
 void tests_unitaires_SIMD(){
     printf("===============================\n");
     display_type_opti(SIMD);puts("");
-    test_unitaire_SIMD(EROSION5, SIMD);
+    test_unitaire_SIMD(EROSION3, SIMD);
     test_unitaire_SIMD(EROSION5, SIMD);
     test_unitaire_SIMD(DILATATION3, SIMD);
     test_unitaire_SIMD(DILATATION5, SIMD);
@@ -224,12 +238,18 @@ void tests_unitaires_SIMD(){
     test_unitaire_SIMD(MORPHO5, SIMD);
     printf("===============================\n");
     display_type_opti(SIMD_OPTI);puts("");
-    test_unitaire_SIMD(EROSION5, SIMD_OPTI);
+    test_unitaire_SIMD(EROSION3, SIMD_OPTI);
     test_unitaire_SIMD(EROSION5, SIMD_OPTI);
     test_unitaire_SIMD(DILATATION3, SIMD_OPTI);
     test_unitaire_SIMD(DILATATION5, SIMD_OPTI);
     test_unitaire_SIMD(MORPHO3, SIMD_OPTI);
     test_unitaire_SIMD(MORPHO5, SIMD_OPTI);
+    printf("===============================\n");
+    display_type_opti(PIPELINE);puts("");
+    test_unitaire_SIMD(MORPHO3, PIPELINE);
+    printf("===============================\n");
+    display_type_opti(PIPELINE_OPTI);puts("");
+    test_unitaire_SIMD(MORPHO3, PIPELINE_OPTI);
     printf("===============================\n");
 
 }
@@ -307,7 +327,8 @@ void ui8matrix_to_vui8matrix_wb_morpho(int card, int vmi0b, int vmi1b, int vmj0b
 
 void main_test_morpho_SIMD(int argc, char *argv[])
 {
-
-    tests_unitaires_SIMD();
-
+    test_unitaire_SIMD(MORPHO3, PIPELINE_OPTI);
+    //test_unitaire_SIMD(DILATATION5, SIMD_OPTI);
+    //tests_unitaires_SIMD();
+    
 }
