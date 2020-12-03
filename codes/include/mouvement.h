@@ -50,30 +50,28 @@ extern "C" {
 #define HEIGHT_TEST_UNIT  8 // correspond au nb de ligne    => indice boucle i
 
 
-// void allocate_matrix(int kernel_size);
-// void free_matrix();
+void SigmaDelta_step1(int mi0, int mi1, int mj0, int mj1, uint8** mean0, uint8** mean1, uint8** image);
+void SigmaDelta_step1_opti(int mi0, int mi1, int mj0, int mj1, uint8** mean0, uint8** mean1, uint8** image);
 
-void SigmaDelta_step1(int mi0b, int mi1b, int mj0b, int mj1b, uint8** mean0, uint8** mean1, uint8** image);
-void SigmaDelta_step1_opti(int mi0b, int mi1b, int mj0b, int mj1b, uint8** mean0, uint8** mean1, uint8** image);
+void SigmaDelta_step2(int mi0, int mi1, int mj0, int mj1, uint8** image, uint8** mean1, uint8** img_diff);
+void SigmaDelta_step2_opti(int mi0, int mi1, int mj0, int mj1, uint8** image, uint8** mean1, uint8** img_diff);
 
-void SigmaDelta_step2(int mi0b, int mi1b, int mj0b, int mj1b, uint8** image, uint8** mean1, uint8** img_diff);
-void SigmaDelta_step2_opti(int mi0b, int mi1b, int mj0b, int mj1b, uint8** image, uint8** mean1, uint8** img_diff);
+void SigmaDelta_step3(int mi0, int mi1, int mj0, int mj1, uint8** std0, uint8** std1, uint8** img_diff);
+void SigmaDelta_step3_opti(int mi0, int mi1, int mj0, int mj1, uint8** std0, uint8** std1, uint8** img_diff);
 
-void SigmaDelta_step3(int mi0b, int mi1b, int mj0b, int mj1b, uint8** std0, uint8** std1, uint8** img_diff);
-void SigmaDelta_step3_opti(int mi0b, int mi1b, int mj0b, int mj1b, uint8** std0, uint8** std1, uint8** img_diff);
+void SigmaDelta_step4(int mi0, int mi1, int mj0, int mj1, uint8** std1, uint8** img_diff, uint8** img_bin);
+void SigmaDelta_step4_opti(int mi0, int mi1, int mj0, int mj1, uint8** std1, uint8** img_diff, uint8** img_bin);
 
-void SigmaDelta_step4(int mi0b, int mi1b, int mj0b, int mj1b, uint8** std1, uint8** img_diff, uint8** img_bin);
-void SigmaDelta_step4_opti(int mi0b, int mi1b, int mj0b, int mj1b, uint8** std1, uint8** img_diff, uint8** img_bin);
+void SigmaDelta_full(int mi0, int mi1, int mj0, int mj1,  uint8** image, uint8** mean0, uint8** mean1, uint8** img_diff, uint8** std0, uint8** std1, uint8** img_bin);
+void SigmaDelta_full_opti(int mi0, int mi1, int mj0, int mj1,  uint8** image, uint8** mean0, uint8** std0, uint8** img_bin);
 
-void SigmaDelta_full(int mi0b, int mi1b, int mj0b, int mj1b,  uint8** image, uint8** mean0, uint8** mean1, uint8** img_diff, uint8** std0, uint8** std1, uint8** img_bin);
-void SigmaDelta_full_opti(int mi0b, int mi1b, int mj0b, int mj1b,  uint8** image, uint8** mean0, uint8** std0, uint8** img_bin);
+void duplicate_border(int mi0, int mi1, int mj0, int mj1, int b, uint8** image);
 
-void duplicate_border(int mi0b, int mi1b, int mj0b, int mj1b, int b, uint8** image);
+void gen_pgm_img(int mi0, int mi1, int mj0, int mj1, uint8** mean0, uint8** std0, uint8** image);
 
-void gen_pgm_img();
+void bin_to_pgm(int mi0, int mi1, int mj0, int mj1, uint8** img_bin, char* filename);
 
-void bin_to_pgm(int mi0b, int mi1b, int mj0b, int mj1b, uint8** img_bin, char* filename);
-
+void copy_ui8matrix(int mi0, int mi1, int mj0, int mj1, uint8** src, uint8** dest);
 
 #ifdef __cplusplus
 }

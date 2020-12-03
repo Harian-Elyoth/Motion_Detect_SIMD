@@ -1,8 +1,9 @@
+
 /* ------------------------------------------------------------------------------ */
 /* ---  Bench Algorithme Morpho SIMD pour le traitement d'image --- */
 /* ------------------------------------------------------------------------------ */
 
-#include "bench_morpho_SIMD.h"
+// #include "bench_morpho_SIMD.h"
 
 void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPTI, int fract){
 
@@ -68,12 +69,14 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
 	// 2 for 5x5
 	//int b = 2;
 
-	// cardinalité des registres
-	int card = card_vuint8(); // 16
 
-	// ------------------------- //
-	// -- calculs des indices -- //
-	// ------------------------- //
+// 	// cardinalité des registres
+// 	int card = card_vuint8(); // 16
+
+// 	// ------------------------- //
+// 	// -- calculs des indices -- //
+// 	// ------------------------- //
+
 
 	// indices scalaires matrices
 	int mi0 = 0; int mi1 = height-1;
@@ -113,7 +116,8 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
 	vuint8** tmp1_SIMD	= vui8matrix(mi0b, mi1b, mj0b, mj1b);
 	vuint8** tmp2_SIMD	= vui8matrix(mi0b, mi1b, mj0b, mj1b);
 
-	/*---------------------------------------------------*/
+// 	/*---------------------------------------------------*/
+
 
 	DEBUG(puts("================================"));
 	DEBUG(puts("=== chargement et conversion ==="));
@@ -123,7 +127,9 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
 	// -- chargement et conversion -- //
 	// ------------------------------ //
 
-	uint8 ** img_temp = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+
+// 	uint8 ** img_temp = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+
 
 	if (is_visual)
     {
@@ -185,6 +191,7 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
 	// transfert ui8matrix à vui8matrix real
 	ui8matrix_to_vui8matrix(card, vmi0b, vmi1b, vmj0b, vmj1b, img_temp, image);
 
+
 	DEBUG(printf("After conversion : \n"));DEBUG(puts(""));
 
 	/*---------------------------------------------------*/
@@ -193,9 +200,10 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
 	DEBUG(puts("=== traitements ==="));
 	DEBUG(puts("==================="));
 
-	// ----------------- //
-	// -- traitements -- //
-	// ----------------- //
+// 	// ----------------- //
+// 	// -- traitements -- //
+// 	// ----------------- //
+
 
 
 	SigmaDelta_step1_simd(vmi0b, vmi1b, vmj0b, vmj1b, mean0, mean1, image);
@@ -527,9 +535,10 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
 	DEBUG(puts("=== free ==="));
 	DEBUG(puts("============"));
 
-	// ---------- //
-	// -- free -- //
-	// ---------- //
+
+// 	// ---------- //
+// 	// -- free -- //
+// 	// ---------- //
 
 	free_vui8matrix(image, vmi0b, vmi1b, vmj0b, vmj1b);
 
@@ -569,3 +578,4 @@ void main_bench_morpho_SIMD(int argc, char *argv[]){
     bench_morpho_SIMD_car(false, MORPHO5, SIMD_OPTI, 1);
     printf("===============================\n");
 }
+

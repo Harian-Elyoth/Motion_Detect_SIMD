@@ -35,9 +35,9 @@
 #define VEC_AVERAGE3_PS(x0,x1,x2) VEC_DIV3(VEC_ADD3(x0, x1, x2))
 #define VEC_AVERAGE5_PS(x0,x1,x2,x3,x4) VEC_DIV5(VEC_ADD5(x0, x1, x2, x3, x4))
 
-// ------------------ //
-// --- MACRO EPI8 --- //
-// ------------------ //
+// ----------------- //
+// --- MACRO EPI --- //
+// ----------------- //
 
 // MEMORY
 #define VEC_LOAD_2D_EPI8(i, j, X) _mm_load_si128((vuint8 *) &X[i][j])
@@ -52,24 +52,69 @@
 #define SWITCH_8_EPI8(x)  _mm_shuffle_epi8(x, init_vuint8_all(8, 9, 10, 11, 12, 13, 14, 15, 0, 1, 2, 3, 4, 5, 6, 7)) // abcdefghijklmnop -> ijklmnopabcdefgh
 
 // VEC LEFT AND RIGHT
-#define VEC_LEFT1_EPI8(x1, x2) _mm_add_epi8(_mm_bslli_si128(x2, 1), _mm_bsrli_si128(x1, 15)) // x1 abcdefghijklmnop ; x2 qrstuvwxyz012345 -> pqrstuvwxyz01234
+#define VEC_LEFT1_EPI8(x1, x2)  _mm_add_epi8(_mm_bslli_si128(x2, 1),  _mm_bsrli_si128(x1, 15)) // x1 abcdefghijklmnop ; x2 qrstuvwxyz012345 -> pqrstuvwxyz01234
 #define VEC_RIGHT1_EPI8(x1, x2) _mm_add_epi8(_mm_bslli_si128(x2, 15), _mm_bsrli_si128(x1, 1)) // x1 abcdefghijklmnop ; x2 qrstuvwxyz012345 -> bcdefghijklmnopq
-#define VEC_LEFT2_EPI8(x1, x2) _mm_add_epi8(_mm_bslli_si128(x2, 2), _mm_bsrli_si128(x1, 14))
+#define VEC_LEFT2_EPI8(x1, x2)  _mm_add_epi8(_mm_bslli_si128(x2, 2),  _mm_bsrli_si128(x1, 14))
 #define VEC_RIGHT2_EPI8(x1, x2) _mm_add_epi8(_mm_bslli_si128(x2, 14), _mm_bsrli_si128(x1, 2))
 
-// COMPARE
+// CAST EPI8 EPI16
+#define EPI8_TO_EPI16(x, x1, x2) 			\
+		x1 = _mm_cvtepu8_epi16(x); 			\
+		x2 = _mm_unpackhi_epi8(x, zero); 	\
+
+#define EPI16_TO_EPI8(x1, x2) _mm_or_si128(_mm_shuffle_epi8(x1, maskLo), _mm_shuffle_epi8(x2, maskHi))
+					
+
+// MIN MAX UNSIGNED EPI8
+#define VEC_MIN_EPU8(x, y) _mm_min_epu8(x, y)
+#define VEC_MAX_EPU8(x, y) _mm_max_epu8(x, y)
+
+// COMPARE EPI8
 #define VEC_CMPEQ_EPI8(x, y) _mm_cmpeq_epi8(x, y) // if x = y => 255 else 0
 #define VEC_CMPGT_EPI8(x, y) _mm_cmpgt_epi8(x, y) // if x > y => 255 else 0
 #define VEC_CMPLT_EPI8(x, y) _mm_cmplt_epi8(x, y) // if x < y => 255 else 0
 
-// CALCULS BASES
-#define VEC_AND_EPI8(x, y) _mm_and_si128(x, y) 	// ET logique bit a bit
-#define VEC_ADD_EPI8(x, y) _mm_add_epi8(x, y)  	// Addition 8 bits 
-#define VEC_SUB_EPI8(x, y) _mm_sub_epi8(x, y)  	// Soustraction 8 bits 
+// COMPARE EPI8 UNSIGNED
 
+#define VEC_CMPGE_EPU8(a, b) VEC_CMPEQ_EPI8(VEC_MAX_EPU8(a, b), a)
+
+#define VEC_CMPLE_EPU8(a, b) VEC_CMPGE_EPU8(b, a)
+
+#define VEC_CMPGT_EPU8(a, b) _mm_xor_si128(VEC_CMPLE_EPU8(a, b), _mm_set1_epi8(-1))
+
+#define VEC_CMPLT_EPU8(a, b) VEC_CMPGT_EPU8(b, a)
+
+// COMPARE EPI16
+#define VEC_CMPEQ_EPI16(x, y) _mm_cmpeq_epi16(x, y) // if x = y => 255 else 0
+#define VEC_CMPGT_EPI16(x, y) _mm_cmpgt_epi16(x, y) // if x > y => 255 else 0
+#define VEC_CMPLT_EPI16(x, y) _mm_cmplt_epi16(x, y) // if x < y => 255 else 0
+
+// CALCULS BASES
+#define VEC_AND_EPI8(x, y)  _mm_and_si128(x, y) 	// ET logique bit a bit
+#define VEC_ADDU_EPI8(x, y) _mm_add_epi8(x, y) 		// Addition non signé 8 bits 
+#define VEC_ADD_EPI8(x, y)  _mm_adds_epi8(x, y) 	// Addition signé 8 bits 
+#define VEC_SUBU_EPI8(x, y) _mm_sub_epi8(x, y)		// Soustraction non signé 8 bits
+#define VEC_SUB_EPI8(x, y)  _mm_subs_epi8(x, y)		// Soustraction signé 8 bits 
+
+
+#define VEC_MULLO_EPU8(x, y, res)							\
+		EPI8_TO_EPI16(x, x1_mul, x2_mul);					\
+		EPI8_TO_EPI16(y, y1_mul, y2_mul);					\
+		mullo_1 	= _mm_mullo_epi16(x1_mul, y1_mul);		\
+		mullo_2 	= _mm_mullo_epi16(x2_mul, y2_mul);		\
+		cmpgt1_mul 	= _mm_cmpgt_epi16(mullo_1, full);		\
+		cmpgt2_mul 	= _mm_cmpgt_epi16(mullo_2, full);		\
+		cmpgt1_mul 	= _mm_or_si128(mullo_1, cmpgt1_mul); 	\
+		cmpgt2_mul 	= _mm_or_si128(mullo_2, cmpgt2_mul); 	\
+		res1 		= _mm_and_si128(cmpgt1_mul, full); 		\
+		res2 		= _mm_and_si128(cmpgt2_mul, full); 		\
+		res 		= EPI16_TO_EPI8(_mm_and_si128(cmpgt1_mul, full), _mm_and_si128(cmpgt2_mul, full));	 		\
+ 
 #define VEC_ABS_EPI8(x) _mm_abs_epi8(x)			// Valeur absolue
 #define VEC_MAX_EPI8(x, y) _mm_max_epi8(x, y) 	// Max 8 bits
 #define VEC_MIN_EPI8(x, y) _mm_min_epi8(x, y) 	// Min 8 bits
+
+#define VEC_ABS_SUB_EPU8(a, b) _mm_or_si128(_mm_subs_epu8(a,  b), _mm_subs_epu8(b, a))
 
 // CALCULS SUR 9 VECTEURS
 #define VEC_AND_9_EPI8(x1, x2, x3, x4, x5, x6, x7, x8, x9) _mm_and_si128(x1, _mm_and_si128(x2, _mm_and_si128(x3, _mm_and_si128(x4, _mm_and_si128(x5, _mm_and_si128(x6, _mm_and_si128(x7, _mm_and_si128(x8, x9))))))))
