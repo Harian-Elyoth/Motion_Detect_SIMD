@@ -32,8 +32,8 @@ extern "C" {
 
 #define load_uint8(vX, i, j) _mm_load_si128((vuint8 *) &vX[i][j])
 
-#define HEIGHT_TEST 10
-#define WIDTH_TEST 64
+#define HEIGHT_TEST_SIMD 24
+#define WIDTH_TEST_SIMD 64
 
 
 int b_test;
@@ -42,6 +42,7 @@ int b_test;
 vuint8 ** vimg_filtered_test;
 vuint8 ** tmp1_SIMD;
 vuint8 ** tmp2_SIMD;
+vuint8 ** tmp3_SIMD;
 vuint8 ** vimg_bin_test;
 uint8 ** img_filtered_test;
 uint8 ** assertion;
@@ -54,7 +55,7 @@ int vmi0b_test, vmi1b_test, vmj0b_test, vmj1b_test; // indices scalaires avec bo
 void vui8matrix_to_ui8matrix_morpho(int card, int vmi0b, int vmi1b, int vmj0b, int vmj1b, uint8** img, vuint8** img_simd);
 void ui8matrix_to_vui8matrix_wb_morpho(int card, int vmi0b, int vmi1b, int vmj0b, int vmj1b, uint8 **img, vuint8 **img_simd);
 void ui8matrix_to_vui8matrix_morpho(int card, int vmi0, int vmi1, int vmj0, int vmj1, uint8 **img, vuint8 **img_simd);
-void gen_img_bin_test_SIMD(type_morpho_t type);
+void gen_img_bin_test_SIMD(type_morpho_t type, type_opti_t OPTI);
 void tests_unitaires_SIMD();
 void test_unitaire_SIMD(type_morpho_t MORPHO, type_opti_t OPTI);
 int equal_SIMD(uint8 ** A, uint8 ** B, int mi0, int mi1, int mj0, int mj1);
