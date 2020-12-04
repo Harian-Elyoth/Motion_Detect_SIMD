@@ -50,8 +50,10 @@ void test_mouvement_morpho_car(){
 	uint8** std1 			= ui8matrix(mi0 , mi1, mj0, mj1);
 
 	uint8** img_diff 		= ui8matrix(mi0 , mi1, mj0, mj1);
+
 	uint8** img_bin 		= ui8matrix(mi0b, mi1b, mj0b, mj1b);
 	uint8** img_filtered	= ui8matrix(mi0b, mi1b, mj0b, mj1b);
+
 	uint8** tmp1			= ui8matrix(mi0b, mi1b, mj0b, mj1b);
 	uint8** tmp2 			= ui8matrix(mi0b, mi1b, mj0b, mj1b);
 
@@ -79,24 +81,24 @@ void test_mouvement_morpho_car(){
     // ----------------- //
 
 	// SIGMA DELTA
-	// SigmaDelta_step1(mi0, mi1, mj0, mj1, mean0, mean1   , image);
-	// SigmaDelta_step2(mi0, mi1, mj0, mj1, image, mean1   , img_diff);
-	// SigmaDelta_step3(mi0, mi1, mj0, mj1, std0 , std1    , img_diff);
-	// SigmaDelta_step4(mi0, mi1, mj0, mj1, std1 , img_diff, img_bin);
+	SigmaDelta_step1(mi0, mi1, mj0, mj1, mean0, mean1   , image);
+	SigmaDelta_step2(mi0, mi1, mj0, mj1, image, mean1   , img_diff);
+	SigmaDelta_step3(mi0, mi1, mj0, mj1, std0 , std1    , img_diff);
+	SigmaDelta_step4(mi0, mi1, mj0, mj1, std1 , img_diff, img_bin);
 
 	// SIGMA DELTA OPTI
-	SigmaDelta_step1_opti(mi0, mi1, mj0, mj1, mean0, mean1   , image);
-	SigmaDelta_step2_opti(mi0, mi1, mj0, mj1, image, mean1   , img_diff);
-	SigmaDelta_step3_opti(mi0, mi1, mj0, mj1, std0 , std1    , img_diff);
-	SigmaDelta_step4_opti(mi0, mi1, mj0, mj1, std1 , img_diff, img_bin);
+	// SigmaDelta_step1_opti(mi0, mi1, mj0, mj1, mean0, mean1   , image);
+	// SigmaDelta_step2_opti(mi0, mi1, mj0, mj1, image, mean1   , img_diff);
+	// SigmaDelta_step3_opti(mi0, mi1, mj0, mj1, std0 , std1    , img_diff);
+	// SigmaDelta_step4_opti(mi0, mi1, mj0, mj1, std1 , img_diff, img_bin);
 
 	duplicate_border(mi0, mi1, mj0, mj1, b, img_bin);
 
 	// MORPHOLOGIE
-	morpho_3_opti(img_bin, img_filtered, tmp1, tmp2, mi0, mi1, mj0, mj1); 
+	morpho_3(img_bin, img_filtered, tmp1, tmp2, mi0, mi1, mj0, mj1); 
 
 	// convert binary img to pgm img
-	bin_to_pgm(mi0, mi1, mj0, mj1, img_filtered,"SD_out.pgm");
+	bin_to_pgm(mi0, mi1, mj0, mj1, img_filtered, "SD_out.pgm");
 
 	// ---------- //
   	// -- free -- //
@@ -114,6 +116,9 @@ void test_mouvement_morpho_car(){
 	free_ui8matrix(img_bin, mi0b, mi1b, mj0b, mj1b);
 
 	free_ui8matrix(img_filtered, mi0b, mi1b, mj0b, mj1b);
+
+	free_ui8matrix(tmp1, mi0b, mi1b, mj0b, mj1b);
+	free_ui8matrix(tmp2, mi0b, mi1b, mj0b, mj1b);
 }
 
 void test_mouvement_morpho_dataset(){
@@ -123,23 +128,23 @@ void test_mouvement_morpho_dataset(){
 
 	int mi0, mi1, mj0, mj1; 	// indices scalaire
 	int mi0b, mi1b, mj0b, mj1b; // indices scalaires avec bord
-  char *format = "%d ";
+	char *format = "%d ";
 
-  puts("=======================================");
+	puts("=======================================");
 	puts("=== test mouvement + morpho dataset ===");
 	puts("=======================================");
 
-  // ------------------------- //
-  // -- calculs des indices -- //
-  // ------------------------- //
+	// ------------------------- //
+	// -- calculs des indices -- //
+	// ------------------------- //
 
-  // 1 for 3x3 / 2 for 5x5
-  b = 1; 
+	// 1 for 3x3 / 2 for 5x5
+	// b = 1; 
 
-  // 1 for 3x3 / 2 for 5x5
-  // b = 2;
+	// 1 for 3x3 / 2 for 5x5
+	b = 2;
 
-  // indices matrices
+  	// indices matrices
 	mi0 = 0; mi1 = HEIGHT - 1;
 	mj0 = 0; mj1 = WIDTH  - 1;
 	
@@ -218,7 +223,7 @@ void test_mouvement_morpho_dataset(){
 		duplicate_border(mi0, mi1, mj0, mj1, b, img_bin);
 
 		// MORPHOLOGIE
-		morpho_5_opti(img_bin, img_filtered, tmp1, tmp2, mi0, mi1, mj0, mj1); 
+		morpho_5(img_bin, img_filtered, tmp1, tmp2, mi0, mi1, mj0, mj1); 
 
 		// built pgm filename out
 		char filename_out[25] = "";
@@ -240,19 +245,20 @@ void test_mouvement_morpho_dataset(){
 
 	free_ui8matrix(img_diff, mi0, mi1, mj0, mj1);
 
-	free_ui8matrix(img_bin     , mi0b, mi1b, mj0b, mj1b);
-	free_ui8matrix(img_filtered, mi0b, mi1b, mj0b, mj1b);
+	free_ui8matrix(img_bin     	, mi0b, mi1b, mj0b, mj1b);
+	free_ui8matrix(img_filtered	, mi0b, mi1b, mj0b, mj1b);
+
+	free_ui8matrix(tmp1     	, mi0b, mi1b, mj0b, mj1b);
+	free_ui8matrix(tmp2     	, mi0b, mi1b, mj0b, mj1b);
 }
 
 void main_test_mouvement_morpho(int argc, char *argv[])
 {
 	// Genere les images pgm dans pgm_imgs/
 
-	// test unitaire sur petite image generer
-
 	// test unitaire sur image du set
 	// test_mouvement_morpho_car();
 
 	// test global sur tout le set
-	// test_mouvement_morpho_dataset();	
+	test_mouvement_morpho_dataset();	
 }

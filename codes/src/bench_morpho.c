@@ -60,7 +60,7 @@ void bench_morpho_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPTI, in
     // ------------------------- //
 
     // 1 for 3x3 / 2 for 5x5
-    
+    b = 1;
     
 
     if (is_visual) {
@@ -82,17 +82,19 @@ void bench_morpho_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPTI, in
     // -- allocation -- //
     // ---------------- //
 
-	uint8** image 			= ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** image 			= ui8matrix(mi0, mi1, mj0, mj1);
 
-	uint8** mean0 			= ui8matrix(mi0b, mi1b, mj0b, mj1b);
-	uint8** mean1 			= ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** mean0 			= ui8matrix(mi0, mi1, mj0, mj1);
+	uint8** mean1 			= ui8matrix(mi0, mi1, mj0, mj1);
 
-	uint8** std0 			= ui8matrix(mi0b, mi1b, mj0b, mj1b);
-	uint8** std1 			= ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** std0 			= ui8matrix(mi0, mi1, mj0, mj1);
+	uint8** std1 			= ui8matrix(mi0, mi1, mj0, mj1);
 
-	uint8** img_diff 		= ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8** img_diff 		= ui8matrix(mi0, mi1, mj0, mj1);
+
 	uint8** img_bin 		= ui8matrix(mi0b, mi1b, mj0b, mj1b);
 	uint8** img_filtered	= ui8matrix(mi0b, mi1b, mj0b, mj1b);
+
 	uint8** tmp1 			= ui8matrix(mi0b, mi1b, mj0b, mj1b);
 	uint8** tmp2 			= ui8matrix(mi0b, mi1b, mj0b, mj1b);
 
@@ -102,37 +104,35 @@ void bench_morpho_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPTI, in
 
     if (is_visual)
     {
-    	gen_pgm_img(mi0, mi1, mj0, mj1, b, mean0, std0, image);
+    	gen_pgm_img(mi0, mi1, mj0, mj1, mean0, std0, image);
     }
     else
     {
-		MLoadPGM_ui8matrix("../car3/car_3037.pgm", mi0b, mi1b, mj0b, mj1b, image);
-
-		duplicate_border(mi0, mi1, mj0, mj1, b, image);
+		MLoadPGM_ui8matrix("../car3/car_3037.pgm", mi0, mi1, mj0, mj1, image);
 
 		// initiate mean0 et std0 for first iteration
-		for (int i = mi0b; i <= mi1b; ++i)
+		for (int i = mi0; i <= mi1; ++i)
 		{
-			for (int j = mj0b; j <= mj1b; ++j)
+			for (int j = mj0; j <= mj1; ++j)
 			{
 				mean0[i][j] = image[i][j];
 				std0[i][j]  = VMIN;
 			}
 		}
 
-		MLoadPGM_ui8matrix("../car3/car_3038.pgm", mi0b, mi1b, mj0b, mj1b, image);
-
-		duplicate_border(mi0, mi1, mj0, mj1, b, image);
+		MLoadPGM_ui8matrix("../car3/car_3038.pgm", mi0, mi1, mj0, mj1, image);
     }
 
 	// ----------------- //
     // -- traitements -- //
     // ----------------- //
 
-	SigmaDelta_step1(mi0b, mi1b, mj0b, mj1b, mean0, mean1, image);
-	SigmaDelta_step2(mi0b, mi1b, mj0b, mj1b, image, mean1, img_diff);
-    SigmaDelta_step3(mi0b, mi1b, mj0b, mj1b, std0, std1, img_diff);
-    SigmaDelta_step4(mi0b, mi1b, mj0b, mj1b, std1, img_diff, img_bin);
+	SigmaDelta_step1(mi0, mi1, mj0, mj1, mean0, mean1, image);
+	SigmaDelta_step2(mi0, mi1, mj0, mj1, image, mean1, img_diff);
+    SigmaDelta_step3(mi0, mi1, mj0, mj1, std0, std1, img_diff);
+    SigmaDelta_step4(mi0, mi1, mj0, mj1, std1, img_diff, img_bin);
+
+    duplicate_border(mi0, mi1, mj0, mj1, b, img_bin);
 
 
     // BENCH 
@@ -465,16 +465,19 @@ void bench_morpho_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPTI, in
     // -- free -- //
     // ---------- //
 
-	free_ui8matrix(image, mi0b, mi1b, mj0b, mj1b);
+	free_ui8matrix(image, mi0, mi1, mj0, mj1);
 
-	free_ui8matrix(mean0, mi0b, mi1b, mj0b, mj1b);
-	free_ui8matrix(mean1, mi0b, mi1b, mj0b, mj1b);
+	free_ui8matrix(mean0, mi0, mi1, mj0, mj1);
+	free_ui8matrix(mean1, mi0, mi1, mj0, mj1);
 
-	free_ui8matrix(std0, mi0b, mi1b, mj0b, mj1b);
-	free_ui8matrix(std1, mi0b, mi1b, mj0b, mj1b);
+	free_ui8matrix(std0, mi0, mi1, mj0, mj1);
+	free_ui8matrix(std1, mi0, mi1, mj0, mj1);
 
 	free_ui8matrix(img_diff, mi0b, mi1b, mj0b, mj1b);
 	free_ui8matrix(img_bin, mi0b, mi1b, mj0b, mj1b);
+
+    free_ui8matrix(tmp1, mi0b, mi1b, mj0b, mj1b);
+    free_ui8matrix(tmp2, mi0b, mi1b, mj0b, mj1b);
 }
 
 void bench_morpho_dataset(){

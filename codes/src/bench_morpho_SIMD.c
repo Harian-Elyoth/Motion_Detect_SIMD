@@ -3,7 +3,7 @@
 /* ---  Bench Algorithme Morpho SIMD pour le traitement d'image --- */
 /* ------------------------------------------------------------------------------ */
 
-// #include "bench_morpho_SIMD.h"
+#include "bench_morpho_SIMD.h"
 
 void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPTI, int fract){
 
@@ -58,24 +58,17 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
             break;
     }
 
-	puts("==================================================");
+	puts("======================================");
 	puts("=== benchmark morpho unitaire SIMD ===");
-	puts("==================================================");
-
-	// BORD
-	// 1 for 3x3 
+	puts("=======================================");
 
 
-	// 2 for 5x5
-	//int b = 2;
+	// cardinalité des registres
+	int card = card_vuint8(); // 16
 
-
-// 	// cardinalité des registres
-// 	int card = card_vuint8(); // 16
-
-// 	// ------------------------- //
-// 	// -- calculs des indices -- //
-// 	// ------------------------- //
+	// ------------------------- //
+	// -- calculs des indices -- //
+	// ------------------------- //
 
 
 	// indices scalaires matrices
@@ -95,29 +88,28 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
 	int vmj0b = vmj0-1; int vmj1b = vmj1+1;
 
 	// images
-	vuint8** image = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
+	vuint8** image                 = vui8matrix(vmi0, vmi1, vmj0, vmj1);
 
 	// moyennes
-	vuint8** mean0 = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
-	vuint8** mean1 = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);		
+	vuint8** mean0                 = vui8matrix(vmi0, vmi1, vmj0, vmj1);
+	vuint8** mean1                 = vui8matrix(vmi0, vmi1, vmj0, vmj1);
 
 	// ecart-types
-	vuint8** std0 = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
-	vuint8** std1 = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);			
+	vuint8** std0                  = vui8matrix(vmi0, vmi1, vmj0, vmj1);
+	vuint8** std1                  = vui8matrix(vmi0, vmi1, vmj0, vmj1);
 
 	// image de différence
-	vuint8 ** img_diff = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);	
+	vuint8 ** img_diff             = vui8matrix(vmi0, vmi1, vmj0, vmj1);
 
 	// image binaire (sortie)
-	vuint8 ** img_bin = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
+	vuint8 ** img_bin              = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
 
 	// image filtrée après morpho
-	vuint8 ** img_filtered = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
-	vuint8** tmp1_SIMD	= vui8matrix(mi0b, mi1b, mj0b, mj1b);
-	vuint8** tmp2_SIMD	= vui8matrix(mi0b, mi1b, mj0b, mj1b);
+	vuint8 ** img_filtered         = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
+	vuint8** tmp1_SIMD	           = vui8matrix(mi0b, mi1b, mj0b, mj1b);
+	vuint8** tmp2_SIMD	           = vui8matrix(mi0b, mi1b, mj0b, mj1b);
 
-// 	/*---------------------------------------------------*/
-
+	/*---------------------------------------------------*/
 
 	DEBUG(puts("================================"));
 	DEBUG(puts("=== chargement et conversion ==="));
@@ -128,71 +120,27 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
 	// ------------------------------ //
 
 
-// 	uint8 ** img_temp = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+    uint8 ** img_temp = ui8matrix(mi0, mi1, mj0, mj1);
 
+    MLoadPGM_ui8matrix("../car3/car_3037.pgm", mi0, mi1, mj0, mj1, img_temp);
 
-	if (is_visual)
+    // transfert ui8matrix à vui8matrix init
+    ui8matrix_to_vui8matrix(card, vmi0, vmi1, vmj0, vmj1, img_temp, image);
+
+    // initiate mean0 et std0 for first iteration
+    for (int i = vmi0; i <= vmi1; ++i)
     {
-    	// gen img visuel
-		gen_pgm_img_simd();
-
-		MLoadPGM_ui8matrix("pgm_imgs/my_pgm1.pgm", mi0b, mi1b, mj0b, mj1b, img_temp);
-
-		duplicate_border(mi0, mi1, mj0, mj1, b, img_temp);
-
-		// transfert ui8matrix à vui8matrix init
-		ui8matrix_to_vui8matrix(card, vmi0b, vmi1b, vmj0b, vmj1b, img_temp, image);
-
-		// initiate mean0 et std0 for first iteration
-		for (int i = vmi0b; i <= vmi1b; ++i)
-		{
-			for (int j = vmj0b; j <= vmj1b; ++j)
-			{
-				mean0[i][j] = image[i][j];
-				std0[i][j]  = init_vuint8(VMIN);
-			}
-		}
-
-		MLoadPGM_ui8matrix("pgm_imgs/my_pgm2.pgm", mi0b, mi1b, mj0b, mj1b, img_temp);
-
-		DEBUG(printf("Before duplicate_border : \n")); DEBUG(puts(""));
-		DEBUG(display_ui8matrix(img_temp, mi0b, mi1b, mj0b, mj1b, "%d ", "img_temp : ")); DEBUG(puts(""));
-
-		duplicate_border(mi0, mi1, mj0, mj1, b, img_temp);
-
-		DEBUG(printf("After duplicate_vborder : \n")); DEBUG(puts(""));
-		DEBUG(display_ui8matrix(img_temp, mi0b, mi1b, mj0b, mj1b, "%d ", "img_temp : ")); DEBUG(puts(""));
-    }
-    else
-    {
-		MLoadPGM_ui8matrix("../car3/car_3037.pgm", mi0b, mi1b, mj0b, mj1b, img_temp);
-
-		duplicate_border(mi0, mi1, mj0, mj1, b, img_temp);
-
-		// transfert ui8matrix à vui8matrix init
-
-		ui8matrix_to_vui8matrix(card, vmi0b, vmi1b, vmj0b, vmj1b, img_temp, image);
-
-		// initiate mean0 et std0 for first iteration
-		for (int i = vmi0b; i <= vmi1b; ++i)
-		{
-			for (int j = vmj0b; j <= vmj1b; ++j)
-			{
-				mean0[i][j] = image[i][j];
-				std0[i][j]  = init_vuint8(VMIN);
-			}
-		}
-
-		MLoadPGM_ui8matrix("../car3/car_3038.pgm", mi0b, mi1b, mj0b, mj1b, img_temp);
-
-		duplicate_border(mi0, mi1, mj0, mj1, b, img_temp);
+        for (int j = vmj0; j <= vmj1; ++j)
+        {
+            mean0[i][j] = image[i][j];
+            std0[i][j]  = init_vuint8(VMIN);
+        }
     }
 
-	// transfert ui8matrix à vui8matrix real
-	ui8matrix_to_vui8matrix(card, vmi0b, vmi1b, vmj0b, vmj1b, img_temp, image);
+    MLoadPGM_ui8matrix("../car3/car_3038.pgm", mi0, mi1, mj0, mj1, img_temp);
 
-
-	DEBUG(printf("After conversion : \n"));DEBUG(puts(""));
+    // transfert ui8matrix à vui8matrix real
+    ui8matrix_to_vui8matrix(card, vmi0, vmi1, vmj0, vmj1, img_temp, image);
 
 	/*---------------------------------------------------*/
 
@@ -200,16 +148,12 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
 	DEBUG(puts("=== traitements ==="));
 	DEBUG(puts("==================="));
 
-// 	// ----------------- //
-// 	// -- traitements -- //
-// 	// ----------------- //
+	SigmaDelta_step1_simd(vmi0, vmi1, vmj0, vmj1, mean0, mean1, image);
+	SigmaDelta_step2_simd(vmi0, vmi1, vmj0, vmj1, image, mean1, img_diff);
+	SigmaDelta_step3_simd(vmi0, vmi1, vmj0, vmj1, std0, std1, img_diff);
+	SigmaDelta_step4_simd(vmi0, vmi1, vmj0, vmj1, std1, img_diff, img_bin);
 
-
-
-	SigmaDelta_step1_simd(vmi0b, vmi1b, vmj0b, vmj1b, mean0, mean1, image);
-	SigmaDelta_step2_simd(vmi0b, vmi1b, vmj0b, vmj1b, image, mean1, img_diff);
-	SigmaDelta_step3_simd(vmi0b, vmi1b, vmj0b, vmj1b, std0, std1, img_diff);
-	SigmaDelta_step4_simd( vmi0b, vmi1b, vmj0b, vmj1b, std1, img_diff, img_bin);
+    duplicate_vborder(mi0, mi1, mj0, mj1, b, img_bin);
 
     if(OPTI == SIMD){
         switch(MORPHO){
@@ -536,23 +480,22 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
 	DEBUG(puts("============"));
 
 
-// 	// ---------- //
-// 	// -- free -- //
-// 	// ---------- //
+	free_vui8matrix(image, vmi0, vmi1, vmj0, vmj1);
 
-	free_vui8matrix(image, vmi0b, vmi1b, vmj0b, vmj1b);
+	free_vui8matrix(mean0, vmi0, vmi1, vmj0, vmj1);
+	free_vui8matrix(mean1, vmi0, vmi1, vmj0, vmj1);
 
-	free_vui8matrix(mean0, vmi0b, vmi1b, vmj0b, vmj1b);
-	free_vui8matrix(mean1, vmi0b, vmi1b, vmj0b, vmj1b);
+	free_vui8matrix(std0, vmi0, vmi1, vmj0, vmj1);
+	free_vui8matrix(std1, vmi0, vmi1, vmj0, vmj1);
 
-	free_vui8matrix(std0, vmi0b, vmi1b, vmj0b, vmj1b);
-	free_vui8matrix(std1, vmi0b, vmi1b, vmj0b, vmj1b);
+	free_vui8matrix(img_diff, vmi0, vmi1, vmj0, vmj1);
 
-	free_vui8matrix(img_diff, vmi0b, vmi1b, vmj0b, vmj1b);
 	free_vui8matrix(img_bin, vmi0b, vmi1b, vmj0b, vmj1b);
 	free_vui8matrix(img_filtered, vmi0b, vmi1b, vmj0b, vmj1b);
-}
 
+    free_vui8matrix(tmp1_SIMD, vmi0b, vmi1b, vmj0b, vmj1b);
+    free_vui8matrix(tmp2_SIMD, vmi0b, vmi1b, vmj0b, vmj1b);
+}
 
 void main_bench_morpho_SIMD(int argc, char *argv[]){
 
