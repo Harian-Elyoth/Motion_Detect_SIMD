@@ -22,34 +22,31 @@ void bench_morpho_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPTI, in
 	char *format = "%d ";
 
 	// calcul cpp
-	double cycles_total, cycles_erosion_1, cycles_dilatation_1, cycles_erosion_2, cycles_dilatation_2, cycles_morpho;
+	double cycles_total = 0, cycles_erosion_1 = 0, cycles_dilatation_1 = 0, cycles_erosion_2 = 0, cycles_dilatation_2 = 0, cycles_morpho = 0;
 
 	// calcul temps
-	double time_total, time_erosion_1, time_dilatation_1, time_erosion_2, time_dilatation_2, time_morpho;
+	double time_total = 0, time_erosion_1 = 0, time_dilatation_1 = 0, time_erosion_2 = 0, time_dilatation_2 = 0, time_morpho = 0;
 
 	// calcul debit
-	double debit_total, debit_erosion_1, debit_dilatation_1, debit_erosion_2, debit_dilatation_2, debit_morpho;
-
-    int kernel_size;
+	double debit_total = 0, debit_erosion_1 = 0, debit_dilatation_1 = 0, debit_erosion_2 = 0, debit_dilatation_2 = 0, debit_morpho = 0;
 
     switch(MORPHO){
+        
         case MORPHO3:
         case EROSION3:
         case DILATATION3:
-            kernel_size = 3;
             b = 1; 
             break;
+
         case MORPHO5 :
         case EROSION5 :
         case DILATATION5 :
-            kernel_size = 5;
             b = 2; 
             break;
+
         default : 
             break;
     }
-	// taille noyau de convolution	
-
 
     puts("=============================================");
     puts("======== benchmark  morpho unitaire =========");
@@ -57,11 +54,7 @@ void bench_morpho_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPTI, in
 
     // ------------------------- //
     // -- calculs des indices -- //
-    // ------------------------- //
-
-    // 1 for 3x3 / 2 for 5x5
-    b = 1;
-    
+    // ------------------------- //    
 
     if (is_visual) {
     	// indices matrices
@@ -108,7 +101,7 @@ void bench_morpho_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPTI, in
     }
     else
     {
-		MLoadPGM_ui8matrix("../car3/car_3037.pgm", mi0, mi1, mj0, mj1, image);
+		MLoadPGM_ui8matrix("../car3/car_3012.pgm", mi0, mi1, mj0, mj1, image);
 
 		// initiate mean0 et std0 for first iteration
 		for (int i = mi0; i <= mi1; ++i)
@@ -120,7 +113,7 @@ void bench_morpho_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPTI, in
 			}
 		}
 
-		MLoadPGM_ui8matrix("../car3/car_3038.pgm", mi0, mi1, mj0, mj1, image);
+		MLoadPGM_ui8matrix("../car3/car_3013.pgm", mi0, mi1, mj0, mj1, image);
     }
 
 	// ----------------- //
@@ -129,76 +122,100 @@ void bench_morpho_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPTI, in
 
 	SigmaDelta_step1(mi0, mi1, mj0, mj1, mean0, mean1, image);
 	SigmaDelta_step2(mi0, mi1, mj0, mj1, image, mean1, img_diff);
-    SigmaDelta_step3(mi0, mi1, mj0, mj1, std0, std1, img_diff);
-    SigmaDelta_step4(mi0, mi1, mj0, mj1, std1, img_diff, img_bin);
+    SigmaDelta_step3(mi0, mi1, mj0, mj1, std0 , std1, img_diff);
+    SigmaDelta_step4(mi0, mi1, mj0, mj1, std1 , img_diff, img_bin);
 
     duplicate_border(mi0, mi1, mj0, mj1, b, img_bin);
 
 
     // BENCH 
     if(OPTI == SCALAIRE){
+        
         switch(MORPHO){
+
             case EROSION3 :
+
+
                 CHRONO(erosion_3(img_bin, tmp1, mi0, mi1, mj0, mj1), cycles_erosion_1); 
                 time_erosion_1 = (double)(cycles_erosion_1/CLK_PROC);
                 debit_erosion_1 = (WIDTH*HEIGHT) / time_erosion_1;
                 time_erosion_1 *= 1000; 
+
                 BENCH(printf("Erosion 3 :")); BENCH(puts(""));
                 BENCH(printf("temps (ms) \t    = %0.6f", time_erosion_1)); BENCH(puts(""));
                 BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_erosion_1/(WIDTH*HEIGHT))); BENCH(puts(""));
                 BENCH(printf("debit (pixel/sec)   = %0.2f", debit_erosion_1)); BENCH(puts("")); BENCH(puts(""));
+
                 dilatation_3(tmp1, tmp2,  mi0, mi1, mj0, mj1);
                 dilatation_3(tmp2, tmp1,  mi0, mi1, mj0, mj1);
                 erosion_3(tmp1, img_filtered,  mi0, mi1, mj0, mj1); 
+
                 break;
+
             case DILATATION3 :
+                
                 erosion_3(img_bin, tmp1, mi0, mi1, mj0, mj1);
+                
                 CHRONO(dilatation_3(tmp1, tmp2,  mi0, mi1, mj0, mj1), cycles_dilatation_1); 
                 time_dilatation_1 = (double)(cycles_dilatation_1/CLK_PROC);
                 debit_dilatation_1 = (WIDTH*HEIGHT) / time_dilatation_1;
                 time_dilatation_1 *= 1000; 
+                
                 BENCH(printf("Dilatation 3 :")); BENCH(puts(""));
                 BENCH(printf("temps (ms) \t    = %0.6f", time_dilatation_1)); BENCH(puts(""));
                 BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_dilatation_1/(WIDTH*HEIGHT))); BENCH(puts(""));
                 BENCH(printf("debit (pixel/sec)   = %0.2f", debit_dilatation_1)); BENCH(puts("")); BENCH(puts(""));
+
                 dilatation_3(tmp2, tmp1,  mi0, mi1, mj0, mj1);
                 erosion_3(tmp1, img_filtered,  mi0, mi1, mj0, mj1); 
+
                 break;
+
             case MORPHO3 :
+
                 if(fract){
                     BENCH(printf("====== Morphologie 3 fractionnée : ======")); BENCH(puts(""));
+                    
                     CHRONO(erosion_3(img_bin, tmp1, mi0, mi1, mj0, mj1), cycles_erosion_1); 
                     time_erosion_1 = (double)(cycles_erosion_1/CLK_PROC);
                     debit_erosion_1 = (WIDTH*HEIGHT) / time_erosion_1;
                     time_erosion_1 *= 1000;
+                    
                     BENCH(printf("Erosion 3 :")); BENCH(puts(""));
                     BENCH(printf("temps (ms) \t    = %0.6f", time_erosion_1)); BENCH(puts(""));
                     BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_erosion_1/(WIDTH*HEIGHT))); BENCH(puts(""));
                     BENCH(printf("debit (pixel/sec)   = %0.2f", debit_erosion_1)); BENCH(puts("")); BENCH(puts(""));
+
                     CHRONO(dilatation_3(tmp1, tmp2, mi0, mi1, mj0, mj1), cycles_dilatation_1); 
                     time_dilatation_1 = (double)(cycles_dilatation_1/CLK_PROC);
                     debit_dilatation_1 = (WIDTH*HEIGHT) / time_dilatation_1;
                     time_dilatation_1 *= 1000;
+
                     BENCH(printf("Dilatation 3 :")); BENCH(puts(""));
                     BENCH(printf("temps (ms) \t    = %0.6f", time_dilatation_1)); BENCH(puts(""));
                     BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_dilatation_1/(WIDTH*HEIGHT))); BENCH(puts(""));
                     BENCH(printf("debit (pixel/sec)   = %0.2f", debit_dilatation_1)); BENCH(puts("")); BENCH(puts(""));
+
                     CHRONO(dilatation_3(tmp2, tmp1, mi0, mi1, mj0, mj1), cycles_dilatation_2); 
                     time_dilatation_2 = (double)(cycles_dilatation_2/CLK_PROC);
                     debit_dilatation_2 = (WIDTH*HEIGHT) / time_dilatation_2;
                     time_dilatation_2 *= 1000;
+
                     BENCH(printf("Dilatation 3 :")); BENCH(puts(""));
                     BENCH(printf("temps (ms) \t    = %0.6f", time_dilatation_2)); BENCH(puts(""));
                     BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_dilatation_2/(WIDTH*HEIGHT))); BENCH(puts(""));
                     BENCH(printf("debit (pixel/sec)   = %0.2f", debit_dilatation_2)); BENCH(puts("")); BENCH(puts(""));
+
                     CHRONO(erosion_3(tmp1, img_filtered, mi0, mi1, mj0, mj1), cycles_erosion_2); 
                     time_erosion_2 = (double)(cycles_erosion_2/CLK_PROC);
                     debit_erosion_2 = (WIDTH*HEIGHT) / time_erosion_2;
                     time_erosion_2 *= 1000;
+
                     BENCH(printf("Erosion 3 :")); BENCH(puts(""));
                     BENCH(printf("temps (ms) \t    = %0.6f", time_erosion_2)); BENCH(puts(""));
                     BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_erosion_2/(WIDTH*HEIGHT))); BENCH(puts(""));
                     BENCH(printf("debit (pixel/sec)   = %0.2f", debit_erosion_2)); BENCH(puts("")); BENCH(puts(""));
+
                     BENCH(printf("=========================================")); BENCH(puts(""));
                 }
                 else {
@@ -212,6 +229,7 @@ void bench_morpho_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPTI, in
                     BENCH(printf("debit (pixel/sec)   = %0.2f", debit_morpho)); BENCH(puts("")); BENCH(puts(""));
                 }
                 break;
+
             case EROSION5 :
                 CHRONO(erosion_5(img_bin, tmp1, mi0, mi1, mj0, mj1), cycles_erosion_1); 
                 time_erosion_1 = (double)(cycles_erosion_1/CLK_PROC);
@@ -225,6 +243,7 @@ void bench_morpho_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPTI, in
                 dilatation_5(tmp2, tmp1,  mi0, mi1, mj0, mj1);
                 erosion_5(tmp1, img_filtered,  mi0, mi1, mj0, mj1); 
                 break;
+
             case DILATATION5 :
                 erosion_5(img_bin, tmp1, mi0, mi1, mj0, mj1);
                 CHRONO(dilatation_5(tmp1, tmp2,  mi0, mi1, mj0, mj1), cycles_dilatation_1); 
@@ -238,6 +257,7 @@ void bench_morpho_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPTI, in
                 dilatation_5(tmp2, tmp1,  mi0, mi1, mj0, mj1);
                 erosion_5(tmp1, img_filtered,  mi0, mi1, mj0, mj1); 
                 break;
+
             case MORPHO5 :
                 if(fract){
                     BENCH(printf("====== Morphologie 5 fractionnée : ======")); BENCH(puts(""));
@@ -294,6 +314,7 @@ void bench_morpho_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPTI, in
                     BENCH(printf("debit (pixel/sec)   = %0.2f", debit_morpho)); BENCH(puts("")); BENCH(puts(""));
                 }
                 break;
+
             default :
                 break;
         }
@@ -473,8 +494,10 @@ void bench_morpho_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPTI, in
 	free_ui8matrix(std0, mi0, mi1, mj0, mj1);
 	free_ui8matrix(std1, mi0, mi1, mj0, mj1);
 
-	free_ui8matrix(img_diff, mi0b, mi1b, mj0b, mj1b);
-	free_ui8matrix(img_bin, mi0b, mi1b, mj0b, mj1b);
+	free_ui8matrix(img_diff, mi0, mi1, mj0, mj1);
+
+	free_ui8matrix(img_bin     , mi0b, mi1b, mj0b, mj1b);
+    free_ui8matrix(img_filtered, mi0b, mi1b, mj0b, mj1b);
 
     free_ui8matrix(tmp1, mi0b, mi1b, mj0b, mj1b);
     free_ui8matrix(tmp2, mi0b, mi1b, mj0b, mj1b);
@@ -653,8 +676,16 @@ void main_bench_morpho(int argc, char *argv[]){
 
 	// benchmark unitaire sur image du set
 	// bench_morpho_car(false);
-    bench_morpho_car(false, MORPHO5, SCALAIRE, 1);
-    bench_morpho_car(false, MORPHO5, SCALAIRE_OPTI, 1);
+
+    // bench_morpho_car(false, EROSION3, SCALAIRE, 1);
+    
+    bench_morpho_car(false, MORPHO3, SCALAIRE, 0);
+    bench_morpho_car(false, MORPHO3, SCALAIRE_OPTI, 0);
+
+    // bench_morpho_car(false, MORPHO5, SCALAIRE, 0);
+    // bench_morpho_car(false, MORPHO5, SCALAIRE_OPTI, 0);
+
+    // bench_morpho_car(false, MORPHO5, SCALAIRE_OPTI, 1);
 	// benchmark global sur tout le dataset
 	// bench_mouvement_morpho_dataset();
 }

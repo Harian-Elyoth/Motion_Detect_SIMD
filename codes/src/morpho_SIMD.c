@@ -4,11 +4,7 @@
 ==================================================================
 */
 
-//=============== INCLUDES ===============================
-
 #include "morpho_SIMD.h"
-
-
 
 void erosion_3_SIMD(vuint8 ** vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0, int vmj1){
 
@@ -1857,7 +1853,6 @@ void morpho_3_SIMD(vuint8 **vX, vuint8 ** vY, vuint8 ** tmp1, vuint8 ** tmp2, in
     dilatation_3_SIMD(tmp1, tmp2, vmi0, vmi1, vmj0, vmj1);
     dilatation_3_SIMD(tmp2, tmp1, vmi0, vmi1, vmj0, vmj1);
     erosion_3_SIMD(tmp1, vY, vmi0, vmi1, vmj0, vmj1);
-
 }
 
 void morpho_3_SIMD_opti(vuint8 **vX, vuint8 ** vY, vuint8 ** tmp1, vuint8 ** tmp2, int vmi0, int vmi1, int vmj0, int vmj1) {
@@ -1868,8 +1863,7 @@ void morpho_3_SIMD_opti(vuint8 **vX, vuint8 ** vY, vuint8 ** tmp1, vuint8 ** tmp
     erosion_3_SIMD_opti(tmp1, vY, vmi0, vmi1, vmj0, vmj1);
 }
 
-void morpho_5_SIMD(vuint8 **vX, vuint8 **vY, vuint8 ** tmp1, vuint8 ** tmp2, int vmi0, int vmi1, int vmj0, int vmj1)
-{
+void morpho_5_SIMD(vuint8 **vX, vuint8 **vY, vuint8 ** tmp1, vuint8 ** tmp2, int vmi0, int vmi1, int vmj0, int vmj1){
 
     int bord = 2;
     
@@ -1886,8 +1880,7 @@ void morpho_5_SIMD(vuint8 **vX, vuint8 **vY, vuint8 ** tmp1, vuint8 ** tmp2, int
     erosion_5_SIMD(tmp1, vY, vmi0, vmi1, vmj0, vmj1);
 }
 
-void morpho_5_SIMD_opti(vuint8 **vX, vuint8 **vY, vuint8 ** tmp1, vuint8 ** tmp2, int vmi0, int vmi1, int vmj0, int vmj1)
-{
+void morpho_5_SIMD_opti(vuint8 **vX, vuint8 **vY, vuint8 ** tmp1, vuint8 ** tmp2, int vmi0, int vmi1, int vmj0, int vmj1){
 
     int bord = 2;
     
@@ -1902,7 +1895,6 @@ void morpho_5_SIMD_opti(vuint8 **vX, vuint8 **vY, vuint8 ** tmp1, vuint8 ** tmp2
     dilatation_5_SIMD_opti(tmp1, tmp2, vmi0, vmi1, vmj0, vmj1);
     dilatation_5_SIMD_opti(tmp2, tmp1, vmi0, vmi1, vmj0, vmj1);
     erosion_5_SIMD_opti(tmp1, vY, vmi0, vmi1, vmj0, vmj1);
-
 }
 
 void morpho_3_SIMD_pipeline(vuint8 **vX, vuint8 **tmp1, vuint8 **tmp2, vuint8 **tmp3, vuint8 ** vY, int vmi0, int vmi1, int vmj0, int vmj1){
