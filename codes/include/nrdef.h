@@ -41,6 +41,8 @@ typedef enum {
 typedef enum {
     SIMD,
     SIMD_OPTI,
+    SIMD_OMP,
+    SIMD_OPTI_OMP,
     SCALAIRE,
     SCALAIRE_OPTI,
     PIPELINE,
