@@ -36,10 +36,14 @@ typedef enum {
 typedef enum {
     SIMD,
     SIMD_OPTI,
+    SIMD_OMP,
+    SIMD_OPTI_OMP,
     SCALAIRE,
     SCALAIRE_OPTI,
     PIPELINE,
-    PIPELINE_OPTI
+    PIPELINE_OPTI,
+    PIPELINE_OMP,
+    PIPELINE_OPTI_OMP
 } type_opti_t;
 
 void display_type_morpho(type_morpho_t MORPHO);
