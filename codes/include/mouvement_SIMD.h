@@ -53,8 +53,11 @@ void SigmaDelta_step3_simd_opti(int vmi0, int vmi1, int vmj0, int vmj1, vuint8**
 void SigmaDelta_step4_simd(int vmi0, int vmi1, int vmj0, int vmj1, vuint8** std1, vuint8** img_diff, vuint8** img_bin);
 void SigmaDelta_step4_simd_opti(int vmi0, int vmi1, int vmj0, int vmj1, vuint8** std1, vuint8** img_diff, vuint8** img_bin);
 
-void SigmaDelta_simd_full(int vmi0, int vmi1, int vmj0, int vmj1,  vuint8** image, vuint8** mean0, vuint8** std0, vuint8** img_bin);
-void SigmaDelta_simd_full_opti(int vmi0, int vmi1, int vmj0, int vmj1,  vuint8** image, vuint8** mean0, vuint8** std0, vuint8** img_bin);
+void SigmaDelta_simd_full(int vmi0, int vmi1, int vmj0, int vmj1,  vuint8** image, vuint8** mean0, vuint8** mean1, vuint8** std0, vuint8** std1, vuint8** img_bin);
+void SigmaDelta_simd_full_openMP(int vmi0, int vmi1, int vmj0, int vmj1,  vuint8** image, vuint8** mean0, vuint8** mean1, vuint8** std0, vuint8** std1, vuint8** img_bin);
+
+void SigmaDelta_simd_full_opti(int vmi0, int vmi1, int vmj0, int vmj1,  vuint8** image, vuint8** mean0, vuint8** mean1, vuint8** std0, vuint8** std1, vuint8** img_bin);
+void SigmaDelta_simd_full_opti_openMP(int vmi0, int vmi1, int vmj0, int vmj1,  vuint8** image, vuint8** mean0, vuint8** mean1, vuint8** std0, vuint8** std1, vuint8** img_bin);
 
 // fonction principale     
 void main_mouvement_simd(int argc, char *argv[]);

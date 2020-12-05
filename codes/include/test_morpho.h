@@ -33,17 +33,6 @@ extern "C" {
 #define HEIGHT_TEST 24
 #define WIDTH_TEST 32
 
-int b_test;
-
-uint8 ** img_bin_test;
-uint8 ** img_filtered_test;
-uint8 ** tmp1;
-uint8 ** tmp2;
-uint8 ** assertion;
-
-int mi0_test, mi1_test, mj0_test, mj1_test; 	// indices scalaire
-int mi0b_test, mi1b_test, mj0b_test, mj1b_test; // indices scalaires avec bord
-
 
 void gen_img_bin_test(type_morpho_t type);
 void test_unitaire(type_morpho_t MORPHO, type_opti_t OPTI);

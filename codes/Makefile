@@ -8,7 +8,7 @@
 # -- File list ----------
 FILE = 	main.c nrutil.c nrdef.c vnrutil.c mutil.c mouvement.c morpho.c test_mouvement.c test_mouvement_morpho.c \
 		test_morpho.c mouvement_SIMD.c test_mouvement_SIMD.c bench_mouvement.c bench_mouvement_SIMD.c \
-		morpho_SIMD.c test_morpho_SIMD.c test_mouvement_morpho_SIMD.c bench_morpho.c bench_morpho_SIMD.c \
+		morpho_SIMD.c test_mouvement_morpho_SIMD.c bench_morpho.c bench_morpho_SIMD.c \
 		bench_mouvement_morpho.c bench_mouvement_morpho_SIMD.c
 
 
@@ -26,14 +26,14 @@ INC_PATH = include
 CONFIG = CLI
 
 # -- Macros ----------
-CC = gcc
+CC = gcc-10.1
 AR = ar -rc
 
 # -- Flags ----------
 C_DEBUG_FLAGS = -O0
-C_CC_FLAGS = -std=c99 -DNOALIAS -DALIGNED -DmySSE -DTIMER_POSIX6
+C_CC_FLAGS = -std=c99 -DNOALIAS -DALIGNED -DmySSE -DTIMER_POSIX6 -fopenmp
 C_OPTIMISATION_FLAGS = -O3 -fstrict-aliasing
-C_ARCH_FLAGS = -msse4.2
+C_ARCH_FLAGS = -msse4.2 
 
 C_OS_FLAGS = 
 C_CONFIG_FLAGS = -D$(CONFIG)
@@ -44,7 +44,7 @@ CFLAGS = $(C_CC_FLAGS) $(C_OPTIMISATION_FLAGS) $(C_ARCH_FLAGS) $(C_OS_FLAGS) $(C
 LDFLAGS = $(C_CC_FLAGS) $(C_OPTIMISATION_FLAGS) $(C_ARCH_FLAGS) $(C_OS_FLAGS) $(C_CONFIG_FLAGS) $(C_INC_FLAGS) $(LIB_LIB_PATH)
 
 # -- Final product ----------
-PRODUCT   = project.exe
+PRODUCT = project.exe
 
 # -- src and obj List ----------
 SRC = $(addprefix ${SRC_PATH}/, $(FILE))
