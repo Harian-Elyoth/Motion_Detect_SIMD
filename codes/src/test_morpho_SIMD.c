@@ -2,11 +2,26 @@
 ==========================================================
 ============= fichier test de morpho_SIMD.c ==============
 ==========================================================
-
 */
 
 #include "test_morpho_SIMD.h"
 
+int b_test;
+
+vuint8 ** vimg_filtered_test;
+vuint8 ** tmp1_SIMD;
+vuint8 ** tmp2_SIMD;
+vuint8 ** tmp3_SIMD;
+vuint8 ** vimg_bin_test;
+
+uint8  ** img_bin_test;
+uint8  ** img_filtered_test;
+uint8  ** assertion;
+
+int mi0_test  , mi1_test  , mj0_test  , mj1_test  ;
+int mi0b_test , mi1b_test , mj0b_test , mj1b_test ;
+int vmi0_test , vmi1_test , vmj0_test , vmj1_test ;      // indices scalaire
+int vmi0b_test, vmi1b_test, vmj0b_test, vmj1b_test;     // indices scalaires avec bord
 
 void gen_img_bin_test_SIMD(type_morpho_t type, type_opti_t OPTI){
     int k;

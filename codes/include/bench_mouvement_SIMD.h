@@ -30,7 +30,7 @@ extern "C" {
 #endif
 
 void bench_mouvement_SIMD_car();
-void bench_mouvement_SIMD_dataset();
+void bench_mouvement_SIMD_dataset(type_sd_t TYPE_SD, type_opti_t TYPE_OPTI);
 void bench_mouvement_SIMD_graphic();
 
 // fonction principale     
