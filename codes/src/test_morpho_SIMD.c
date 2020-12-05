@@ -163,6 +163,30 @@ void test_unitaire_SIMD(type_morpho_t MORPHO, type_opti_t OPTI){
                     break;
             }
             break;
+        case SIMD_OMP :
+            switch(MORPHO){
+                case EROSION3 : 
+                    erosion_3_SIMD_omp(vimg_bin_test, vimg_filtered_test , vmi0_test, vmi1_test, vmj0_test, vmj1_test);
+                    break;
+                case EROSION5 :
+                    erosion_5_SIMD_omp(vimg_bin_test, vimg_filtered_test , vmi0_test, vmi1_test, vmj0_test, vmj1_test);
+                    break;
+                case DILATATION3 : 
+                    dilatation_3_SIMD_omp(vimg_bin_test, vimg_filtered_test , vmi0_test, vmi1_test, vmj0_test, vmj1_test);
+                    break;
+                case DILATATION5 :
+                    dilatation_5_SIMD_omp(vimg_bin_test, vimg_filtered_test , vmi0_test, vmi1_test, vmj0_test, vmj1_test);
+                    break;
+                case MORPHO3 :
+                    morpho_3_SIMD_omp(vimg_bin_test, vimg_filtered_test, tmp1_SIMD, tmp2_SIMD, vmi0_test, vmi1_test, vmj0_test, vmj1_test);
+                    break;
+                case MORPHO5 :
+                    morpho_5_SIMD_omp(vimg_bin_test, vimg_filtered_test, tmp1_SIMD, tmp2_SIMD, vmi0_test, vmi1_test, vmj0_test, vmj1_test);
+                    break;
+                default :
+                    break;
+            }
+            break;
         case SIMD_OPTI :
             switch(MORPHO){
                 case EROSION3 : 
@@ -187,11 +211,41 @@ void test_unitaire_SIMD(type_morpho_t MORPHO, type_opti_t OPTI){
                     break;
             }
             break;
+        case SIMD_OPTI_OMP :
+            switch(MORPHO){
+                case EROSION3 : 
+                    erosion_3_SIMD_opti_omp(vimg_bin_test, vimg_filtered_test , vmi0_test, vmi1_test, vmj0_test, vmj1_test);
+                    break;
+                case EROSION5 :
+                    erosion_5_SIMD_opti_omp(vimg_bin_test, vimg_filtered_test , vmi0_test, vmi1_test, vmj0_test, vmj1_test);
+                    break;
+                case DILATATION3 : 
+                    dilatation_3_SIMD_opti_omp(vimg_bin_test, vimg_filtered_test , vmi0_test, vmi1_test, vmj0_test, vmj1_test);
+                    break;
+                case DILATATION5 :
+                    dilatation_5_SIMD_opti_omp(vimg_bin_test, vimg_filtered_test , vmi0_test, vmi1_test, vmj0_test, vmj1_test);
+                    break;
+                case MORPHO3 :
+                    morpho_3_SIMD_opti_omp(vimg_bin_test, vimg_filtered_test, tmp1_SIMD, tmp2_SIMD, vmi0_test, vmi1_test, vmj0_test, vmj1_test);
+                    break;
+                case MORPHO5 :
+                    morpho_5_SIMD_opti_omp(vimg_bin_test, vimg_filtered_test, tmp1_SIMD, tmp2_SIMD, vmi0_test, vmi1_test, vmj0_test, vmj1_test);
+                    break;
+                default :
+                    break;
+            }
+            break;
         case PIPELINE :
             morpho_3_SIMD_pipeline(vimg_bin_test, tmp1_SIMD, tmp2_SIMD, tmp3_SIMD, vimg_filtered_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test);
             break;
         case PIPELINE_OPTI :
             morpho_3_SIMD_pipeline_opti(vimg_bin_test, tmp1_SIMD, tmp2_SIMD, vimg_filtered_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test);
+            break;
+        case PIPELINE_OMP :
+            morpho_3_SIMD_pipeline_omp(vimg_bin_test, tmp1_SIMD, tmp2_SIMD, tmp3_SIMD, vimg_filtered_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test);
+            break;
+        case PIPELINE_OPTI_OMP :
+            morpho_3_SIMD_pipeline_opti_omp(vimg_bin_test, tmp1_SIMD, tmp2_SIMD, vimg_filtered_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test);
             break;
         default :
             break;
