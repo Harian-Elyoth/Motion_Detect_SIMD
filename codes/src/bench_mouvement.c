@@ -581,11 +581,7 @@ void bench_mouvement_graphic(){
 	fprintf(fichier_csv, "%s;%s;%s;%s;", "Taille (pixels)", "Temps (ms)", "Cycle par point (cpp)", "Debit (pixel/seconde)");
 	fprintf(fichier_csv, ";%s;%s;%s\n", "Temps (ms)", "Cycle par point (cpp)", "Debit (pixel/seconde)");
 
-	// BORD
-	int b;
-
 	int mi0, mi1, mj0, mj1; 	// indices scalaire
-	int mi0b, mi1b, mj0b, mj1b; // indices scalaires avec bord
 
 	// chronometrie
     int iter, niter = 4;
@@ -601,7 +597,7 @@ void bench_mouvement_graphic(){
 	double time_total, time_step1, time_step2, time_step3, time_step4, time_total_full_opti;
 
 	// calcul debit
-	double debit_total, debit_step1, debit_step2, debit_step3, debit_step4, debit_total_full_opti;
+	double debit_total, debit_total_full_opti;
 
     puts("====================================");
 	puts("=== benchmark mouvement graphics ===");
@@ -610,9 +606,6 @@ void bench_mouvement_graphic(){
     // ------------------------- //
     // -- calculs des indices -- //
     // ------------------------- //
-
-    // 1 for 3x3 / 2 for 5x5
-    b = 1; 
     
     // Dimension initial des matrices générés
     int height = 32;
@@ -621,7 +614,7 @@ void bench_mouvement_graphic(){
     for (int i = 0; i < 300; ++i)
     {
 
-    	printf("\ni = %d\n", i);
+    	// printf("\ni = %d\n", i);
 
     	// commence a 8 x 8
     	height += 16;
@@ -631,29 +624,25 @@ void bench_mouvement_graphic(){
 		mi0 = 0; mi1 = height-1;
 		mj0 = 0; mj1 = width-1;
 
-    	// indices matrices avec bord
-		mi0b = mi0-b; mi1b = mi1+b;
-		mj0b = mj0-b; mj1b = mj1+b;
-
 		// ---------------- //
 	    // -- allocation -- //
 	    // ---------------- //
 
-	    uint8 ** image_init = ui8matrix(mi0b, mi1b, mj0b, mj1b);
-	   	uint8 ** image 		= ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	    uint8 ** image_init = ui8matrix(mi0, mi1, mj0, mj1);
+	   	uint8 ** image 		= ui8matrix(mi0, mi1, mj0, mj1);
 
-		uint8** mean0 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
-		uint8** mean1 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+		uint8** mean0 		= ui8matrix(mi0, mi1, mj0, mj1);
+		uint8** mean1 		= ui8matrix(mi0, mi1, mj0, mj1);
 
-		uint8** std0 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
-		uint8** std1 = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+		uint8** std0 		= ui8matrix(mi0, mi1, mj0, mj1);
+		uint8** std1 		= ui8matrix(mi0, mi1, mj0, mj1);
 
-		uint8** img_diff = ui8matrix(mi0b, mi1b, mj0b, mj1b);
-		uint8** img_bin = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+		uint8** img_diff 	= ui8matrix(mi0, mi1, mj0, mj1);
+		uint8** img_bin 	= ui8matrix(mi0, mi1, mj0, mj1);
 
-	   	for (int i = mi0b; i <= mi1b; ++i)
+	   	for (int i = mi0; i <= mi1; ++i)
 	   	{
-	   		for (int j = mj0b; j <= mj1b; ++j)
+	   		for (int j = mj0; j <= mj1; ++j)
 	   		{
 	   			// Générer des valeurs de pixels avec un motif qui evoluent avec la taille
 	   			// Génére 2 images censé etre tres similaire (seul quelques pixels doivent varier)
@@ -662,48 +651,40 @@ void bench_mouvement_graphic(){
 	   		}
 	   	}
 
-	   	duplicate_border(mi0, mi1, mj0, mj1, b, image_init);
-
 	   	// initiate mean0 et std0 for first iteration
-		for (int i = mi0b; i <= mi1b; ++i)
+		for (int i = mi0; i <= mi1; ++i)
 		{
-			for (int j = mj0b; j <= mj1b; ++j)
+			for (int j = mj0; j <= mj1; ++j)
 			{
 				mean0[i][j] = image_init[i][j];
 				std0[i][j]  = VMIN;
 			}
 		}
 
-		duplicate_border(mi0, mi1, mj0, mj1, b, image);
-
 		// ----------------- //
 	    // -- traitements -- //
 	    // ----------------- //
 
-		CHRONO(SigmaDelta_step1(mi0b, mi1b, mj0b, mj1b, mean0, mean1, image), cycles_step1);
-		time_step1 = (double)(cycles_step1/CLK_PROC);
-		debit_step1 = (WIDTH*HEIGHT) / time_step1;
+		// CHRONO(SigmaDelta_step1(mi0, mi1, mj0, mj1, mean0, mean1, image), cycles_step1);
+		// time_step1 = (double)(cycles_step1/CLK_PROC);
 
-		CHRONO(SigmaDelta_step2(mi0b, mi1b, mj0b, mj1b, image, mean1, img_diff), cycles_step2);
-		time_step2 = (double)(cycles_step2/CLK_PROC);
-		debit_step2 = (WIDTH*HEIGHT) / time_step2;
+		// CHRONO(SigmaDelta_step2(mi0, mi1, mj0, mj1, image, mean1, img_diff), cycles_step2);
+		// time_step2 = (double)(cycles_step2/CLK_PROC);
 		
-		CHRONO(SigmaDelta_step3(mi0b, mi1b, mj0b, mj1b, std0, std1, img_diff), cycles_step3);
-		time_step3 = (double)(cycles_step3/CLK_PROC);
-		debit_step3 = (WIDTH*HEIGHT) / time_step3;
+		// CHRONO(SigmaDelta_step3(mi0, mi1, mj0, mj1, std0, std1, img_diff), cycles_step3);
+		// time_step3 = (double)(cycles_step3/CLK_PROC);
 
-		CHRONO(SigmaDelta_step4(mi0b, mi1b, mj0b, mj1b, std1, img_diff, img_bin), cycles_step4);
-		time_step4 = (double)(cycles_step4/CLK_PROC);
-		debit_step4 = (WIDTH*HEIGHT) / time_step4;
+		// CHRONO(SigmaDelta_step4(mi0, mi1, mj0, mj1, std1, img_diff, img_bin), cycles_step4);
+		// time_step4 = (double)(cycles_step4/CLK_PROC);
 
-		cycles_total = cycles_step1 + cycles_step2 + cycles_step3 + cycles_step4;
-		time_total   = time_step1   + time_step2   + time_step3   + time_step4;
-		debit_total  = (WIDTH*HEIGHT) / time_total;
+		// cycles_total = cycles_step1 + cycles_step2 + cycles_step3 + cycles_step4;
+		// time_total   = time_step1   + time_step2   + time_step3   + time_step4;
+		// debit_total  = (width*height) / time_total;
 
 		// FULL OPTI
-		CHRONO(SigmaDelta_full_opti(mi0b, mi1b, mj0b, mj1b, image, mean0, std0, img_bin), cycles_total_full_opti);
+		CHRONO(SigmaDelta_full_opti(mi0, mi1, mj0, mj1, image, mean0, std0, img_bin), cycles_total_full_opti);
 		time_total_full_opti = (double)(cycles_total_full_opti/CLK_PROC);
-		debit_total_full_opti = (WIDTH*HEIGHT) / time_total_full_opti;
+		debit_total_full_opti = (width*height) / time_total_full_opti;
 
 		// ecrire les donnees dans un fichier csv
 		fprintf(fichier_csv, "%d;", height);
@@ -712,23 +693,23 @@ void bench_mouvement_graphic(){
 		fprintf(fichier_csv, "%f;", debit_total);
 
 		fprintf(fichier_csv, ";%f;", time_total_full_opti*1000);
-		fprintf(fichier_csv, "%f;", cycles_total_full_opti/(height*width));
+		fprintf(fichier_csv, "%f;" , cycles_total_full_opti/(height*width));
 		fprintf(fichier_csv, "%f\n", debit_total_full_opti);
 
 		// ---------- //
 	    // -- free -- //
 	    // ---------- //
 
-		free_ui8matrix(image, mi0b, mi1b, mj0b, mj1b);
+		free_ui8matrix(image, mi0, mi1, mj0, mj1);
 
-		free_ui8matrix(mean0, mi0b, mi1b, mj0b, mj1b);
-		free_ui8matrix(mean1, mi0b, mi1b, mj0b, mj1b);
+		free_ui8matrix(mean0, mi0, mi1, mj0, mj1);
+		free_ui8matrix(mean1, mi0, mi1, mj0, mj1);
 
-		free_ui8matrix(std0, mi0b, mi1b, mj0b, mj1b);
-		free_ui8matrix(std1, mi0b, mi1b, mj0b, mj1b);
+		free_ui8matrix(std0, mi0, mi1, mj0, mj1);
+		free_ui8matrix(std1, mi0, mi1, mj0, mj1);
 
-		free_ui8matrix(img_diff, mi0b, mi1b, mj0b, mj1b);
-		free_ui8matrix(img_bin, mi0b, mi1b, mj0b, mj1b);
+		free_ui8matrix(img_diff, mi0, mi1, mj0, mj1);
+		free_ui8matrix(img_bin, mi0, mi1, mj0, mj1);
     }
 
     fclose(fichier_csv);
@@ -742,8 +723,8 @@ void main_bench_mouvement(int argc, char *argv[]){
 	// bench_mouvement_car();
 
 	// benchmark global sur tout le dataset
-	bench_mouvement_dataset();
+	// bench_mouvement_dataset();
 
 	// benchmark sur images generees pour fichier csv
-	//bench_mouvement_graphic();
+	bench_mouvement_graphic();
 }

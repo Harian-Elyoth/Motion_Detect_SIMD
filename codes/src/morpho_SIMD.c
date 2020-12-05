@@ -17,8 +17,6 @@ void erosion_3_SIMD(vuint8 ** vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0, in
 
     int i, j;
 
-
-
     for(i = vmi0 ; i <= vmi1 ; i++){
 
         j = vmj0;
@@ -4227,7 +4225,6 @@ void morpho_3_SIMD_pipeline_omp(vuint8 **vX, vuint8 **tmp1, vuint8 **tmp2, vuint
     erosion_3_SIMD(tmp1, vY, vmi1 - 2, vmi1, vmj0, vmj1);
 }
 
-
 void morpho_3_SIMD_pipeline_opti(vuint8 **vX, vuint8 **tmp1, vuint8 **tmp2, vuint8 ** vY, int vmi0, int vmi1, int vmj0, int vmj1){
 
     //DEBUG(printf("vmi0 = %d, vmi1 = %d, vmj0 = %d, vmj1 = %d\n", vmi0, vmi1, vmj0, vmj1));
@@ -4477,7 +4474,6 @@ void morpho_3_SIMD_pipeline_opti(vuint8 **vX, vuint8 **tmp1, vuint8 **tmp2, vuin
     // erosion 3 sur les 3 dernieres lignes
     erosion_3_SIMD_opti(tmp1, vY, vmi1 - 2, vmi1, vmj0, vmj1);
 }
-
 
 void morpho_3_SIMD_pipeline_opti_omp(vuint8 **vX, vuint8 **tmp1, vuint8 **tmp2, vuint8 ** vY, int vmi0, int vmi1, int vmj0, int vmj1){
 

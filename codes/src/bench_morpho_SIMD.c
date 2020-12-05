@@ -105,8 +105,6 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
 	vuint8 ** img_bin              = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
 
 	// image filtrée après morpho
-
-
     vuint8 ** img_filtered         = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
 
     // matrice temporaires
@@ -231,10 +229,12 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
                     BENCH(printf("=========================================")); BENCH(puts(""));
                 }
                 else {
+                    
                     CHRONO(morpho_3_SIMD(img_bin, img_filtered, tmp1_SIMD, tmp2_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_morpho); 
                     time_morpho = (double)(cycles_morpho/CLK_PROC);
                     debit_morpho = (WIDTH*HEIGHT) / time_morpho;
                     time_morpho *= 1000;
+
                     BENCH(printf("Morphologie 3 :")); BENCH(puts(""));
                     BENCH(printf("temps (ms) \t    = %0.6f", time_morpho)); BENCH(puts(""));
                     BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_morpho/(WIDTH*HEIGHT))); BENCH(puts(""));
@@ -319,6 +319,7 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
                 break;
         }
     }
+
     else if(OPTI == SIMD_OPTI) {
         switch(MORPHO){
             case EROSION3 :
@@ -481,8 +482,8 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
                 break;
         }
     }
-    else if (OPTI == PIPELINE)
-    {
+
+    else if (OPTI == PIPELINE){
         switch(MORPHO){
 
             case MORPHO3:
@@ -498,8 +499,8 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
                 break;
         }
     }
-    else if (OPTI == PIPELINE_OPTI)
-    {
+
+    else if (OPTI == PIPELINE_OPTI){
         switch(MORPHO){
 
             case MORPHO5:
@@ -515,9 +516,10 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
                 break;
         }
     }
-    else if(OPTI == SIMD_OMP)
-    {
-                switch(MORPHO){
+
+    else if(OPTI == SIMD_OMP) {
+
+        switch(MORPHO){
             case EROSION3 :
                 CHRONO(erosion_3_SIMD_omp(img_bin, tmp1_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_erosion_1); 
                 time_erosion_1 = (double)(cycles_erosion_1/CLK_PROC);
@@ -582,6 +584,7 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
                     BENCH(printf("=========================================")); BENCH(puts(""));
                 }
                 else {
+                    BENCH(printf("====== Morphologie 3 OMP : ======")); BENCH(puts(""));
                     CHRONO(morpho_3_SIMD_omp(img_bin, img_filtered, tmp1_SIMD, tmp2_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_morpho); 
                     time_morpho = (double)(cycles_morpho/CLK_PROC);
                     debit_morpho = (WIDTH*HEIGHT) / time_morpho;
@@ -670,8 +673,8 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
                 break;
         }
     }
-    else if (OPTI == SIMD_OPTI_OMP)
-    {
+
+    else if (OPTI == SIMD_OPTI_OMP){
         switch(MORPHO){
             case EROSION3 :
                 CHRONO(erosion_3_SIMD_opti_omp(img_bin, tmp1_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_erosion_1); 
@@ -833,6 +836,7 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
                 break;
         }
     }
+
     else if (OPTI == PIPELINE_OMP){
 
         switch(MORPHO){
@@ -885,17 +889,19 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
 	free_vui8matrix(img_diff, vmi0, vmi1, vmj0, vmj1);
 
 	free_vui8matrix(img_bin, vmi0b, vmi1b, vmj0b, vmj1b);
-    free_vui8matrix(img_filtered, vmi0b, vmi1b, vmj0b, vmj1b);
+
+    // free_vui8matrix(img_filtered, vmi0b, vmi1b, vmj0b, vmj1b);
 
     free_vui8matrix(tmp1_SIMD, vmi0b, vmi1b, vmj0b, vmj1b);
     free_vui8matrix(tmp2_SIMD, vmi0b, vmi1b, vmj0b, vmj1b);
+
     free_vui8matrix(tmp3_SIMD, vmi0b, vmi1b, vmj0b, vmj1b);
 }
 
 void main_bench_morpho_SIMD(int argc, char *argv[]){
 
-    // printf("===============================\n");
-    bench_morpho_SIMD_car(false, EROSION3, SIMD, 0);
+    
+    // bench_morpho_SIMD_car(false, EROSION3, SIMD, 0);
     // bench_morpho_SIMD_car(false, EROSION5, SIMD, 0);
     // bench_morpho_SIMD_car(false, DILATATION3, SIMD, 0);
     // bench_morpho_SIMD_car(false, DILATATION5, SIMD, 0);
@@ -903,7 +909,7 @@ void main_bench_morpho_SIMD(int argc, char *argv[]){
     // bench_morpho_SIMD_car(false, MORPHO3, SIMD, 1);
     // bench_morpho_SIMD_car(false, MORPHO5, SIMD, 0);
     // bench_morpho_SIMD_car(false, MORPHO5, SIMD, 1);
-    // printf("===============================\n");
+
     // bench_morpho_SIMD_car(false, EROSION3, SIMD_OPTI, 0);
     // bench_morpho_SIMD_car(false, EROSION5, SIMD_OPTI, 0);
     // bench_morpho_SIMD_car(false, DILATATION3, SIMD_OPTI, 0);
@@ -912,9 +918,10 @@ void main_bench_morpho_SIMD(int argc, char *argv[]){
     // bench_morpho_SIMD_car(false, MORPHO3, SIMD_OPTI, 1);
     // bench_morpho_SIMD_car(false, MORPHO5, SIMD_OPTI, 0);
     // bench_morpho_SIMD_car(false, MORPHO5, SIMD_OPTI, 1);
-    // printf("===============================\n");
+    
     // bench_morpho_SIMD_car(false, MORPHO3, PIPELINE, 0);
     // bench_morpho_SIMD_car(false, MORPHO5, PIPELINE_OPTI, 0);
-    printf("===============================\n");
+    
+    // bench_morpho_SIMD_car(false, MORPHO3, SIMD_OMP, 0);
 }
 
