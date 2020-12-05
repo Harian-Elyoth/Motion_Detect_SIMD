@@ -161,18 +161,23 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
     if(OPTI == SIMD){
         switch(MORPHO){
             case EROSION3 :
+                
                 CHRONO(erosion_3_SIMD(img_bin, tmp1_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_erosion_1); 
                 time_erosion_1 = (double)(cycles_erosion_1/CLK_PROC);
                 debit_erosion_1 = (WIDTH*HEIGHT) / time_erosion_1;
                 time_erosion_1 *= 1000; 
+
                 BENCH(printf("Erosion 3 :")); BENCH(puts(""));
                 BENCH(printf("temps (ms) \t    = %0.6f", time_erosion_1)); BENCH(puts(""));
                 BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_erosion_1/(WIDTH*HEIGHT))); BENCH(puts(""));
                 BENCH(printf("debit (pixel/sec)   = %0.2f", debit_erosion_1)); BENCH(puts("")); BENCH(puts(""));
+
                 dilatation_3_SIMD(tmp1_SIMD, tmp2_SIMD,  vmi0, vmi1, vmj0, vmj1);
                 dilatation_3_SIMD(tmp2_SIMD, tmp1_SIMD,  vmi0, vmi1, vmj0, vmj1);
                 erosion_3_SIMD(tmp1_SIMD, img_filtered,  vmi0, vmi1, vmj0, vmj1); 
+                
                 break;
+
             case DILATATION3 :
                 erosion_3_SIMD(img_bin, tmp1_SIMD, vmi0, vmi1, vmj0, vmj1);
                 CHRONO(dilatation_3_SIMD(tmp1_SIMD, tmp2_SIMD,  vmi0, vmi1, vmj0, vmj1), cycles_dilatation_1); 
@@ -538,7 +543,7 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
 void main_bench_morpho_SIMD(int argc, char *argv[]){
 
     // printf("===============================\n");
-    // bench_morpho_SIMD_car(false, EROSION3, SIMD, 0);
+    bench_morpho_SIMD_car(false, EROSION3, SIMD, 0);
     // bench_morpho_SIMD_car(false, EROSION5, SIMD, 0);
     // bench_morpho_SIMD_car(false, DILATATION3, SIMD, 0);
     // bench_morpho_SIMD_car(false, DILATATION5, SIMD, 0);
@@ -557,7 +562,7 @@ void main_bench_morpho_SIMD(int argc, char *argv[]){
     // bench_morpho_SIMD_car(false, MORPHO5, SIMD_OPTI, 1);
     // printf("===============================\n");
     // bench_morpho_SIMD_car(false, MORPHO3, PIPELINE, 0);
-    bench_morpho_SIMD_car(false, MORPHO5, PIPELINE_OPTI, 0);
+    // bench_morpho_SIMD_car(false, MORPHO5, PIPELINE_OPTI, 0);
     printf("===============================\n");
 }
 
