@@ -17,8 +17,6 @@ void erosion_3_SIMD(vuint8 ** vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0, in
 
     int i, j;
 
-
-
     for(i = vmi0 ; i <= vmi1 ; i++){
 
         j = vmj0;

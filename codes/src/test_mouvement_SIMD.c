@@ -152,8 +152,10 @@ void test_mouvement_SIMD_unit(){
     DEBUG(display_vui8matrix(std1, vmi0, vmi1, vmj0, vmj1, format, "\nstd1 :\n"));
 
 	SigmaDelta_step4_simd_opti(vmi0, vmi1, vmj0, vmj1, std1, img_diff, img_bin);
-	// SigmaDelta_simd_full(vmi0, vmi1, vmj0, vmj1, image, mean0, std0, img_bin);
-	// SigmaDelta_simd_full_opti(vmi0, vmi1, vmj0, vmj1, image, mean0, std0, img_bin);
+	// SigmaDelta_simd_full(vmi0, vmi1, vmj0, vmj1, image, mean0, mean1, std0, std1, img_bin);
+	// SigmaDelta_simd_full_openMP(vmi0, vmi1, vmj0, vmj1, image, mean0, mean1, std0, std1, img_bin);
+	// SigmaDelta_simd_full_opti(vmi0, vmi1, vmj0, vmj1, image, mean0, mean1, std0, std1, img_bin);
+	// SigmaDelta_simd_full_opti_openMP(vmi0, vmi1, vmj0, vmj1, image, mean0, mean1, std0, std1, img_bin);
 
 	vuint8** img_bin_correct		= vui8matrix(vmi0, vmi1, vmj0, vmj1);
 	img_bin_correct[0][0]    		= init_vuint8_all(0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1); 
@@ -161,10 +163,16 @@ void test_mouvement_SIMD_unit(){
     img_bin_correct[2][0]    		= init_vuint8_all(1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
     img_bin_correct[3][0]    		= init_vuint8_all(1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
 
+    DEBUG(display_vui8matrix(img_bin_correct, vmi0, vmi1, vmj0, vmj1, format, "\nimg_bin_correct :\n"));
+    DEBUG(display_vui8matrix(img_bin, vmi0, vmi1, vmj0, vmj1, format, "\nimg_bin :\n"));
+
     for (int i = vmi0; i <= vmi1; ++i)
     {
     	for (int j = vmj0; j <= vmj1; ++j)
     	{
+    		DEBUG(display_vuint8(img_bin[i][j], "%d ", "\nimg_bin[i][j] = \n"));
+    		DEBUG(display_vuint8(img_bin_correct[i][j], "%d ", "\nimg_bin_correct[i][j] = \n"));
+
     		for (int k = 0; k < card; ++k)
     		{
     			assert(img_bin[i][j][k] == img_bin_correct[i][j][k]);
@@ -284,10 +292,10 @@ void test_mouvement_SIMD_car(){
 	// ----------------- //
 
 	// SIGMA DELTA
-	SigmaDelta_step1_simd(vmi0, vmi1, vmj0, vmj1, mean0, mean1   , image);
-	SigmaDelta_step2_simd(vmi0, vmi1, vmj0, vmj1, image, mean1   , img_diff);
-	SigmaDelta_step3_simd(vmi0, vmi1, vmj0, vmj1, std0 , std1    , img_diff);
-	SigmaDelta_step4_simd(vmi0, vmi1, vmj0, vmj1, std1 , img_diff, img_bin);
+	// SigmaDelta_step1_simd(vmi0, vmi1, vmj0, vmj1, mean0, mean1   , image);
+	// SigmaDelta_step2_simd(vmi0, vmi1, vmj0, vmj1, image, mean1   , img_diff);
+	// SigmaDelta_step3_simd(vmi0, vmi1, vmj0, vmj1, std0 , std1    , img_diff);
+	// SigmaDelta_step4_simd(vmi0, vmi1, vmj0, vmj1, std1 , img_diff, img_bin);
 	
 	// SIGMA DELTA OPTI
 	// SigmaDelta_step1_simd_opti(vmi0, vmi1, vmj0, vmj1, mean0, mean1, image);
@@ -295,7 +303,7 @@ void test_mouvement_SIMD_car(){
 	// SigmaDelta_step3_simd_opti(vmi0, vmi1, vmj0, vmj1, std0, std1, img_diff);
 	// SigmaDelta_step4_simd_opti(vmi0, vmi1, vmj0, vmj1, std1, img_diff, img_bin);
 
-	// SigmaDelta_simd_full(vmi0, vmi1, vmj0, vmj1, image, mean0, std0, img_bin);
+	SigmaDelta_simd_full_openMP(vmi0, vmi1, vmj0, vmj1, image, mean0, mean1, std0, std1, img_bin);
 
 	// SigmaDelta_simd_full_opti(vmi0, vmi1, vmj0, vmj1, image, mean0, std0, img_bin);
 
@@ -432,10 +440,10 @@ void test_mouvement_SIMD_dataset(){
 	    // ----------------- //
 
 		// SIGMA DELTA
-		SigmaDelta_step1_simd(vmi0, vmi1, vmj0, vmj1, mean0, mean1   , image);
-		SigmaDelta_step2_simd(vmi0, vmi1, vmj0, vmj1, image, mean1   , img_diff);
-		SigmaDelta_step3_simd(vmi0, vmi1, vmj0, vmj1, std0 , std1    , img_diff);
-		SigmaDelta_step4_simd(vmi0, vmi1, vmj0, vmj1, std1 , img_diff, img_bin);
+		// SigmaDelta_step1_simd(vmi0, vmi1, vmj0, vmj1, mean0, mean1   , image);
+		// SigmaDelta_step2_simd(vmi0, vmi1, vmj0, vmj1, image, mean1   , img_diff);
+		// SigmaDelta_step3_simd(vmi0, vmi1, vmj0, vmj1, std0 , std1    , img_diff);
+		// SigmaDelta_step4_simd(vmi0, vmi1, vmj0, vmj1, std1 , img_diff, img_bin);
 		
 		// SIGMA DELTA OPTI
 		// SigmaDelta_step1_simd_opti(vmi0, vmi1, vmj0, vmj1, mean0, mean1, image);
@@ -443,9 +451,11 @@ void test_mouvement_SIMD_dataset(){
 		// SigmaDelta_step3_simd_opti(vmi0, vmi1, vmj0, vmj1, std0, std1, img_diff);
 		// SigmaDelta_step4_simd_opti(vmi0, vmi1, vmj0, vmj1, std1, img_diff, img_bin);
 
-		// SigmaDelta_simd_full(vmi0, vmi1, vmj0, vmj1, image, mean0, std0, img_bin);
+		// SigmaDelta_simd_full_openMP(vmi0, vmi1, vmj0, vmj1, image, mean0, mean1, std0, std1, img_bin);
+		// SigmaDelta_simd_full(vmi0, vmi1, vmj0, vmj1, image, mean0, mean1, std0, std1, img_bin);
 
-		// SigmaDelta_simd_full_opti(vmi0, vmi1, vmj0, vmj1, image, mean0, std0, img_bin);
+		SigmaDelta_simd_full_opti(vmi0, vmi1, vmj0, vmj1, image, mean0, mean1, std0, std1, img_bin);
+		// SigmaDelta_simd_full_opti_openMP(vmi0, vmi1, vmj0, vmj1, image, mean0, mean1, std0, std1, img_bin);
 
 		// --------------- //
 		// -- affichage -- //
@@ -494,10 +504,10 @@ void main_test_mouvement_SIMD(int argc, char *argv[]){
 	// Genere les images pgm dans pgm_imgs/
 
 	// test unitaire sur petite image generer
-	test_mouvement_SIMD_unit();
+	// test_mouvement_SIMD_unit();
 
 	// test unitaire sur image du set
-	// test_mouvement_SIMD_car();
+	test_mouvement_SIMD_car();
 
 	// test global sur tout le set
 	// test_mouvement_SIMD_dataset();	

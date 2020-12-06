@@ -34,6 +34,11 @@ typedef enum {
 } type_morpho_t;
 
 typedef enum {
+    SD,
+    SD_FULL
+} type_sd_t;
+
+typedef enum {
     SIMD,
     SIMD_OPTI,
     SIMD_OMP,
