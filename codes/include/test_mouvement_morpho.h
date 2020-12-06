@@ -30,7 +30,10 @@
 extern "C" {
 #endif
 
+//Test sur une image du set
 void test_mouvement_morpho_car();
+
+//Test sur l'ensemble des images.
 void test_mouvement_morpho_dataset();
 
 // fonction principale     

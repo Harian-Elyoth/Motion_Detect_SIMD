@@ -29,8 +29,13 @@
 extern "C" {
 #endif
 
+//Effectue le bench sur une SD
 void bench_mouvement_SIMD_car();
+
+//Effectue le bench de SD sur l'ensemble des images.
 void bench_mouvement_SIMD_dataset(type_sd_t TYPE_SD, type_opti_t TYPE_OPTI);
+
+//Ecris les performances de la combinaison SD avec différentes tailles de matrice sur un fichier .csv
 void bench_mouvement_SIMD_graphic();
 
 // fonction principale     

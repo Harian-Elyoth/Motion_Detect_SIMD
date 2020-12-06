@@ -901,11 +901,8 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t UNR
 void bench_morpho_SIMD_graphic(){
 
 	// init fichier csv
-    printf("Bonjour !\n\n");
 	FILE* fichier_csv = fopen("csv_files/perf_morpho_SIMD.csv","w");
-    printf("Bonjour !\n\n");
 	fprintf(fichier_csv, ";%s;;;;%s;;;;%s;;;;%s;;;;%s;;;;%s;;;;%s;;;;%s;;;;%s;;;;%s\n", "Morpho 3 SIMD", "Morpho 3 SIMD OMP", "Morpho 3 SIMD UNROLL", "Morpho 3 SIMD UNROLL OMP", "Morpho 3 SIMD PIPELINE", "Morpho 3 SIMD PIPELINE OMP", "Morpho 3 SIMD PIPELINE UNROLL", "Morpho 3 SIMD PIPELINE UNROLL OMP", "Morpho 3 SIMD C", "Morpho 3 SIMD UNROLL C");
-    printf("Bonjour !\n\n");
 	fprintf(fichier_csv, "%s;%s;%s;%s;", "Taille (pixels)", "Temps (ms)", "Cycle par point (cpp)", "Debit (pixel/seconde)");
 	fprintf(fichier_csv, ";%s;%s;%s;", "Temps (ms)", "Cycle par point (cpp)", "Debit (pixel/seconde)");
     fprintf(fichier_csv, ";%s;%s;%s;", "Temps (ms)", "Cycle par point (cpp)", "Debit (pixel/seconde)");
@@ -918,7 +915,6 @@ void bench_morpho_SIMD_graphic(){
     fprintf(fichier_csv, ";%s;%s;%s\n", "Temps (ms)", "Cycle par point (cpp)", "Debit (pixel/seconde)");
 
 	// BORD
-    printf("Bonjour !\n\n");
 	int b;
 
 	int mi0, mi1, mj0, mj1; 	// indices scalaire
@@ -1060,7 +1056,6 @@ void bench_morpho_SIMD_graphic(){
 		// ----------------- //
 	    // -- traitements -- //
 	    // ----------------- //
-        printf("Bonjour !\n\n");
         CHRONO(morpho_3_SIMD(img_bin, img_filtered, tmp1_SIMD, tmp2_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_morpho_3);
         time_morpho_3 = (double)(cycles_morpho_3/CLK_PROC);
         debit_morpho_3 = width*height / time_morpho_3;
@@ -1141,31 +1136,26 @@ void bench_morpho_SIMD_graphic(){
         fprintf(fichier_csv, ";%f;", time_morpho_3_c_unroll*1000);
 		fprintf(fichier_csv, "%f;", cycles_morpho_3_c_unroll/(height*width));
 		fprintf(fichier_csv, "%f\n;", debit_morpho_3_c_unroll);
-        printf("Bonjour !\n\n");
 		// ---------- //
 		// -- free -- //
 		// ---------- //
+
 		free_ui8matrix(image_init, mi0, mi1, mj0, mj1);
 		free_ui8matrix(img_temp, mi0, mi1, mj0, mj1);
 		free_vui8matrix(image, vmi0, vmi1, vmj0, vmj1);
-		//printf("Bonjour !\n\n");
 		free_vui8matrix(mean0, vmi0, vmi1, vmj0, vmj1);
 		free_vui8matrix(mean1, vmi0, vmi1, vmj0, vmj1);
-		//printf("Bonjour !\n\n");
 		free_vui8matrix(std0, vmi0, vmi1, vmj0, vmj1);
 		free_vui8matrix(std1, vmi0, vmi1, vmj0, vmj1);
 		
 		free_vui8matrix(img_diff, vmi0, vmi1, vmj0, vmj1);
 		
-		//free_vui8matrix(img_bin, vmi0, vmi1, vmj0, vmj1);
+		free_vui8matrix(img_bin, vmi0, vmi1, vmj0, vmj1);
         
-		//free_vui8matrix(img_filtered, vmi0, vmi1, vmj0, vmj1);
-        //printf("Bonjour !\n\n");
-		// free_vui8matrix(tmp1_SIMD, vmi0, vmi1, vmj0, vmj1);
-        // printf("Bonjour !\n\n");
-		// free_vui8matrix(tmp2_SIMD, vmi0, vmi1, vmj0, vmj1);
-        printf("Bonjour !\n\n");
-		// free_vui8matrix(tmp3_SIMD, vmi0, vmi1, vmj0, vmj1);
+		free_vui8matrix(img_filtered, vmi0, vmi1, vmj0, vmj1);
+		free_vui8matrix(tmp1_SIMD, vmi0, vmi1, vmj0, vmj1);
+		free_vui8matrix(tmp2_SIMD, vmi0, vmi1, vmj0, vmj1);
+		free_vui8matrix(tmp3_SIMD, vmi0, vmi1, vmj0, vmj1);
 
     }
 
@@ -1192,11 +1182,11 @@ void main_bench_morpho_SIMD(int argc, char *argv[]){
     // bench_morpho_SIMD_car(false, MORPHO3, SIMD_UNROLL, 1);
     // bench_morpho_SIMD_car(false, MORPHO5, SIMD_UNROLL, 0);
     // bench_morpho_SIMD_car(false, MORPHO5, SIMD_UNROLL, 1);
-    // printf("===============================\n");
+    // DEBUG(printf("===============================\n"));
     // bench_morpho_SIMD_car(false, MORPHO3, PIPELINE, 0);
     // bench_morpho_SIMD_car(false, MORPHO5, PIPELINE_FUSION, 0);
-    // printf("===============================\n");
-    bench_morpho_SIMD_graphic();
+    // DEBUG(printf("===============================\n"));
+    //bench_morpho_SIMD_graphic();
 
 }
 

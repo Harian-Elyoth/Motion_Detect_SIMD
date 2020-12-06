@@ -47,7 +47,7 @@ void erosion_3_unroll(uint8 ** X, uint8 ** Y, int mi0, int mi1, int mj0, int mj1
     int r = (mj1 + 1)% k;
 
     for(i = mi0 ; i <= mi1 ; i++){
-        //printf("i : %d\n", i);
+
         j = mj0;
 
         a0 = X[i - 1][j - 1]; a1 = X[i - 1][j + 0];
@@ -56,7 +56,7 @@ void erosion_3_unroll(uint8 ** X, uint8 ** Y, int mi0, int mi1, int mj0, int mj1
           
 
         for(j = mj0 ; j <= mj1 - r; j = j + k){
-            //printf("j : %d\n", j);
+  
             //Detection d'un zero sur le kernel autour du IJ
             //Si il y a un zero, dans le kernel alors le Yij prends 0, sinon il prends 1
             a2 = X[i - 1][j + 1]; a3 = X[i - 1][j + 2]; a4 = X[i - 1][j + 3];

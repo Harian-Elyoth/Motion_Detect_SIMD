@@ -29,7 +29,10 @@
 extern "C" {
 #endif
 
+//Test sur la combinaison SD + Morpho sur une image du set
 void test_mouvement_morpho_SIMD_car(bool is_visual);
+
+//Test sur l'ensemble des images
 void test_mouvement_morpho_SIMD_dataset();
 
 // fonction principale     

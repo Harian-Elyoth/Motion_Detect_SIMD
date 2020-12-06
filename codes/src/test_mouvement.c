@@ -74,7 +74,7 @@ void test_mouvement_unit(){
     // -- traitements -- //
     // ----------------- //
 
-    printf("\nTest unitaire Sigma Delta\n");
+    DEBUG(printf("\nTest unitaire Sigma Delta\n"));
 
     DEBUG(display_ui8matrix(mean0, mi0, mi1, mj0, mj1, format, "\nmean0 : "));
     DEBUG(display_ui8matrix(image, mi0, mi1, mj0, mj1, format, "\nimage : "));
@@ -95,7 +95,7 @@ void test_mouvement_unit(){
     		assert(mean1[i][j] == mean1_correct[i][j]);
     	}
     }
-    printf("\nStep 1 : \033[32mOK\033[00m\n");
+    DEBUG(printf("\nStep 1 : \033[32mOK\033[00m\n"));
 
     DEBUG(display_ui8matrix(mean1, mi0, mi1, mj0, mj1, format, "\nmean1 : "));
 
@@ -115,7 +115,7 @@ void test_mouvement_unit(){
     		assert(img_diff[i][j] == img_diff_correct[i][j]);
     	}
     }
-    printf("\nStep 2 : \033[32mOK\033[00m\n");
+    DEBUG(printf("\nStep 2 : \033[32mOK\033[00m\n"));
 
     DEBUG(display_ui8matrix(img_diff, mi0, mi1, mj0, mj1, format, "\nimg_diff : "));
 
@@ -137,7 +137,7 @@ void test_mouvement_unit(){
     		assert(std1[i][j] == std1_correct[i][j]);
     	}
     }
-    printf("\nStep 3 : \033[32mOK\033[00m\n");
+    DEBUG(printf("\nStep 3 : \033[32mOK\033[00m\n"));
 
     DEBUG(display_ui8matrix(std1, mi0, mi1, mj0, mj1, format, "\nstd1 : "));
 
@@ -157,7 +157,7 @@ void test_mouvement_unit(){
     		assert(img_bin[i][j] == img_bin_correct[i][j]);
     	}
     }
-    printf("\nStep 4 : \033[32mOK\033[00m\n");
+    DEBUG(printf("\nStep 4 : \033[32mOK\033[00m\n"));
 
     DEBUG(printf("\nBefore duplicate border :"));
     DEBUG(display_ui8matrix(img_bin, mi0, mi1, mj0, mj1, format, "\nimg_bin : "));

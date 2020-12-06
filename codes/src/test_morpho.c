@@ -185,10 +185,10 @@ void test_unitaire(type_morpho_t MORPHO, type_opti_t OPTI){
     }
     display_type_morpho(MORPHO);
     if(equal(img_filtered_test, assertion, mi0_test, mi1_test, mj0_test, mj1_test)){
-        printf(" :\n\x1B[32mOK\x1B[0m\n\n");
+        DEBUG(printf(" :\n\x1B[32mOK\x1B[0m\n\n"));
     }
     else {
-        printf(" :\n\x1B[31mKO\x1B[0m\n\n");
+        DEBUG(printf(" :\n\x1B[31mKO\x1B[0m\n\n"));
         DEBUG(display_ui8matrix(assertion, mi0_test, mi1_test, mj0_test, mj1_test, format, "assertion matrix : ")); DEBUG(puts(""));
     }
     DEBUG(display_ui8matrix(img_filtered_test, mi0_test, mi1_test, mj0_test, mj1_test, format, "returned matrix : ")); DEBUG(puts(""));

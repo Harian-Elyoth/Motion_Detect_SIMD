@@ -600,7 +600,6 @@ double dtime(void)
         //if( 0 != err ) return err;
         if(err != 0) return 0.0;
         conversion = 1e-9 * (double) timebase.numer / (double) timebase.denom;
-        //printf("numer = %d denom = %d\n", timebase.numer, timebase.denom);
         first_time = 0;
     }
     return conversion * (double) t;/**/    

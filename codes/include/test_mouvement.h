@@ -30,8 +30,13 @@
 extern "C" {
 #endif
 
+//Test sur une matrice générée
 void test_mouvement_unit();
+
+//Test sur une image du dataset
 void test_mouvement_car();
+
+//Test sur l'ensemble du dataset
 void test_mouvement_dataset();
 
 // fonction principale     

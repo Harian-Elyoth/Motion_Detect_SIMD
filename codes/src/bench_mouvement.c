@@ -613,7 +613,6 @@ void bench_mouvement_graphic(){
     for (int i = 0; i < 300; ++i)
     {
 
-    	// printf("\ni = %d\n", i);
 
     	// commence a 8 x 8
     	height += 16;

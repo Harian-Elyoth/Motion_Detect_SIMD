@@ -30,8 +30,13 @@
 extern "C" {
 #endif
 
+//Effectue le test unitaire pour une fonction SD
 void test_mouvement_SIMD_unit();
+
+//Effectue le test unitaire partant d'une image.
 void test_mouvement_SIMD_car();
+
+//Effectue le test sur tout le dataset.
 void test_mouvement_SIMD_dataset();
 
 // fonction principale     

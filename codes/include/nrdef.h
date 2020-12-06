@@ -24,6 +24,7 @@ typedef float         float32;
 typedef double        float64;
 typedef struct { byte r; byte g; byte b;} rgb8;
 
+//Types des différentes morphologies
 typedef enum {
     EROSION3,
     DILATATION3,
@@ -33,11 +34,13 @@ typedef enum {
     MORPHO5
 } type_morpho_t;
 
+//types des différentes SD (fusion ou non)
 typedef enum {
     SD,
     SD_FULL
 } type_sd_t;
 
+//Types des différentes optimisations
 typedef enum {
     SIMD,
     SIMD_UNROLL,
@@ -51,7 +54,10 @@ typedef enum {
     PIPELINE_FUSION_OMP
 } type_opti_t;
 
+//Affichage des types morphos
 void display_type_morpho(type_morpho_t MORPHO);
+
+//Affichage des types optis
 void display_type_opti(type_opti_t UNROLL);
 
 #endif // __DEF_H__

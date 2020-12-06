@@ -774,8 +774,6 @@ void bench_mouvement_SIMD_graphic(){
 
     for (int i = 0; i < 300; ++i)
     {
-    	// printf("\ni = %d\n", i);
-    	// printf("\nheight = %d\n", height);
 
     	// commence a 8 x 8
     	height += 16;

@@ -565,7 +565,7 @@ void erosion_5_SIMD_unroll(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int vm
     int i, j;
 
     int bord = 2;
-    printf("r = %d\n", r);
+    
     for(i = vmi0 ; i <= vmi1 ; i++){
         j = vmj0;
         
@@ -912,7 +912,7 @@ void erosion_5_SIMD_unroll(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int vm
                 break;
             
             case 3 :
-                printf("i = %d, j = %d\n", i, j);
+                
                 aa1 = VEC_LEFT2_EPI8(a0, a3);
                 aa2 = VEC_LEFT1_EPI8(a0, a3);
 
@@ -1218,7 +1218,7 @@ void erosion_5_SIMD_unroll_omp(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, in
     int i, j;
 
     int bord = 2;
-    printf("r = %d\n", r);
+    
     #pragma omp parallel for
     for(i = vmi0 ; i <= vmi1 ; i++){
         j = vmj0;
@@ -1566,7 +1566,7 @@ void erosion_5_SIMD_unroll_omp(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, in
                 break;
             
             case 3 :
-                printf("i = %d, j = %d\n", i, j);
+                
                 aa1 = VEC_LEFT2_EPI8(a0, a3);
                 aa2 = VEC_LEFT1_EPI8(a0, a3);
 
@@ -2223,7 +2223,6 @@ void dilatation_3_SIMD_unroll_omp(vuint8 ** vX, vuint8 ** vY, int vmi0, int vmi1
 }
 
 void dilatation_5_SIMD(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0, int vmj1) {
-    //DEBUG(printf("vmi0 = %d, vmi1 = %d, vmj0 = %d, vmj1 = %d\n", vmi0, vmi1, vmj0, vmj1));
     //vecteur aligné
     vuint8 a0, a2, a4;
     vuint8 b0, b2, b4;
@@ -2243,7 +2242,6 @@ void dilatation_5_SIMD(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0, 
 
 
     for(i = vmi0 ; i <= vmi1 ; i++){
-        //printf("i %d\n", i);
         j = vmj0;
 
         a0 = VEC_LOAD_2D_EPI8(i - 2, j - 1, vX);
@@ -2263,7 +2261,6 @@ void dilatation_5_SIMD(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0, 
         
 
         for(j = vmj0 ; j <= vmj1 ; j++){
-            //printf("j %d\n", j);
             aa0 = VEC_LEFT2_EPI8(a0, a2);
             aa1 = VEC_LEFT1_EPI8(a0, a2);
             a4 = VEC_LOAD_2D_EPI8(i - 2, j + 1, vX);
@@ -2307,7 +2304,6 @@ void dilatation_5_SIMD(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0, 
 }
 
 void dilatation_5_SIMD_omp(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0, int vmj1) {
-    //DEBUG(printf("vmi0 = %d, vmi1 = %d, vmj0 = %d, vmj1 = %d\n", vmi0, vmi1, vmj0, vmj1));
     //vecteur aligné
     vuint8 a0, a2, a4;
     vuint8 b0, b2, b4;
@@ -2327,7 +2323,6 @@ void dilatation_5_SIMD_omp(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int vm
 
     #pragma omp parallel for
     for(i = vmi0 ; i <= vmi1 ; i++){
-        //printf("i %d\n", i);
         j = vmj0;
 
         a0 = VEC_LOAD_2D_EPI8(i - 2, j - 1, vX);
@@ -2347,7 +2342,6 @@ void dilatation_5_SIMD_omp(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int vm
         
 
         for(j = vmj0 ; j <= vmj1 ; j++){
-            //printf("j %d\n", j);
             aa0 = VEC_LEFT2_EPI8(a0, a2);
             aa1 = VEC_LEFT1_EPI8(a0, a2);
             a4 = VEC_LOAD_2D_EPI8(i - 2, j + 1, vX);
@@ -2414,7 +2408,6 @@ void dilatation_5_SIMD_unroll(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int
 
     int i, j;
 
-    //printf("vmi0 = %d, vmi1 = %d, vmj0 = %d, vmj1 = %d\n", vmi0, vmi1, vmj0, vmj1);
     
     for(i = vmi0 ; i <= vmi1 ; i++){
         j = vmj0;
@@ -3063,7 +3056,6 @@ void dilatation_5_SIMD_unroll_omp(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1,
 
     int i, j;
 
-    //printf("vmi0 = %d, vmi1 = %d, vmj0 = %d, vmj1 = %d\n", vmi0, vmi1, vmj0, vmj1);
     #pragma omp parallel for
     for(i = vmi0 ; i <= vmi1 ; i++){
         j = vmj0;
@@ -3975,7 +3967,6 @@ void morpho_3_SIMD_pipeline(vuint8 **vX, vuint8 **tmp1, vuint8 **tmp2, vuint8 **
         // dilation sur l'avant avant dernière ligne des 2 dernieres colonnes de l'iteration courante : ligne bleue
         dilatation_3_SIMD(tmp2, tmp1, i - 2, i - 2, vmj1 - 1, vmj1);
 
-        // printf("\n\nvmi1 - 6 = %d, vmi1 = %d, j - 3 = %d, j - 3 = %d\n\n", vmi1 - 6, vmi1, j - 3, j - 3);
 
         // erosion sur l'avant avant avant derniere lignes des 3 dernieres colonnes de l'iteration courante : ligne rouge
         erosion_3_SIMD(tmp1, vY, i - 3, i - 3, vmj1 - 2, vmj1);
@@ -4207,7 +4198,6 @@ void morpho_3_SIMD_pipeline_omp(vuint8 **vX, vuint8 **tmp1, vuint8 **tmp2, vuint
         // dilation sur l'avant avant dernière ligne des 2 dernieres colonnes de l'iteration courante : ligne bleue
         dilatation_3_SIMD(tmp2, tmp1, i - 2, i - 2, vmj1 - 1, vmj1);
 
-        // printf("\n\nvmi1 - 6 = %d, vmi1 = %d, j - 3 = %d, j - 3 = %d\n\n", vmi1 - 6, vmi1, j - 3, j - 3);
 
         // erosion sur l'avant avant avant derniere lignes des 3 dernieres colonnes de l'iteration courante : ligne rouge
         erosion_3_SIMD(tmp1, vY, i - 3, i - 3, vmj1 - 2, vmj1);
@@ -4227,7 +4217,6 @@ void morpho_3_SIMD_pipeline_omp(vuint8 **vX, vuint8 **tmp1, vuint8 **tmp2, vuint
 
 void morpho_3_SIMD_pipeline_fusion_unroll(vuint8 **vX, vuint8 **tmp1, vuint8 **tmp2, vuint8 ** vY, int vmi0, int vmi1, int vmj0, int vmj1){
 
-    //DEBUG(printf("vmi0 = %d, vmi1 = %d, vmj0 = %d, vmj1 = %d\n", vmi0, vmi1, vmj0, vmj1));
 
     // CONDITION SUR LA TAILLE DES MATRICES
     // il faut au moins 4 colonnes SIMD et 6 lignes
@@ -4238,15 +4227,12 @@ void morpho_3_SIMD_pipeline_fusion_unroll(vuint8 **vX, vuint8 **tmp1, vuint8 **t
 
     // PROLOGUE GLOBAL
 
-    //printf("1\n");
 
     // 1ere erosion sur les 3 premieres lignes
     erosion_3_SIMD_unroll(vX, tmp2, vmi0, vmi0 + 2, vmj0, vmj1);
-    //printf("VOILA\n");
     // dilation 5 sur la 1ere ligne
     dilatation_5_SIMD_unroll(tmp2, tmp1, vmi0, vmi0, vmj0, vmj1);
 
-    //printf("2\n");
 
     // aa, bb : non alignés
     // a , b  : alignés
@@ -4274,7 +4260,6 @@ void morpho_3_SIMD_pipeline_fusion_unroll(vuint8 **vX, vuint8 **tmp1, vuint8 **t
     // on commence a i egale 3
     for (i = vmi0 + 3; i <= vmi1; ++i){   
 
-        //printf("i = %d\n", j);
 
         // on commence a j = 2
         j = vmj0 + 2;
@@ -4333,7 +4318,6 @@ void morpho_3_SIMD_pipeline_fusion_unroll(vuint8 **vX, vuint8 **tmp1, vuint8 **t
         for (j = vmj0 + 2; j <= vmj1; ++j)
         {
 
-            //printf("i = %d\n", i);
 
             // ALLOCATION + CALCUL VECTEUR NON ALIGNES
 
@@ -4449,14 +4433,9 @@ void morpho_3_SIMD_pipeline_fusion_unroll(vuint8 **vX, vuint8 **tmp1, vuint8 **t
 
         // EPILOGUE BOUCLE
 
-        //printf("3\n");
 
         // dilataion 5 sur l'avant avant derniere ligne et la derniere colonne de l'iteration courante
         dilatation_5_SIMD(tmp2, tmp1, i - 2, i - 2, vmj1, vmj1);
-
-        //printf("\n\nvmi1 - 3 = %d, vmi1 = %d, j - 2 = %d, j - 2 = %d\n\n", vmi1 - 3, vmi1, j - 2, j - 2);
-
-        //printf("4\n");
 
         // erosion 3 sur l'avant avant avant derniere ligne et les 2 dernières colonnes de l'iteration courante
         erosion_3_SIMD_unroll(tmp1, vY, i - 3, i - 3, vmj1 - 1, vmj1);
@@ -4464,12 +4443,10 @@ void morpho_3_SIMD_pipeline_fusion_unroll(vuint8 **vX, vuint8 **tmp1, vuint8 **t
 
     // EPILOGUE GLOBAL
 
-    //printf("5\n");
 
     // dilatation 5 sur les 2 dernieres lignes
     dilatation_5_SIMD_unroll(tmp2, tmp1, vmi1 - 1, vmi1, vmj0, vmj1);
 
-    //printf("6\n");
 
     // erosion 3 sur les 3 dernieres lignes
     erosion_3_SIMD_unroll(tmp1, vY, vmi1 - 2, vmi1, vmj0, vmj1);
@@ -4477,7 +4454,6 @@ void morpho_3_SIMD_pipeline_fusion_unroll(vuint8 **vX, vuint8 **tmp1, vuint8 **t
 
 void morpho_3_SIMD_pipeline_fusion_unroll_omp(vuint8 **vX, vuint8 **tmp1, vuint8 **tmp2, vuint8 ** vY, int vmi0, int vmi1, int vmj0, int vmj1){
 
-    //DEBUG(printf("vmi0 = %d, vmi1 = %d, vmj0 = %d, vmj1 = %d\n", vmi0, vmi1, vmj0, vmj1));
 
     // CONDITION SUR LA TAILLE DES MATRICES
     // il faut au moins 4 colonnes SIMD et 6 lignes
@@ -4488,15 +4464,12 @@ void morpho_3_SIMD_pipeline_fusion_unroll_omp(vuint8 **vX, vuint8 **tmp1, vuint8
 
     // PROLOGUE GLOBAL
 
-    //printf("1\n");
 
     // 1ere erosion sur les 3 premieres lignes
     erosion_3_SIMD_unroll(vX, tmp2, vmi0, vmi0 + 2, vmj0, vmj1);
-    //printf("VOILA\n");
     // dilation 5 sur la 1ere ligne
     dilatation_5_SIMD_unroll(tmp2, tmp1, vmi0, vmi0, vmj0, vmj1);
 
-    //printf("2\n");
 
     // aa, bb : non alignés
     // a , b  : alignés
@@ -4525,7 +4498,6 @@ void morpho_3_SIMD_pipeline_fusion_unroll_omp(vuint8 **vX, vuint8 **tmp1, vuint8
     #pragma omp parallel for
     for (i = vmi0 + 3; i <= vmi1; ++i){   
 
-        //printf("i = %d\n", j);
 
         // on commence a j = 2
         j = vmj0 + 2;
@@ -4584,7 +4556,6 @@ void morpho_3_SIMD_pipeline_fusion_unroll_omp(vuint8 **vX, vuint8 **tmp1, vuint8
         for (j = vmj0 + 2; j <= vmj1; ++j)
         {
 
-            //printf("i = %d\n", i);
 
             // ALLOCATION + CALCUL VECTEUR NON ALIGNES
 
@@ -4700,14 +4671,11 @@ void morpho_3_SIMD_pipeline_fusion_unroll_omp(vuint8 **vX, vuint8 **tmp1, vuint8
 
         // EPILOGUE BOUCLE
 
-        //printf("3\n");
 
         // dilataion 5 sur l'avant avant derniere ligne et la derniere colonne de l'iteration courante
         dilatation_5_SIMD(tmp2, tmp1, i - 2, i - 2, vmj1, vmj1);
 
-        //printf("\n\nvmi1 - 3 = %d, vmi1 = %d, j - 2 = %d, j - 2 = %d\n\n", vmi1 - 3, vmi1, j - 2, j - 2);
 
-        //printf("4\n");
 
         // erosion 3 sur l'avant avant avant derniere ligne et les 2 dernières colonnes de l'iteration courante
         erosion_3_SIMD_unroll(tmp1, vY, i - 3, i - 3, vmj1 - 1, vmj1);
@@ -4715,12 +4683,10 @@ void morpho_3_SIMD_pipeline_fusion_unroll_omp(vuint8 **vX, vuint8 **tmp1, vuint8
 
     // EPILOGUE GLOBAL
 
-    //printf("5\n");
 
     // dilatation 5 sur les 2 dernieres lignes
     dilatation_5_SIMD_unroll(tmp2, tmp1, vmi1 - 1, vmi1, vmj0, vmj1);
 
-    //printf("6\n");
 
     // erosion 3 sur les 3 dernieres lignes
     erosion_3_SIMD_unroll(tmp1, vY, vmi1 - 2, vmi1, vmj0, vmj1);
@@ -4728,7 +4694,6 @@ void morpho_3_SIMD_pipeline_fusion_unroll_omp(vuint8 **vX, vuint8 **tmp1, vuint8
 
 void morpho_3_SIMD_pipeline_fusion(vuint8 **vX, vuint8 **tmp1, vuint8 **tmp2, vuint8 ** vY, int vmi0, int vmi1, int vmj0, int vmj1){
 
-    //DEBUG(printf("vmi0 = %d, vmi1 = %d, vmj0 = %d, vmj1 = %d\n", vmi0, vmi1, vmj0, vmj1));
 
     // CONDITION SUR LA TAILLE DES MATRICES
     // il faut au moins 4 colonnes SIMD et 6 lignes
@@ -4739,15 +4704,12 @@ void morpho_3_SIMD_pipeline_fusion(vuint8 **vX, vuint8 **tmp1, vuint8 **tmp2, vu
 
     // PROLOGUE GLOBAL
 
-    //printf("1\n");
 
     // 1ere erosion sur les 3 premieres lignes
     erosion_3_SIMD(vX, tmp2, vmi0, vmi0 + 2, vmj0, vmj1);
-    //printf("VOILA\n");
     // dilation 5 sur la 1ere ligne
     dilatation_5_SIMD(tmp2, tmp1, vmi0, vmi0, vmj0, vmj1);
 
-    //printf("2\n");
 
     // aa, bb : non alignés
     // a , b  : alignés
@@ -4775,7 +4737,6 @@ void morpho_3_SIMD_pipeline_fusion(vuint8 **vX, vuint8 **tmp1, vuint8 **tmp2, vu
     // on commence a i egale 3
     for (i = vmi0 + 3; i <= vmi1; ++i){   
 
-        //printf("i = %d\n", j);
 
         // on commence a j = 2
         j = vmj0 + 2;
@@ -4834,7 +4795,6 @@ void morpho_3_SIMD_pipeline_fusion(vuint8 **vX, vuint8 **tmp1, vuint8 **tmp2, vu
         for (j = vmj0 + 2; j <= vmj1; ++j)
         {
 
-            //printf("i = %d\n", i);
 
             // ALLOCATION + CALCUL VECTEUR NON ALIGNES
 
@@ -4950,14 +4910,10 @@ void morpho_3_SIMD_pipeline_fusion(vuint8 **vX, vuint8 **tmp1, vuint8 **tmp2, vu
 
         // EPILOGUE BOUCLE
 
-        //printf("3\n");
 
         // dilataion 5 sur l'avant avant derniere ligne et la derniere colonne de l'iteration courante
         dilatation_5_SIMD(tmp2, tmp1, i - 2, i - 2, vmj1, vmj1);
 
-        //printf("\n\nvmi1 - 3 = %d, vmi1 = %d, j - 2 = %d, j - 2 = %d\n\n", vmi1 - 3, vmi1, j - 2, j - 2);
-
-        //printf("4\n");
 
         // erosion 3 sur l'avant avant avant derniere ligne et les 2 dernières colonnes de l'iteration courante
         erosion_3_SIMD(tmp1, vY, i - 3, i - 3, vmj1 - 1, vmj1);
@@ -4965,12 +4921,10 @@ void morpho_3_SIMD_pipeline_fusion(vuint8 **vX, vuint8 **tmp1, vuint8 **tmp2, vu
 
     // EPILOGUE GLOBAL
 
-    //printf("5\n");
 
     // dilatation 5 sur les 2 dernieres lignes
     dilatation_5_SIMD(tmp2, tmp1, vmi1 - 1, vmi1, vmj0, vmj1);
 
-    //printf("6\n");
 
     // erosion 3 sur les 3 dernieres lignes
     erosion_3_SIMD(tmp1, vY, vmi1 - 2, vmi1, vmj0, vmj1);
@@ -4978,7 +4932,6 @@ void morpho_3_SIMD_pipeline_fusion(vuint8 **vX, vuint8 **tmp1, vuint8 **tmp2, vu
 
 void morpho_3_SIMD_pipeline_fusion_omp(vuint8 **vX, vuint8 **tmp1, vuint8 **tmp2, vuint8 ** vY, int vmi0, int vmi1, int vmj0, int vmj1){
 
-    //DEBUG(printf("vmi0 = %d, vmi1 = %d, vmj0 = %d, vmj1 = %d\n", vmi0, vmi1, vmj0, vmj1));
 
     // CONDITION SUR LA TAILLE DES MATRICES
     // il faut au moins 4 colonnes SIMD et 6 lignes
@@ -4989,15 +4942,14 @@ void morpho_3_SIMD_pipeline_fusion_omp(vuint8 **vX, vuint8 **tmp1, vuint8 **tmp2
 
     // PROLOGUE GLOBAL
 
-    //printf("1\n");
+;
 
     // 1ere erosion sur les 3 premieres lignes
     erosion_3_SIMD(vX, tmp2, vmi0, vmi0 + 2, vmj0, vmj1);
-    //printf("VOILA\n");
+
     // dilation 5 sur la 1ere ligne
     dilatation_5_SIMD(tmp2, tmp1, vmi0, vmi0, vmj0, vmj1);
 
-    //printf("2\n");
 
     // aa, bb : non alignés
     // a , b  : alignés
@@ -5026,7 +4978,7 @@ void morpho_3_SIMD_pipeline_fusion_omp(vuint8 **vX, vuint8 **tmp1, vuint8 **tmp2
     #pragma omp parallel for
     for (i = vmi0 + 3; i <= vmi1; ++i){   
 
-        //printf("i = %d\n", j);
+
 
         // on commence a j = 2
         j = vmj0 + 2;
@@ -5085,7 +5037,7 @@ void morpho_3_SIMD_pipeline_fusion_omp(vuint8 **vX, vuint8 **tmp1, vuint8 **tmp2
         for (j = vmj0 + 2; j <= vmj1; ++j)
         {
 
-            //printf("i = %d\n", i);
+
 
             // ALLOCATION + CALCUL VECTEUR NON ALIGNES
 
@@ -5201,14 +5153,11 @@ void morpho_3_SIMD_pipeline_fusion_omp(vuint8 **vX, vuint8 **tmp1, vuint8 **tmp2
 
         // EPILOGUE BOUCLE
 
-        //printf("3\n");
 
         // dilataion 5 sur l'avant avant derniere ligne et la derniere colonne de l'iteration courante
         dilatation_5_SIMD(tmp2, tmp1, i - 2, i - 2, vmj1, vmj1);
 
-        //printf("\n\nvmi1 - 3 = %d, vmi1 = %d, j - 2 = %d, j - 2 = %d\n\n", vmi1 - 3, vmi1, j - 2, j - 2);
 
-        //printf("4\n");
 
         // erosion 3 sur l'avant avant avant derniere ligne et les 2 dernières colonnes de l'iteration courante
         erosion_3_SIMD(tmp1, vY, i - 3, i - 3, vmj1 - 1, vmj1);
@@ -5216,12 +5165,10 @@ void morpho_3_SIMD_pipeline_fusion_omp(vuint8 **vX, vuint8 **tmp1, vuint8 **tmp2
 
     // EPILOGUE GLOBAL
 
-    //printf("5\n");
 
     // dilatation 5 sur les 2 dernieres lignes
     dilatation_5_SIMD(tmp2, tmp1, vmi1 - 1, vmi1, vmj0, vmj1);
 
-    //printf("6\n");
 
     // erosion 3 sur les 3 dernieres lignes
     erosion_3_SIMD(tmp1, vY, vmi1 - 2, vmi1, vmj0, vmj1);
@@ -5528,7 +5475,6 @@ void erosion_5_SIMD_c_unroll(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int 
     int vmj0b = vmj0 - bord;
     int vmj1b = vmj1 + bord;
 
-    printf("mi1 = %d, r = %d\n", vmi1, r);
 
     for(j = vmj0 ; j <= vmj1 ; j++){
 

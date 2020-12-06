@@ -55,7 +55,6 @@ void gen_img_bin_test_SIMD(type_morpho_t type, type_opti_t OPTI){
 
     mi0b_test = mi0_test-b_test; mi1b_test = mi1_test+b_test;
 	mj0b_test = mj0_test-b_test; mj1b_test = mj1_test+b_test;
-    printf("vmi0b_test = %d, vmi1b_test = %d, vmj0b_test = %d, vmj1b_test = %d\n", vmi0b_test, vmi1b_test, vmj0b_test, vmj1b_test);
     if(type == MORPHO3 || type == MORPHO5){
         tmp1_SIMD = vui8matrix(vmi0b_test, vmi1b_test, vmj0b_test, vmj1b_test);
         tmp2_SIMD = vui8matrix(vmi0b_test, vmi1b_test, vmj0b_test, vmj1b_test);
@@ -149,6 +148,7 @@ void gen_img_bin_test_SIMD(type_morpho_t type, type_opti_t OPTI){
 
 }
 
+//Effectue le test unitaire pour une transformation MORPHO et une optimisation OPTI (cf. vnrdef.h)
 void test_unitaire_SIMD(type_morpho_t MORPHO, type_opti_t OPTI){
     gen_img_bin_test_SIMD(MORPHO, OPTI);
     char * format = " %d";
@@ -269,11 +269,11 @@ void test_unitaire_SIMD(type_morpho_t MORPHO, type_opti_t OPTI){
     //display_vui8matrix(vimg_filtered_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test, format, "TEST\n");
     vui8matrix_to_ui8matrix_morpho(16, vmi0_test, vmi1_test, vmj0_test, vmj1_test, img_filtered_test, vimg_filtered_test);
     if(equal_SIMD(img_filtered_test, assertion, mi0_test, mi1_test, mj0_test, mj1_test)){
-        printf(" :\n\x1B[32mOK\x1B[0m\n\n");
+        DEBUG(printf(" :\n\x1B[32mOK\x1B[0m\n\n"));
     }
     
     else {
-        printf(" :\n\x1B[31mKO\x1B[0m\n\n");
+        DEBUG(printf(" :\n\x1B[31mKO\x1B[0m\n\n"));
         DEBUG(display_ui8matrix(assertion, mi0_test, mi1_test, mj0_test, mj1_test, format, "assertion matrix : ")); DEBUG(puts(""));
     }
     DEBUG(display_ui8matrix(img_filtered_test, mi0_test, mi1_test, mj0_test, mj1_test, format, "returned matrix : ")); DEBUG(puts(""));
@@ -295,7 +295,7 @@ int equal_SIMD(uint8 ** A, uint8 ** B, int mi0, int mi1, int mj0, int mj1){
     }
     return 1;
 }
-
+//Effectue tous les tests unitaires.
 void tests_unitaires_SIMD(){
     printf("===============================\n");
     display_type_unroll(SIMD);puts("");

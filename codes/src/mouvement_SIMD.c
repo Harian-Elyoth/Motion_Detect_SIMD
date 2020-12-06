@@ -805,7 +805,7 @@ void SigmaDelta_simd_fusion_openMP(int vmi0, int vmi1, int vmj0, int vmj1,  vuin
 		#pragma omp for schedule(static)
 		for (int i = vmi0; i <= vmi1; ++i)
 		{
-			DEBUG(printf("\nThread %d : iteration i = %d\n", tid, i));
+			
 
 			for (int j = vmj0; j <= vmj1; ++j)
 			{

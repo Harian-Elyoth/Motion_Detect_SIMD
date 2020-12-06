@@ -65,10 +65,7 @@ void SigmaDelta_step1_unroll(int mi0, int mi1, int mj0, int mj1, uint8** mean0, 
 	int k = 4; 
 	int r = (mj1+1) % k;
 
-	// DEBUG(printf("mj0b = %d\n", mj0b));
-	// DEBUG(printf("mj1b = %d\n", mj1b));
-	// DEBUG(printf("r = %d\n", r));
-	// DEBUG(printf("mj1b - r = %d\n", mj1b - r));
+
 
 	for (int i = mi0; i <= mi1; ++i)
 	{
@@ -460,7 +457,7 @@ void SigmaDelta_fusion_unroll(int mi0, int mi1, int mj0, int mj1,  uint8** image
 	int k = 4; 
 	int r = (mj1+1) % k;
 
-	// printf("r = %d \n", r);
+
 
 	uint8 mean0_reg, mean1_reg, image_reg;
 	uint8 std0_reg, std1_reg;
