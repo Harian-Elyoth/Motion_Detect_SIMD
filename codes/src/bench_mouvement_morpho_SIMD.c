@@ -654,12 +654,12 @@ void bench_mouvement_morpho_SIMD_graphic(){
 		
 		free_vui8matrix(img_diff, vmi0, vmi1, vmj0, vmj1);
 		
-		// free_vui8matrix(img_bin, vmi0, vmi1, vmj0, vmj1);
+		free_vui8matrix(img_bin, vmi0, vmi1, vmj0, vmj1);
 
-		// free_vui8matrix(img_filtered, vmi0, vmi1, vmj0, vmj1);
-		// free_vui8matrix(tmp1_SIMD, vmi0, vmi1, vmj0, vmj1);
-		// free_vui8matrix(tmp2_SIMD, vmi0, vmi1, vmj0, vmj1);
-		// free_vui8matrix(tmp3_SIMD, vmi0, vmi1, vmj0, vmj1);
+		free_vui8matrix(img_filtered, vmi0, vmi1, vmj0, vmj1);
+		free_vui8matrix(tmp1_SIMD, vmi0, vmi1, vmj0, vmj1);
+		free_vui8matrix(tmp2_SIMD, vmi0, vmi1, vmj0, vmj1);
+		free_vui8matrix(tmp3_SIMD, vmi0, vmi1, vmj0, vmj1);
     }
 
     fclose(fichier_csv);
