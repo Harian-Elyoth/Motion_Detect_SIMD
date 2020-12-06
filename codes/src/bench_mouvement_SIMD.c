@@ -731,8 +731,9 @@ void bench_mouvement_SIMD_graphic(){
 
 	// init fichier csv
 	FILE* fichier_csv = fopen("csv_files/perf_SigmaDelta_SIMD.csv","w");
-	fprintf(fichier_csv, "%s;;;;;%s\n", "Sigma Delta", "Sigma Delta Optimise");
+	fprintf(fichier_csv, "%s;;;;;%s;;;;;%s\n", "Sigma Delta", "Sigma Delta Optimise", "SigmaDelta Optimise OMP");
 	fprintf(fichier_csv, "%s;%s;%s;%s;", "Taille (pixels)", "Temps (ms)", "Cycle par point (cpp)", "Debit (pixel/seconde)");
+	fprintf(fichier_csv, ";%s;%s;%s;", "Temps (ms)", "Cycle par point (cpp)", "Debit (pixel/seconde)");
 	fprintf(fichier_csv, ";%s;%s;%s\n", "Temps (ms)", "Cycle par point (cpp)", "Debit (pixel/seconde)");
 
 	int mi0, mi1, mj0, mj1; 	// indices scalaire
@@ -749,20 +750,19 @@ void bench_mouvement_SIMD_graphic(){
 	int card = card_vuint8(); // 16
 
     // calcul cpp
-	double cycles_total = 0;
-	double cycles_step1 = 0;
-	double cycles_step2 = 0;
-	double cycles_step3 = 0;
-	double cycles_step4 = 0;
+	double cycles_total = 0, cycles_step1 = 0, cycles_step2 = 0, cycles_step3 = 0, cycles_step4 = 0;
 	double cycles_total_full_opti = 0;
+	double cycles_total_full_opti_omp = 0;
 
 	// calcul temps
 	double time_total = 0, time_step1 = 0, time_step2 = 0, time_step3 = 0, time_step4 = 0;
 	double time_total_full_opti = 0;
+	double time_total_full_opti_omp = 0;
 
 	// calcul debit
 	double debit_total = 0;
 	double debit_total_full_opti = 0;
+	double debit_total_full_opti_omp = 0;
 
     puts("=========================================");
 	puts("=== benchmark mouvement SIMD graphics ===");
@@ -823,8 +823,13 @@ void bench_mouvement_SIMD_graphic(){
 	   		{
 	   			// Générer des valeurs de pixels avec un motif qui evoluent avec la taille
 	   			// Génére 2 images censé etre tres similaire (seul quelques pixels doivent varier)
-	   			image_init [i][j]   	= (i + j)*10 + j;
-	   			img_temp[i][j]  		= (i + j)*10 + j + i; 
+	   			int val1 = (i + j)*10 + j;
+	   			int val2 = (i + j)*10 + j + i;
+	   			if(val1 > 255)	val1 = val1 / 255;
+	   			if(val2 > 255)	val2 = val2 / 255;
+
+	   			image_init [i][j]   = val1;
+	   			img_temp[i][j]  	= val2; 
 	   		}
 	   	}
 
@@ -848,26 +853,31 @@ void bench_mouvement_SIMD_graphic(){
 	    // -- traitements -- //
 	    // ----------------- //
 
-		// CHRONO(SigmaDelta_step1_simd(vmi0, vmi1, vmj0, vmj1, mean0, mean1, image), cycles_step1);
-		// time_step1 = (double)(cycles_step1/CLK_PROC);
+		CHRONO(SigmaDelta_step1_simd(vmi0, vmi1, vmj0, vmj1, mean0, mean1, image), cycles_step1);
+		time_step1 = (double)(cycles_step1/CLK_PROC);
 
-		// CHRONO(SigmaDelta_step2_simd(vmi0, vmi1, vmj0, vmj1, image, mean1, img_diff), cycles_step2);
-		// time_step2 = (double)(cycles_step2/CLK_PROC);
+		CHRONO(SigmaDelta_step2_simd(vmi0, vmi1, vmj0, vmj1, image, mean1, img_diff), cycles_step2);
+		time_step2 = (double)(cycles_step2/CLK_PROC);
 		
-		// CHRONO(SigmaDelta_step3_simd(vmi0, vmi1, vmj0, vmj1, std0, std1, img_diff), cycles_step3);
-		// time_step3 = (double)(cycles_step3/CLK_PROC);
+		CHRONO(SigmaDelta_step3_simd(vmi0, vmi1, vmj0, vmj1, std0, std1, img_diff), cycles_step3);
+		time_step3 = (double)(cycles_step3/CLK_PROC);
 
-		// CHRONO(SigmaDelta_step4_simd( vmi0, vmi1, vmj0, vmj1, std1, img_diff, img_bin), cycles_step4);
-		// time_step4 = (double)(cycles_step4/CLK_PROC);
+		CHRONO(SigmaDelta_step4_simd( vmi0, vmi1, vmj0, vmj1, std1, img_diff, img_bin), cycles_step4);
+		time_step4 = (double)(cycles_step4/CLK_PROC);
 
-		// cycles_total = cycles_step1 + cycles_step2 + cycles_step3 + cycles_step4;
-		// time_total   = time_step1   + time_step2   + time_step3   + time_step4;
-		// debit_total  = (width*height) / time_total;
+		cycles_total = cycles_step1 + cycles_step2 + cycles_step3 + cycles_step4;
+		time_total   = time_step1   + time_step2   + time_step3   + time_step4;
+		debit_total  = (width*height) / time_total;
 
 		// FULL OPTI
 		CHRONO(SigmaDelta_simd_full_opti(vmi0, vmi1, vmj0, vmj1, image, mean0, mean1, std0, std1, img_bin), cycles_total_full_opti);
 		time_total_full_opti = (double)(cycles_total_full_opti/CLK_PROC);
 		debit_total_full_opti = (width*height) / time_total_full_opti;
+
+		// FULL OPTI OMP
+		CHRONO(SigmaDelta_simd_full_opti_openMP(vmi0, vmi1, vmj0, vmj1, image, mean0, mean1, std0, std1, img_bin), cycles_total_full_opti_omp);
+		time_total_full_opti_omp = (double)(cycles_total_full_opti_omp/CLK_PROC);
+		debit_total_full_opti_omp = (width*height) / time_total_full_opti_omp;
 
 		// ecrire les donnees dans un fichier csv
 		fprintf(fichier_csv, "%d;", height);
@@ -877,7 +887,11 @@ void bench_mouvement_SIMD_graphic(){
 
 		fprintf(fichier_csv, ";%f;" , time_total_full_opti*1000);
 		fprintf(fichier_csv, "%f;"  , cycles_total_full_opti/(height*width));
-		fprintf(fichier_csv, "%f\n" , debit_total_full_opti);
+		fprintf(fichier_csv, "%f;"  , debit_total_full_opti);
+
+		fprintf(fichier_csv, ";%f;" , time_total_full_opti_omp * 1000);
+		fprintf(fichier_csv, "%f;"  , cycles_total_full_opti_omp / (height*width));
+		fprintf(fichier_csv, "%f\n" , debit_total_full_opti_omp);
 
 		// ---------- //
 		// -- free -- //
@@ -894,17 +908,17 @@ void bench_mouvement_SIMD_graphic(){
 		free_vui8matrix(img_diff, vmi0, vmi1, vmj0, vmj1);
 		free_vui8matrix(img_bin, vmi0, vmi1, vmj0, vmj1);
 
-		// calcul cpp
-		cycles_total = 0, cycles_step1 = 0, cycles_step2 = 0, cycles_step3 = 0, cycles_step4 = 0;
-		cycles_total_full_opti = 0;
+		// // calcul cpp
+		// cycles_total = 0, cycles_step1 = 0, cycles_step2 = 0, cycles_step3 = 0, cycles_step4 = 0;
+		// cycles_total_full_opti = 0;
 
-		// calcul temps
-		time_total = 0, time_step1 = 0, time_step2 = 0, time_step3 = 0, time_step4 = 0;
-		time_total_full_opti = 0;
+		// // calcul temps
+		// time_total = 0, time_step1 = 0, time_step2 = 0, time_step3 = 0, time_step4 = 0;
+		// time_total_full_opti = 0;
 
-		// calcul debit
-		debit_total = 0;
-		debit_total_full_opti = 0;
+		// // calcul debit
+		// debit_total = 0;
+		// debit_total_full_opti = 0;
     }
 
     fclose(fichier_csv);

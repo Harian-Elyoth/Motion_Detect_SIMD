@@ -646,8 +646,13 @@ void bench_mouvement_graphic(){
 	   		{
 	   			// Générer des valeurs de pixels avec un motif qui evoluent avec la taille
 	   			// Génére 2 images censé etre tres similaire (seul quelques pixels doivent varier)
-	   			image_init [i][j]   = (i + j)*10 + j;
-	   			image[i][j]  		= (i + j)*10 + j + i; 
+	   			int val1 = (i + j)*10 + j;
+	   			int val2 = (i + j)*10 + j + i;
+	   			if(val1 > 255)	val1 = val1 / 255;
+	   			if(val2 > 255)	val2 = val2 / 255;
+
+	   			image_init [i][j]   = val1;
+	   			image[i][j]  		= val2; 
 	   		}
 	   	}
 
@@ -665,21 +670,21 @@ void bench_mouvement_graphic(){
 	    // -- traitements -- //
 	    // ----------------- //
 
-		// CHRONO(SigmaDelta_step1(mi0, mi1, mj0, mj1, mean0, mean1, image), cycles_step1);
-		// time_step1 = (double)(cycles_step1/CLK_PROC);
+		CHRONO(SigmaDelta_step1(mi0, mi1, mj0, mj1, mean0, mean1, image), cycles_step1);
+		time_step1 = (double)(cycles_step1/CLK_PROC);
 
-		// CHRONO(SigmaDelta_step2(mi0, mi1, mj0, mj1, image, mean1, img_diff), cycles_step2);
-		// time_step2 = (double)(cycles_step2/CLK_PROC);
+		CHRONO(SigmaDelta_step2(mi0, mi1, mj0, mj1, image, mean1, img_diff), cycles_step2);
+		time_step2 = (double)(cycles_step2/CLK_PROC);
 		
-		// CHRONO(SigmaDelta_step3(mi0, mi1, mj0, mj1, std0, std1, img_diff), cycles_step3);
-		// time_step3 = (double)(cycles_step3/CLK_PROC);
+		CHRONO(SigmaDelta_step3(mi0, mi1, mj0, mj1, std0, std1, img_diff), cycles_step3);
+		time_step3 = (double)(cycles_step3/CLK_PROC);
 
-		// CHRONO(SigmaDelta_step4(mi0, mi1, mj0, mj1, std1, img_diff, img_bin), cycles_step4);
-		// time_step4 = (double)(cycles_step4/CLK_PROC);
+		CHRONO(SigmaDelta_step4(mi0, mi1, mj0, mj1, std1, img_diff, img_bin), cycles_step4);
+		time_step4 = (double)(cycles_step4/CLK_PROC);
 
-		// cycles_total = cycles_step1 + cycles_step2 + cycles_step3 + cycles_step4;
-		// time_total   = time_step1   + time_step2   + time_step3   + time_step4;
-		// debit_total  = (width*height) / time_total;
+		cycles_total = cycles_step1 + cycles_step2 + cycles_step3 + cycles_step4;
+		time_total   = time_step1   + time_step2   + time_step3   + time_step4;
+		debit_total  = (width*height) / time_total;
 
 		// FULL OPTI
 		CHRONO(SigmaDelta_full_opti(mi0, mi1, mj0, mj1, image, mean0, std0, img_bin), cycles_total_full_opti);
