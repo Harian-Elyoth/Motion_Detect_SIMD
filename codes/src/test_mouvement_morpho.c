@@ -87,10 +87,10 @@ void test_mouvement_morpho_car(){
 	SigmaDelta_step4(mi0, mi1, mj0, mj1, std1 , img_diff, img_bin);
 
 	// SIGMA DELTA OPTI
-	// SigmaDelta_step1_opti(mi0, mi1, mj0, mj1, mean0, mean1   , image);
-	// SigmaDelta_step2_opti(mi0, mi1, mj0, mj1, image, mean1   , img_diff);
-	// SigmaDelta_step3_opti(mi0, mi1, mj0, mj1, std0 , std1    , img_diff);
-	// SigmaDelta_step4_opti(mi0, mi1, mj0, mj1, std1 , img_diff, img_bin);
+	// SigmaDelta_step1_unroll(mi0, mi1, mj0, mj1, mean0, mean1   , image);
+	// SigmaDelta_step2_unroll(mi0, mi1, mj0, mj1, image, mean1   , img_diff);
+	// SigmaDelta_step3_unroll(mi0, mi1, mj0, mj1, std0 , std1    , img_diff);
+	// SigmaDelta_step4_unroll(mi0, mi1, mj0, mj1, std1 , img_diff, img_bin);
 
 	duplicate_border(mi0, mi1, mj0, mj1, b, img_bin);
 
@@ -215,10 +215,10 @@ void test_mouvement_morpho_dataset(){
 		// SigmaDelta_step4(mi0, mi1, mj0, mj1, std1 , img_diff, img_bin);
 
 		// SIGMA DELTA OPTI
-		SigmaDelta_step1_opti(mi0, mi1, mj0, mj1, mean0, mean1   , image);
-		SigmaDelta_step2_opti(mi0, mi1, mj0, mj1, image, mean1   , img_diff);
-		SigmaDelta_step3_opti(mi0, mi1, mj0, mj1, std0 , std1    , img_diff);
-		SigmaDelta_step4_opti(mi0, mi1, mj0, mj1, std1 , img_diff, img_bin);
+		SigmaDelta_step1_unroll(mi0, mi1, mj0, mj1, mean0, mean1   , image);
+		SigmaDelta_step2_unroll(mi0, mi1, mj0, mj1, image, mean1   , img_diff);
+		SigmaDelta_step3_unroll(mi0, mi1, mj0, mj1, std0 , std1    , img_diff);
+		SigmaDelta_step4_unroll(mi0, mi1, mj0, mj1, std1 , img_diff, img_bin);
 
 		duplicate_border(mi0, mi1, mj0, mj1, b, img_bin);
 

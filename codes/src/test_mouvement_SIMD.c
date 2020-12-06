@@ -85,7 +85,8 @@ void test_mouvement_SIMD_unit(){
 	DEBUG(display_vui8matrix(mean0, vmi0, vmi1, vmj0, vmj1, format, "\nmean0 :\n"));
 	DEBUG(display_vui8matrix(image, vmi0, vmi1, vmj0, vmj1, format, "\nimage :\n"));
 
-	SigmaDelta_step1_simd_opti(vmi0, vmi1, vmj0, vmj1, mean0, mean1, image);
+	SigmaDelta_step1_simd(vmi0, vmi1, vmj0, vmj1, mean0, mean1, image);
+	// SigmaDelta_step1_simd_unroll(vmi0, vmi1, vmj0, vmj1, mean0, mean1, image);
 
 	vuint8** mean1_correct 	= vui8matrix(vmi0, vmi1, vmj0, vmj1);
 	mean1_correct[0][0]    	= init_vuint8_all(0, 10, 21, 32, 43, 54, 65, 76, 87, 98 , 109, 120, 131, 142, 153, 164); 
@@ -107,7 +108,8 @@ void test_mouvement_SIMD_unit(){
 
 	DEBUG(display_vui8matrix(mean1, vmi0, vmi1, vmj0, vmj1, format, "\nmean1 :\n"));
 
-	SigmaDelta_step2_simd_opti(vmi0, vmi1, vmj0, vmj1, image, mean1, img_diff);
+	SigmaDelta_step2_simd(vmi0, vmi1, vmj0, vmj1, image, mean1, img_diff);
+	// SigmaDelta_step2_simd_unroll(vmi0, vmi1, vmj0, vmj1, image, mean1, img_diff);
 
 	vuint8** img_diff_correct 	= vui8matrix(vmi0, vmi1, vmj0, vmj1);
 	img_diff_correct[0][0]    	= init_vuint8_all(0 , 9 , 19, 29, 39, 49, 59, 69, 79, 89, 99, 109, 119, 129, 139, 149); 
@@ -130,6 +132,7 @@ void test_mouvement_SIMD_unit(){
     DEBUG(display_vui8matrix(img_diff, vmi0, vmi1, vmj0, vmj1, format, "\nimg_diff :\n"));
 
 	SigmaDelta_step3_simd(vmi0, vmi1, vmj0, vmj1, std0, std1, img_diff);
+	// SigmaDelta_step3_unroll(vmi0, vmi1, vmj0, vmj1, std0, std1, img_diff);
 
 	vuint8** std1_correct	= vui8matrix(vmi0, vmi1, vmj0, vmj1);
 	std1_correct[0][0]    	= init_vuint8_all(1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2); 
@@ -151,11 +154,13 @@ void test_mouvement_SIMD_unit(){
 
     DEBUG(display_vui8matrix(std1, vmi0, vmi1, vmj0, vmj1, format, "\nstd1 :\n"));
 
-	SigmaDelta_step4_simd_opti(vmi0, vmi1, vmj0, vmj1, std1, img_diff, img_bin);
-	// SigmaDelta_simd_full(vmi0, vmi1, vmj0, vmj1, image, mean0, mean1, std0, std1, img_bin);
-	// SigmaDelta_simd_full_openMP(vmi0, vmi1, vmj0, vmj1, image, mean0, mean1, std0, std1, img_bin);
-	// SigmaDelta_simd_full_opti(vmi0, vmi1, vmj0, vmj1, image, mean0, mean1, std0, std1, img_bin);
-	// SigmaDelta_simd_full_opti_openMP(vmi0, vmi1, vmj0, vmj1, image, mean0, mean1, std0, std1, img_bin);
+    SigmaDelta_step4_simd(vmi0, vmi1, vmj0, vmj1, std1, img_diff, img_bin);
+	SigmaDelta_step4_simd_unroll(vmi0, vmi1, vmj0, vmj1, std1, img_diff, img_bin);
+
+	// SigmaDelta_simd_fusion(vmi0, vmi1, vmj0, vmj1, image, mean0, mean1, std0, std1, img_bin);
+	// SigmaDelta_simd_fusion_openMP(vmi0, vmi1, vmj0, vmj1, image, mean0, mean1, std0, std1, img_bin);
+	// SigmaDelta_simd_fusion_unroll(vmi0, vmi1, vmj0, vmj1, image, mean0, mean1, std0, std1, img_bin);
+	// SigmaDelta_simd_fusion_unroll_openMP(vmi0, vmi1, vmj0, vmj1, image, mean0, mean1, std0, std1, img_bin);
 
 	vuint8** img_bin_correct		= vui8matrix(vmi0, vmi1, vmj0, vmj1);
 	img_bin_correct[0][0]    		= init_vuint8_all(0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1); 
@@ -298,14 +303,14 @@ void test_mouvement_SIMD_car(){
 	// SigmaDelta_step4_simd(vmi0, vmi1, vmj0, vmj1, std1 , img_diff, img_bin);
 	
 	// SIGMA DELTA OPTI
-	// SigmaDelta_step1_simd_opti(vmi0, vmi1, vmj0, vmj1, mean0, mean1, image);
-	// SigmaDelta_step2_simd_opti(vmi0, vmi1, vmj0, vmj1, image, mean1, img_diff);
-	// SigmaDelta_step3_simd_opti(vmi0, vmi1, vmj0, vmj1, std0, std1, img_diff);
-	// SigmaDelta_step4_simd_opti(vmi0, vmi1, vmj0, vmj1, std1, img_diff, img_bin);
+	// SigmaDelta_step1_simd_unroll(vmi0, vmi1, vmj0, vmj1, mean0, mean1, image);
+	// SigmaDelta_step2_simd_unroll(vmi0, vmi1, vmj0, vmj1, image, mean1, img_diff);
+	// SigmaDelta_step3_simd_unroll(vmi0, vmi1, vmj0, vmj1, std0, std1, img_diff);
+	// SigmaDelta_step4_simd_unroll(vmi0, vmi1, vmj0, vmj1, std1, img_diff, img_bin);
 
-	SigmaDelta_simd_full_openMP(vmi0, vmi1, vmj0, vmj1, image, mean0, mean1, std0, std1, img_bin);
+	SigmaDelta_simd_fusion_openMP(vmi0, vmi1, vmj0, vmj1, image, mean0, mean1, std0, std1, img_bin);
 
-	// SigmaDelta_simd_full_opti(vmi0, vmi1, vmj0, vmj1, image, mean0, std0, img_bin);
+	// SigmaDelta_simd_fusion_unroll(vmi0, vmi1, vmj0, vmj1, image, mean0, std0, img_bin);
 
 	/*---------------------------------------------------*/
 
@@ -446,16 +451,16 @@ void test_mouvement_SIMD_dataset(){
 		// SigmaDelta_step4_simd(vmi0, vmi1, vmj0, vmj1, std1 , img_diff, img_bin);
 		
 		// SIGMA DELTA OPTI
-		// SigmaDelta_step1_simd_opti(vmi0, vmi1, vmj0, vmj1, mean0, mean1, image);
-		// SigmaDelta_step2_simd_opti(vmi0, vmi1, vmj0, vmj1, image, mean1, img_diff);
-		// SigmaDelta_step3_simd_opti(vmi0, vmi1, vmj0, vmj1, std0, std1, img_diff);
-		// SigmaDelta_step4_simd_opti(vmi0, vmi1, vmj0, vmj1, std1, img_diff, img_bin);
+		// SigmaDelta_step1_simd_unroll(vmi0, vmi1, vmj0, vmj1, mean0, mean1, image);
+		// SigmaDelta_step2_simd_unroll(vmi0, vmi1, vmj0, vmj1, image, mean1, img_diff);
+		// SigmaDelta_step3_simd_unroll(vmi0, vmi1, vmj0, vmj1, std0, std1, img_diff);
+		// SigmaDelta_step4_simd_unroll(vmi0, vmi1, vmj0, vmj1, std1, img_diff, img_bin);
 
-		// SigmaDelta_simd_full_openMP(vmi0, vmi1, vmj0, vmj1, image, mean0, mean1, std0, std1, img_bin);
-		// SigmaDelta_simd_full(vmi0, vmi1, vmj0, vmj1, image, mean0, mean1, std0, std1, img_bin);
+		// SigmaDelta_simd_fusion_openMP(vmi0, vmi1, vmj0, vmj1, image, mean0, mean1, std0, std1, img_bin);
+		// SigmaDelta_simd_fusion(vmi0, vmi1, vmj0, vmj1, image, mean0, mean1, std0, std1, img_bin);
 
-		SigmaDelta_simd_full_opti(vmi0, vmi1, vmj0, vmj1, image, mean0, mean1, std0, std1, img_bin);
-		// SigmaDelta_simd_full_opti_openMP(vmi0, vmi1, vmj0, vmj1, image, mean0, mean1, std0, std1, img_bin);
+		SigmaDelta_simd_fusion_unroll(vmi0, vmi1, vmj0, vmj1, image, mean0, mean1, std0, std1, img_bin);
+		// SigmaDelta_simd_fusion_unroll_openMP(vmi0, vmi1, vmj0, vmj1, image, mean0, mean1, std0, std1, img_bin);
 
 		// --------------- //
 		// -- affichage -- //

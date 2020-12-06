@@ -783,7 +783,7 @@ void bench_morpho_graphic(){
             }
         }
 
-        SigmaDelta_full_unroll(mi0, mi1, mj0, mj1, image, mean0, mean1, std0, std1, img_bin);
+        SigmaDelta_fusion_unroll(mi0, mi1, mj0, mj1, image, mean0, mean1, std0, std1, img_bin);
 
         duplicate_border(mi0, mi1, mj0, mj1, b, img_bin);
 

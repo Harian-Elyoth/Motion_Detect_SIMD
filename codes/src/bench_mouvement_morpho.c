@@ -496,7 +496,7 @@ void bench_mouvement_morpho_graphic(){
 		fprintf(fichier_csv, "%f;", debit_total);
 
 		// FULL OPTI
-		CHRONO(SigmaDelta_full_opti(mi0, mi1, mj0, mj1, image, mean0, mean1, std0, std1, img_bin), cycles_total_full_opti);
+		CHRONO(SigmaDelta_fusion_unroll(mi0, mi1, mj0, mj1, image, mean0, mean1, std0, std1, img_bin), cycles_total_full_opti);
 		time_total_full_opti = (double)(cycles_total_full_opti/CLK_PROC);
 
 		duplicate_border(mi0, mi1, mj0, mj1, b, img_bin);

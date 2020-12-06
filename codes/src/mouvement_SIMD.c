@@ -117,7 +117,7 @@ void SigmaDelta_step1_simd(int vmi0, int vmi1, int vmj0, int vmj1, vuint8** mean
 	}
 }
 
-void SigmaDelta_step1_simd_opti(int vmi0, int vmi1, int vmj0, int vmj1, vuint8** mean0, vuint8** mean1, vuint8** image){
+void SigmaDelta_step1_simd_unroll(int vmi0, int vmi1, int vmj0, int vmj1, vuint8** mean0, vuint8** mean1, vuint8** image){
 
 	int k = 4; int r = (vmj1+1) % k;
 
@@ -264,7 +264,7 @@ void SigmaDelta_step2_simd(int vmi0, int vmi1, int vmj0, int vmj1, vuint8** imag
 	}
 }
 
-void SigmaDelta_step2_simd_opti(int vmi0, int vmi1, int vmj0, int vmj1, vuint8** image, vuint8** mean1, vuint8** img_diff){
+void SigmaDelta_step2_simd_unroll(int vmi0, int vmi1, int vmj0, int vmj1, vuint8** image, vuint8** mean1, vuint8** img_diff){
 
 	int k = 4; int r = (vmj1+1) % k;
 
@@ -401,7 +401,7 @@ void SigmaDelta_step3_simd(int vmi0, int vmi1, int vmj0, int vmj1, vuint8** std0
 	}
 }	
 
-void SigmaDelta_step3_simd_opti(int vmi0, int vmi1, int vmj0, int vmj1, vuint8** std0, vuint8** std1, vuint8** img_diff){
+void SigmaDelta_step3_simd_unroll(int vmi0, int vmi1, int vmj0, int vmj1, vuint8** std0, vuint8** std1, vuint8** img_diff){
 
 	int k = 4; int r = (vmj1+1) % k;
 
@@ -595,7 +595,7 @@ void SigmaDelta_step4_simd(int vmi0, int vmi1, int vmj0, int vmj1, vuint8** std1
 	}
 }
 
-void SigmaDelta_step4_simd_opti(int vmi0, int vmi1, int vmj0, int vmj1, vuint8** std1, vuint8** img_diff, vuint8** img_bin){
+void SigmaDelta_step4_simd_unroll(int vmi0, int vmi1, int vmj0, int vmj1, vuint8** std1, vuint8** img_diff, vuint8** img_bin){
 
 	int k = 4; int r = (vmj1+1) % k;
 
@@ -690,7 +690,7 @@ void SigmaDelta_step4_simd_opti(int vmi0, int vmi1, int vmj0, int vmj1, vuint8**
 	}
 }
 
-void SigmaDelta_simd_full(int vmi0, int vmi1, int vmj0, int vmj1,  vuint8** image, vuint8** mean0, vuint8** mean1, vuint8** std0, vuint8** std1, vuint8** img_bin){
+void SigmaDelta_simd_fusion(int vmi0, int vmi1, int vmj0, int vmj1,  vuint8** image, vuint8** mean0, vuint8** mean1, vuint8** std0, vuint8** std1, vuint8** img_bin){
 
 	// UNE SEULE DOUBLE BOUCLE FOR + SCALARISATION
 
@@ -770,7 +770,7 @@ void SigmaDelta_simd_full(int vmi0, int vmi1, int vmj0, int vmj1,  vuint8** imag
 	}
 }
 
-void SigmaDelta_simd_full_openMP(int vmi0, int vmi1, int vmj0, int vmj1,  vuint8** image, vuint8** mean0, vuint8** mean1, vuint8** std0, vuint8** std1, vuint8** img_bin){
+void SigmaDelta_simd_fusion_openMP(int vmi0, int vmi1, int vmj0, int vmj1,  vuint8** image, vuint8** mean0, vuint8** mean1, vuint8** std0, vuint8** std1, vuint8** img_bin){
 
 	// UNE SEULE DOUBLE BOUCLE FOR + SCALARISATION
 	int tid;
@@ -857,7 +857,7 @@ void SigmaDelta_simd_full_openMP(int vmi0, int vmi1, int vmj0, int vmj1,  vuint8
 	}
 }
 
-void SigmaDelta_simd_full_opti(int vmi0, int vmi1, int vmj0, int vmj1,  vuint8** image, vuint8** mean0, vuint8** mean1, vuint8** std0, vuint8** std1, vuint8** img_bin){
+void SigmaDelta_simd_fusion_unroll(int vmi0, int vmi1, int vmj0, int vmj1,  vuint8** image, vuint8** mean0, vuint8** mean1, vuint8** std0, vuint8** std1, vuint8** img_bin){
 
 	// UNE SEULE DOUBLE BOUCLE FOR + SCALARISATION + DEROULEMENT BOUCLE J ORDRE 4
 
@@ -1225,7 +1225,7 @@ void SigmaDelta_simd_full_opti(int vmi0, int vmi1, int vmj0, int vmj1,  vuint8**
 	}
 }
 
-void SigmaDelta_simd_full_opti_openMP(int vmi0, int vmi1, int vmj0, int vmj1,  vuint8** image, vuint8** mean0, vuint8** mean1, vuint8** std0, vuint8** std1, vuint8** img_bin){
+void SigmaDelta_simd_fusion_unroll_openMP(int vmi0, int vmi1, int vmj0, int vmj1,  vuint8** image, vuint8** mean0, vuint8** mean1, vuint8** std0, vuint8** std1, vuint8** img_bin){
 
 	// UNE SEULE DOUBLE BOUCLE FOR + SCALARISATION + DEROULEMENT BOUCLE J ORDRE 4
 
