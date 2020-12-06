@@ -51,19 +51,19 @@ extern "C" {
 
 
 void SigmaDelta_step1(int mi0, int mi1, int mj0, int mj1, uint8** mean0, uint8** mean1, uint8** image);
-void SigmaDelta_step1_opti(int mi0, int mi1, int mj0, int mj1, uint8** mean0, uint8** mean1, uint8** image);
+void SigmaDelta_step1_unroll(int mi0, int mi1, int mj0, int mj1, uint8** mean0, uint8** mean1, uint8** image);
 
 void SigmaDelta_step2(int mi0, int mi1, int mj0, int mj1, uint8** image, uint8** mean1, uint8** img_diff);
-void SigmaDelta_step2_opti(int mi0, int mi1, int mj0, int mj1, uint8** image, uint8** mean1, uint8** img_diff);
+void SigmaDelta_step2_unroll(int mi0, int mi1, int mj0, int mj1, uint8** image, uint8** mean1, uint8** img_diff);
 
 void SigmaDelta_step3(int mi0, int mi1, int mj0, int mj1, uint8** std0, uint8** std1, uint8** img_diff);
-void SigmaDelta_step3_opti(int mi0, int mi1, int mj0, int mj1, uint8** std0, uint8** std1, uint8** img_diff);
+void SigmaDelta_step3_unroll(int mi0, int mi1, int mj0, int mj1, uint8** std0, uint8** std1, uint8** img_diff);
 
 void SigmaDelta_step4(int mi0, int mi1, int mj0, int mj1, uint8** std1, uint8** img_diff, uint8** img_bin);
-void SigmaDelta_step4_opti(int mi0, int mi1, int mj0, int mj1, uint8** std1, uint8** img_diff, uint8** img_bin);
+void SigmaDelta_step4_unroll(int mi0, int mi1, int mj0, int mj1, uint8** std1, uint8** img_diff, uint8** img_bin);
 
-void SigmaDelta_full(int mi0, int mi1, int mj0, int mj1,  uint8** image, uint8** mean0, uint8** mean1, uint8** img_diff, uint8** std0, uint8** std1, uint8** img_bin);
-void SigmaDelta_full_opti(int mi0, int mi1, int mj0, int mj1,  uint8** image, uint8** mean0, uint8** mean1, uint8** std0, uint8** std1, uint8** img_bin);
+void SigmaDelta_fusion(int mi0, int mi1, int mj0, int mj1,  uint8** image, uint8** mean0, uint8** mean1, uint8** img_diff, uint8** std0, uint8** std1, uint8** img_bin);
+void SigmaDelta_fusion_unroll(int mi0, int mi1, int mj0, int mj1,  uint8** image, uint8** mean0, uint8** mean1, uint8** std0, uint8** std1, uint8** img_bin);
 
 void duplicate_border(int mi0, int mi1, int mj0, int mj1, int b, uint8** image);
 

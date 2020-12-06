@@ -26,12 +26,12 @@ INC_PATH = include
 CONFIG = CLI
 
 # -- Macros ----------
-CC = gcc
+CC = gcc-10.1
 AR = ar -rc
 
 # -- Flags ----------
 C_DEBUG_FLAGS = -O0
-C_CC_FLAGS = -std=c99 -DNOALIAS -DALIGNED -DmySSE -DTIMER_POSIX6 -fopenmp
+C_CC_FLAGS = -std=c99 -DNOALIAS -DALIGNED -DmySSE -DTIMER_POSIX6 -fopenmp -Werror
 C_OPTIMISATION_FLAGS = -O3 -fstrict-aliasing
 C_ARCH_FLAGS = -msse4.2 
 

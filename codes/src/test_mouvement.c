@@ -80,6 +80,7 @@ void test_mouvement_unit(){
     DEBUG(display_ui8matrix(image, mi0, mi1, mj0, mj1, format, "\nimage : "));
 
     SigmaDelta_step1(mi0, mi1, mj0, mj1, mean0, mean1, image);
+    SigmaDelta_step1_unroll(mi0, mi1, mj0, mj1, mean0, mean1, image);
 
     int mean1_correct[2][3] = 
     { 
@@ -99,6 +100,7 @@ void test_mouvement_unit(){
     DEBUG(display_ui8matrix(mean1, mi0, mi1, mj0, mj1, format, "\nmean1 : "));
 
 	SigmaDelta_step2(mi0, mi1, mj0, mj1, image, mean1, img_diff);
+	SigmaDelta_step2_unroll(mi0, mi1, mj0, mj1, image, mean1, img_diff);
 
 	int img_diff_correct[2][3] = 
     { 
@@ -120,6 +122,7 @@ void test_mouvement_unit(){
     DEBUG(display_ui8matrix(std0, mi0, mi1, mj0, mj1, format, "\nstd0 : "));
 
     SigmaDelta_step3(mi0, mi1, mj0, mj1, std0, std1, img_diff);
+    SigmaDelta_step3_unroll(mi0, mi1, mj0, mj1, std0, std1, img_diff);
 
 	int std1_correct[2][3] = 
     { 
@@ -138,7 +141,8 @@ void test_mouvement_unit(){
 
     DEBUG(display_ui8matrix(std1, mi0, mi1, mj0, mj1, format, "\nstd1 : "));
 
-    SigmaDelta_step4_opti(mi0, mi1, mj0, mj1, std1, img_diff, img_bin);
+    SigmaDelta_step4(mi0, mi1, mj0, mj1, std1, img_diff, img_bin);
+    SigmaDelta_step4_unroll(mi0, mi1, mj0, mj1, std1, img_diff, img_bin);
 
     int img_bin_correct[2][3] = 
     { 
@@ -163,11 +167,11 @@ void test_mouvement_unit(){
     DEBUG(printf("\nAfter duplicate border :"));
     DEBUG(display_ui8matrix(img_bin, mi0b, mi1b, mj0b, mj1b, format, "\nimg_bin : "));
 
-    // TEST FULL VERSION 
+    // TEST FUSION VERSION 
 
-	// SigmaDelta_full(mi0b, mi1b, mj0b, mj1b, image, mean0, mean1, img_diff, std0, std1, img_bin);
+	// SigmaDelta_fusion(mi0b, mi1b, mj0b, mj1b, image, mean0, mean1, img_diff, std0, std1, img_bin);
 
-	// SigmaDelta_full_opti(mi0b, mi1b, mj0b, mj1b, image, mean0, std0, img_bin);
+	// SigmaDelta_fusion_unroll(mi0b, mi1b, mj0b, mj1b, image, mean0, std0, img_bin);
 
 	// DEBUG(display_ui8matrix(img_bin, mi0b, mi1b, mj0b, mj1b, " %d ", "img_bin"));
 
@@ -272,16 +276,16 @@ void test_mouvement_car(){
 	// SigmaDelta_step4(mi0, mi1, mj0, mj1, std1 , img_diff , img_bin);
 
 	// SIGMA DELTA OPTI
- 	// SigmaDelta_step1_opti(mi0, mi1, mj0, mj1, mean0, mean1, image);
-	// SigmaDelta_step2_opti(mi0, mi1, mj0, mj1, image, mean1, img_diff);
-	// SigmaDelta_step3_opti(mi0, mi1, mj0, mj1, std0, std1, img_diff);
-	// SigmaDelta_step4_opti(mi0, mi1, mj0, mj1, std1, img_diff, img_bin);
+ 	// SigmaDelta_step1_unroll(mi0, mi1, mj0, mj1, mean0, mean1, image);
+	// SigmaDelta_step2_unroll(mi0, mi1, mj0, mj1, image, mean1, img_diff);
+	// SigmaDelta_step3_unroll(mi0, mi1, mj0, mj1, std0, std1, img_diff);
+	// SigmaDelta_step4_unroll(mi0, mi1, mj0, mj1, std1, img_diff, img_bin);
 
 	// SIGMA DELTA FUSIONNE
-	// SigmaDelta_full(mi0, mi1, mj0, mj1, image, mean0, mean1, img_diff, std0, std1, img_bin);
+	// SigmaDelta_fusion(mi0, mi1, mj0, mj1, image, mean0, mean1, img_diff, std0, std1, img_bin);
 
 	// SIGMA DELTA FUSIONNE DEROULE SCALARISE
-	SigmaDelta_full_opti(mi0, mi1, mj0, mj1, image, mean0, std0, img_bin);
+	SigmaDelta_fusion_unroll(mi0, mi1, mj0, mj1, image, mean0, mean1, std0, std1, img_bin);
 
 	// duplicate border for morpho
 	duplicate_border(mi0, mi1, mj0, mj1, b, img_bin);
@@ -396,9 +400,9 @@ void test_mouvement_dataset(){
 		SigmaDelta_step3(mi0, mi1, mj0, mj1, std0, std1, img_diff);
 		SigmaDelta_step4(mi0, mi1, mj0, mj1, std1, img_diff, img_bin);
 
-		// SigmaDelta_full(mi0b, mi1b, mj0b, mj1b, image, mean0, mean1, img_diff, std0, std1, img_bin);
+		// SigmaDelta_fusion(mi0b, mi1b, mj0b, mj1b, image, mean0, mean1, img_diff, std0, std1, img_bin);
 
-		// SigmaDelta_full_opti(mi0b, mi1b, mj0b, mj1b, image, mean0, std0, img_bin);
+		// SigmaDelta_fusion_unroll(mi0b, mi1b, mj0b, mj1b, image, mean0, std0, img_bin);
 
 		// built pgm filename out
 		char filename_out[25] = "";

@@ -4,7 +4,6 @@
 
 #include "bench_mouvement_morpho_SIMD.h"
 
-
 void bench_mouvement_morpho_SIMD_car(bool is_visual){
 
 	int width, height;
@@ -286,9 +285,6 @@ void bench_mouvement_morpho_SIMD_dataset(){
 	// calcul debit
 	double debit_dataset, debit_total;
 
-	// taille noyau de convolution	
-    int kernel_size = 3;
-
 	puts("=================================================");
 	puts("=== benchmark mouvement + morpho dataset SIMD ===");
 	puts("=================================================");
@@ -326,18 +322,18 @@ void bench_mouvement_morpho_SIMD_dataset(){
 	int vmj0b = vmj0-1; int vmj1b = vmj1+1;
 
 	// images
-	vuint8** image = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
+	vuint8** image = vui8matrix(vmi0, vmi1, vmj0, vmj1);
 
 	// moyennes
-	vuint8** mean0 = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
-	vuint8** mean1 = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);		
+	vuint8** mean0 = vui8matrix(vmi0, vmi1, vmj0, vmj1);
+	vuint8** mean1 = vui8matrix(vmi0, vmi1, vmj0, vmj1);
 
 	// ecart-types
-	vuint8** std0 = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
-	vuint8** std1 = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);			
+	vuint8** std0 = vui8matrix(vmi0, vmi1, vmj0, vmj1);
+	vuint8** std1 = vui8matrix(vmi0, vmi1, vmj0, vmj1);
 
 	// image de différence
-	vuint8 ** img_diff = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);	
+	vuint8 ** img_diff = vui8matrix(vmi0, vmi1, vmj0, vmj1);
 
 	// image binaire (sortie)
 	vuint8 ** img_bin = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
@@ -353,19 +349,17 @@ void bench_mouvement_morpho_SIMD_dataset(){
     // -- prologue -- //
     // -------------- //
 
-	uint8 ** img_temp = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+	uint8 ** img_temp = ui8matrix(mi0, mi1, mj0, mj1);
 
-	MLoadPGM_ui8matrix("../car3/car_3000.pgm", mi0b, mi1b, mj0b, mj1b, img_temp);
-
-	duplicate_border(mi0, mi1, mj0, mj1, b, img_temp);
+	MLoadPGM_ui8matrix("../car3/car_3000.pgm", mi0, mi1, mj0, mj1, img_temp);
 
 	// transfert ui8matrix à vui8matrix init
-	ui8matrix_to_vui8matrix(card, vmi0b, vmi1b, vmj0b, vmj1b, img_temp, image);
+	ui8matrix_to_vui8matrix(card, vmi0, vmi1, vmj0, vmj1, img_temp, image);
 
 	// initiate mean0 et std0 for first iteration
-	for (int i = vmi0b; i <= vmi1b; ++i)
+	for (int i = vmi0; i <= vmi1; ++i)
 	{
-		for (int j = vmj0b; j <= vmj1b; ++j)
+		for (int j = vmj0; j <= vmj1; ++j)
 		{
 			mean0[i][j] = image[i][j];
 			std0[i][j]  = init_vuint8(VMIN);
@@ -388,9 +382,7 @@ void bench_mouvement_morpho_SIMD_dataset(){
     	// -- chargement de l'image -- //
     	// --------------------------- //
 
-		MLoadPGM_ui8matrix(filename, mi0b, mi1b, mj0b, mj1b, img_temp);
-
-		duplicate_border(mi0, mi1, mj0, mj1, b, img_temp);
+		MLoadPGM_ui8matrix(filename, mi0, mi1, mj0, mj1, img_temp);
 
 		// transfert ui8matrix à vui8matrix init
 		ui8matrix_to_vui8matrix(card, vmi0b, vmi1b, vmj0b, vmj1b, img_temp, image);
@@ -401,23 +393,23 @@ void bench_mouvement_morpho_SIMD_dataset(){
 	    // -- traitements -- //
 	    // ----------------- //
 
-		CHRONO(SigmaDelta_step1_simd(vmi0b, vmi1b, vmj0b, vmj1b, mean0, mean1, image), cycles_step1);
+		CHRONO(SigmaDelta_step1_simd(vmi0, vmi1, vmj0, vmj1, mean0, mean1, image), cycles_step1);
 		time_step1 = (double)(cycles_step1/CLK_PROC);
 		time_step1 *= 1000;
 
-		CHRONO(SigmaDelta_step2_simd(vmi0b, vmi1b, vmj0b, vmj1b, image, mean1, img_diff), cycles_step2);
+		CHRONO(SigmaDelta_step2_simd(vmi0, vmi1, vmj0, vmj1, image, mean1, img_diff), cycles_step2);
 		time_step2 = (double)(cycles_step2/CLK_PROC);
 		time_step2 *= 1000;
 
-		CHRONO(SigmaDelta_step3_simd(vmi0b, vmi1b, vmj0b, vmj1b, std0, std1, img_diff), cycles_step3);
+		CHRONO(SigmaDelta_step3_simd(vmi0, vmi1, vmj0, vmj1, std0, std1, img_diff), cycles_step3);
 		time_step3 = (double)(cycles_step3/CLK_PROC);
 		time_step3 *= 1000;
 
-		CHRONO(SigmaDelta_step4_simd( vmi0b, vmi1b, vmj0b, vmj1b, std1, img_diff, img_bin), cycles_step4);
+		CHRONO(SigmaDelta_step4_simd(vmi0, vmi1, vmj0, vmj1, std1, img_diff, img_bin), cycles_step4);
 		time_step4 = (double)(cycles_step4/CLK_PROC);
 		time_step4 *= 1000;
 
-		CHRONO(morpho_3_SIMD(img_bin, img_filtered, tmp1_SIMD, tmp2_SIMD,vmi0, vmi1, vmj0, vmj1), cycles_morpho); 
+		CHRONO(morpho_3_SIMD(img_bin, img_filtered, tmp1_SIMD, tmp2_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_morpho); 
 		time_morpho = (double)(cycles_morpho/CLK_PROC);
 		time_morpho *= 1000;
 
@@ -427,8 +419,6 @@ void bench_mouvement_morpho_SIMD_dataset(){
 
 		cycles_dataset += cycles_total/(WIDTH*HEIGHT);
 		time_dataset += time_total;
-		// DEBIT DATASET PAS TROP DE SENS ICI ?
-
 	}
 
 	BENCH(printf("\nTotal dataset :")); BENCH(puts(""));
@@ -441,17 +431,21 @@ void bench_mouvement_morpho_SIMD_dataset(){
 	// -- free -- //
 	// ---------- //
 
-	free_vui8matrix(image, vmi0b, vmi1b, vmj0b, vmj1b);
+	free_vui8matrix(image, vmi0, vmi1, vmj0, vmj1);
 
-	free_vui8matrix(mean0, vmi0b, vmi1b, vmj0b, vmj1b);
-	free_vui8matrix(mean1, vmi0b, vmi1b, vmj0b, vmj1b);
+	free_vui8matrix(mean0, vmi0, vmi1, vmj0, vmj1);
+	free_vui8matrix(mean1, vmi0, vmi1, vmj0, vmj1);
 
-	free_vui8matrix(std0, vmi0b, vmi1b, vmj0b, vmj1b);
-	free_vui8matrix(std1, vmi0b, vmi1b, vmj0b, vmj1b);
+	free_vui8matrix(std0, vmi0, vmi1, vmj0, vmj1);
+	free_vui8matrix(std1, vmi0, vmi1, vmj0, vmj1);
 
-	free_vui8matrix(img_diff, vmi0b, vmi1b, vmj0b, vmj1b);
+	free_vui8matrix(img_diff, vmi0, vmi1, vmj0, vmj1);
+
 	free_vui8matrix(img_bin, vmi0b, vmi1b, vmj0b, vmj1b);
 	free_vui8matrix(img_filtered, vmi0b, vmi1b, vmj0b, vmj1b);
+
+	free_vui8matrix(tmp1_SIMD, vmi0b, vmi1b, vmj0b, vmj1b);
+	free_vui8matrix(tmp2_SIMD, vmi0b, vmi1b, vmj0b, vmj1b);
 }
 
 void bench_mouvement_morpho_SIMD_graphic(){
@@ -483,19 +477,20 @@ void bench_mouvement_morpho_SIMD_graphic(){
 	int card = card_vuint8(); // 16
 
     // calcul cpp
-	double cycles_total, cycles_total_full_opti, cycles_step1, cycles_step2, cycles_step3, cycles_step4, cycles_morpho_3, cycles_morpho_3_opti;
+	double cycles_total, cycles_total_fusion_unroll, cycles_step1, cycles_step2, cycles_step3, cycles_step4, cycles_morpho_3, cycles_morpho_3_unroll;
+
 	// calcul temps
-	double time_total, time_total_full_opti, time_step1, time_step2, time_step3, time_step4, time_morpho_3, time_morpho_3_opti;
+	double time_total, time_total_fusion_unroll, time_step1, time_step2, time_step3, time_step4, time_morpho_3, time_morpho_3_unroll;
 
 	// calcul debit
-	double debit_total, debit_total_full_opti, debit_morpho_3, debit_morpho_3_opti;
+	double debit_total, debit_total_fusion_unroll, debit_morpho_3, debit_morpho_3_unroll;
 
     puts("=========================================");
 	puts("=== benchmark mouvement SIMD graphics ===");
 	puts("=========================================");
 
     // 1 for 3x3 / 2 for 5x5
-    b = 2; 
+    b = 1; 
     
     // Dimension initial des matrices générés
     int height = 32;
@@ -551,12 +546,13 @@ void bench_mouvement_morpho_SIMD_graphic(){
 
 		// image de différence
 		vuint8 ** img_diff 		= vui8matrix(vmi0, vmi1, vmj0, vmj1);	
-        vuint8 ** tmp1_SIMD     = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
-        vuint8 ** tmp2_SIMD     = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
-        vuint8 ** tmp3_SIMD     = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
+
 		// image binaire (sortie)
 		vuint8 ** img_bin 		= vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
         vuint8 ** img_filtered  = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
+
+        vuint8 ** tmp1_SIMD     = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
+        vuint8 ** tmp2_SIMD     = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
 
 	   	for (int i = mi0; i <= mi1; ++i)
 	   	{
@@ -573,8 +569,6 @@ void bench_mouvement_morpho_SIMD_graphic(){
 	   			img_temp[i][j]  		= val2; 
 	   		}
 	   	}
-
-
 
 		// transfert ui8matrix à vui8matrix init
 		ui8matrix_to_vui8matrix(card, vmi0, vmi1, vmj0, vmj1, image_init, image);
@@ -605,14 +599,13 @@ void bench_mouvement_morpho_SIMD_graphic(){
 		CHRONO(SigmaDelta_step3_simd(vmi0, vmi1, vmj0, vmj1, std0, std1, img_diff), cycles_step3);
 		time_step3 = (double)(cycles_step3/CLK_PROC);
 
-		CHRONO(SigmaDelta_step4_simd( vmi0, vmi0, vmj0, vmj1, std1, img_diff, img_bin), cycles_step4);
+		CHRONO(SigmaDelta_step4_simd(vmi0, vmi0, vmj0, vmj1, std1, img_diff, img_bin), cycles_step4);
 		time_step4 = (double)(cycles_step4/CLK_PROC);
 
        	duplicate_vborder(vmi0, vmi1, vmj0, vmj1, b, img_bin);
 		
 	    CHRONO(morpho_3_SIMD(img_bin, img_filtered, tmp1_SIMD, tmp2_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_morpho_3);
         time_morpho_3 = (double)(cycles_morpho_3/CLK_PROC);
-		
 
 		cycles_total = cycles_step1 + cycles_step2 + cycles_step3 + cycles_step4 + cycles_morpho_3;
 		time_total   = time_step1   + time_step2   + time_step3   + time_step4 + time_morpho_3;
@@ -624,18 +617,20 @@ void bench_mouvement_morpho_SIMD_graphic(){
 		fprintf(fichier_csv, "%f;", debit_total);
 
 		// FULL OPTI
-		CHRONO(SigmaDelta_simd_full_opti(vmi0, vmi1, vmj0, vmj1, image, mean0, mean1, std0, std1, img_bin), cycles_total_full_opti);
-		time_total_full_opti = (double)(cycles_total_full_opti/CLK_PROC);
+		CHRONO(SigmaDelta_simd_fusion_unroll(vmi0, vmi1, vmj0, vmj1, image, mean0, mean1, std0, std1, img_bin), cycles_total_fusion_unroll);
+		time_total_fusion_unroll = (double)(cycles_total_fusion_unroll/CLK_PROC);
 
 		duplicate_vborder(vmi0, vmi1, vmj0, vmj1, b, img_bin);
-		CHRONO(morpho_3_SIMD_opti(img_bin, img_filtered, tmp1_SIMD, tmp2_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_morpho_3_opti);
-        time_morpho_3_opti = (double)(cycles_morpho_3_opti/CLK_PROC);
-		cycles_total = cycles_morpho_3_opti + cycles_total_full_opti;
-		time_total   = time_morpho_3 + time_total_full_opti;
+
+		CHRONO(morpho_3_SIMD_unroll(img_bin, img_filtered, tmp1_SIMD, tmp2_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_morpho_3_unroll);
+        time_morpho_3_unroll = (double)(cycles_morpho_3_unroll/CLK_PROC);
+
+		cycles_total = cycles_morpho_3_unroll + cycles_total_fusion_unroll;
+		time_total   = time_morpho_3 + time_total_fusion_unroll;
 		debit_total  = (width*height) / time_total;
 
 		fprintf(fichier_csv, ";%f;", time_total*1000);
-		fprintf(fichier_csv, "%f;", cycles_total/(height*width));
+		fprintf(fichier_csv, "%f;" , cycles_total/(height*width));
 		fprintf(fichier_csv, "%f\n", debit_total);
 
 		// ---------- //
@@ -644,6 +639,7 @@ void bench_mouvement_morpho_SIMD_graphic(){
 
 		free_ui8matrix(image_init, mi0, mi1, mj0, mj1);
 		free_ui8matrix(img_temp, mi0, mi1, mj0, mj1);
+
 		free_vui8matrix(image, vmi0, vmi1, vmj0, vmj1);
 		
 		free_vui8matrix(mean0, vmi0, vmi1, vmj0, vmj1);
@@ -654,12 +650,11 @@ void bench_mouvement_morpho_SIMD_graphic(){
 		
 		free_vui8matrix(img_diff, vmi0, vmi1, vmj0, vmj1);
 		
-		// free_vui8matrix(img_bin, vmi0, vmi1, vmj0, vmj1);
+		free_vui8matrix(img_bin, vmi0b, vmi1b, vmj0b, vmj1b);
+		free_vui8matrix(img_filtered, vmi0b, vmi1b, vmj0b, vmj1b);
 
-		// free_vui8matrix(img_filtered, vmi0, vmi1, vmj0, vmj1);
-		// free_vui8matrix(tmp1_SIMD, vmi0, vmi1, vmj0, vmj1);
-		// free_vui8matrix(tmp2_SIMD, vmi0, vmi1, vmj0, vmj1);
-		// free_vui8matrix(tmp3_SIMD, vmi0, vmi1, vmj0, vmj1);
+		free_vui8matrix(tmp1_SIMD, vmi0b, vmi1b, vmj0b, vmj1b);
+		free_vui8matrix(tmp2_SIMD, vmi0b, vmi1b, vmj0b, vmj1b);
     }
 
     fclose(fichier_csv);
