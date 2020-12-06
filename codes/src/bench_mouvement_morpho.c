@@ -372,12 +372,12 @@ void bench_mouvement_morpho_graphic(){
     char *format = "%d ";
 
     // calcul cpp
-	double cycles_total, cycles_total_full_opti, cycles_step1, cycles_step2, cycles_step3, cycles_step4, cycles_morpho_3, cycles_morpho_3_opti;
+	double cycles_total, cycles_total_full_opti, cycles_step1, cycles_step2, cycles_step3, cycles_step4, cycles_morpho_3, cycles_morpho_3_unroll;
 	// calcul temps
-	double time_total, time_total_full_opti, time_step1, time_step2, time_step3, time_step4, time_morpho_3, time_morpho_3_opti;
+	double time_total, time_total_full_opti, time_step1, time_step2, time_step3, time_step4, time_morpho_3, time_morpho_3_unroll;
 
 	// calcul debit
-	double debit_total, debit_total_full_opti, debit_morpho_3, debit_morpho_3_opti;
+	double debit_total, debit_total_full_opti, debit_morpho_3, debit_morpho_3_unroll;
 
     puts("=========================================");
 	puts("=== benchmark mouvement SIMD graphics ===");
@@ -501,11 +501,11 @@ void bench_mouvement_morpho_graphic(){
 
 		duplicate_border(mi0, mi1, mj0, mj1, b, img_bin);
 
-		CHRONO(morpho_3_opti(img_bin, img_filtered, tmp1, tmp2, mi0, mi1, mj0, mj1), cycles_morpho_3_opti);
-        time_morpho_3_opti = (double)(cycles_morpho_3_opti/CLK_PROC);
+		CHRONO(morpho_3_unroll(img_bin, img_filtered, tmp1, tmp2, mi0, mi1, mj0, mj1), cycles_morpho_3_unroll);
+        time_morpho_3_unroll = (double)(cycles_morpho_3_unroll/CLK_PROC);
 
-		cycles_total = cycles_morpho_3_opti + cycles_total_full_opti;
-		time_total   = time_morpho_3 + time_total_full_opti;
+		cycles_total = cycles_morpho_3_unroll + cycles_total_full_opti;
+		time_total   = time_morpho_3_unroll + time_total_full_opti;
 		debit_total  = (width*height) / time_total;
 
 		fprintf(fichier_csv, ";%f;", time_total*1000);

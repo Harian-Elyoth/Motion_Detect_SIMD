@@ -41,7 +41,7 @@ void gen_img_bin_test_SIMD(type_morpho_t type, type_opti_t OPTI){
         default :
             break;
     }
-    if(type == MORPHO3 && OPTI == PIPELINE_OPTI){
+    if(type == MORPHO3 && OPTI == PIPELINE_FUSION){
         b_test = 2;
     }
     // indices matrices
@@ -202,49 +202,49 @@ void test_unitaire_SIMD(type_morpho_t MORPHO, type_opti_t OPTI){
                     break;
             }
             break;
-        case SIMD_OPTI :
+        case SIMD_UNROLL :
             switch(MORPHO){
                 case EROSION3 : 
-                    erosion_3_SIMD_opti(vimg_bin_test, vimg_filtered_test , vmi0_test, vmi1_test, vmj0_test, vmj1_test);
+                    erosion_3_SIMD_unroll(vimg_bin_test, vimg_filtered_test , vmi0_test, vmi1_test, vmj0_test, vmj1_test);
                     break;
                 case EROSION5 :
-                    erosion_5_SIMD_opti(vimg_bin_test, vimg_filtered_test , vmi0_test, vmi1_test, vmj0_test, vmj1_test);
+                    erosion_5_SIMD_unroll(vimg_bin_test, vimg_filtered_test , vmi0_test, vmi1_test, vmj0_test, vmj1_test);
                     break;
                 case DILATATION3 : 
-                    dilatation_3_SIMD_opti(vimg_bin_test, vimg_filtered_test , vmi0_test, vmi1_test, vmj0_test, vmj1_test);
+                    dilatation_3_SIMD_unroll(vimg_bin_test, vimg_filtered_test , vmi0_test, vmi1_test, vmj0_test, vmj1_test);
                     break;
                 case DILATATION5 :
-                    dilatation_5_SIMD_opti(vimg_bin_test, vimg_filtered_test , vmi0_test, vmi1_test, vmj0_test, vmj1_test);
+                    dilatation_5_SIMD_unroll(vimg_bin_test, vimg_filtered_test , vmi0_test, vmi1_test, vmj0_test, vmj1_test);
                     break;
                 case MORPHO3 :
-                    morpho_3_SIMD_opti(vimg_bin_test, vimg_filtered_test, tmp1_SIMD, tmp2_SIMD, vmi0_test, vmi1_test, vmj0_test, vmj1_test);
+                    morpho_3_SIMD_unroll(vimg_bin_test, vimg_filtered_test, tmp1_SIMD, tmp2_SIMD, vmi0_test, vmi1_test, vmj0_test, vmj1_test);
                     break;
                 case MORPHO5 :
-                    morpho_5_SIMD_opti(vimg_bin_test, vimg_filtered_test, tmp1_SIMD, tmp2_SIMD, vmi0_test, vmi1_test, vmj0_test, vmj1_test);
+                    morpho_5_SIMD_unroll(vimg_bin_test, vimg_filtered_test, tmp1_SIMD, tmp2_SIMD, vmi0_test, vmi1_test, vmj0_test, vmj1_test);
                     break;
                 default :
                     break;
             }
             break;
-        case SIMD_OPTI_OMP :
+        case SIMD_UNROLL_OMP :
             switch(MORPHO){
                 case EROSION3 : 
-                    erosion_3_SIMD_opti_omp(vimg_bin_test, vimg_filtered_test , vmi0_test, vmi1_test, vmj0_test, vmj1_test);
+                    erosion_3_SIMD_unroll_omp(vimg_bin_test, vimg_filtered_test , vmi0_test, vmi1_test, vmj0_test, vmj1_test);
                     break;
                 case EROSION5 :
-                    erosion_5_SIMD_opti_omp(vimg_bin_test, vimg_filtered_test , vmi0_test, vmi1_test, vmj0_test, vmj1_test);
+                    erosion_5_SIMD_unroll_omp(vimg_bin_test, vimg_filtered_test , vmi0_test, vmi1_test, vmj0_test, vmj1_test);
                     break;
                 case DILATATION3 : 
-                    dilatation_3_SIMD_opti_omp(vimg_bin_test, vimg_filtered_test , vmi0_test, vmi1_test, vmj0_test, vmj1_test);
+                    dilatation_3_SIMD_unroll_omp(vimg_bin_test, vimg_filtered_test , vmi0_test, vmi1_test, vmj0_test, vmj1_test);
                     break;
                 case DILATATION5 :
-                    dilatation_5_SIMD_opti_omp(vimg_bin_test, vimg_filtered_test , vmi0_test, vmi1_test, vmj0_test, vmj1_test);
+                    dilatation_5_SIMD_unroll_omp(vimg_bin_test, vimg_filtered_test , vmi0_test, vmi1_test, vmj0_test, vmj1_test);
                     break;
                 case MORPHO3 :
-                    morpho_3_SIMD_opti_omp(vimg_bin_test, vimg_filtered_test, tmp1_SIMD, tmp2_SIMD, vmi0_test, vmi1_test, vmj0_test, vmj1_test);
+                    morpho_3_SIMD_unroll_omp(vimg_bin_test, vimg_filtered_test, tmp1_SIMD, tmp2_SIMD, vmi0_test, vmi1_test, vmj0_test, vmj1_test);
                     break;
                 case MORPHO5 :
-                    morpho_5_SIMD_opti_omp(vimg_bin_test, vimg_filtered_test, tmp1_SIMD, tmp2_SIMD, vmi0_test, vmi1_test, vmj0_test, vmj1_test);
+                    morpho_5_SIMD_unroll_omp(vimg_bin_test, vimg_filtered_test, tmp1_SIMD, tmp2_SIMD, vmi0_test, vmi1_test, vmj0_test, vmj1_test);
                     break;
                 default :
                     break;
@@ -253,14 +253,14 @@ void test_unitaire_SIMD(type_morpho_t MORPHO, type_opti_t OPTI){
         case PIPELINE :
             morpho_3_SIMD_pipeline(vimg_bin_test, tmp1_SIMD, tmp2_SIMD, tmp3_SIMD, vimg_filtered_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test);
             break;
-        case PIPELINE_OPTI :
-            morpho_3_SIMD_pipeline_opti(vimg_bin_test, tmp1_SIMD, tmp2_SIMD, vimg_filtered_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test);
+        case PIPELINE_FUSION :
+            morpho_3_SIMD_pipeline_fusion(vimg_bin_test, tmp1_SIMD, tmp2_SIMD, vimg_filtered_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test);
             break;
         case PIPELINE_OMP :
             morpho_3_SIMD_pipeline_omp(vimg_bin_test, tmp1_SIMD, tmp2_SIMD, tmp3_SIMD, vimg_filtered_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test);
             break;
-        case PIPELINE_OPTI_OMP :
-            morpho_3_SIMD_pipeline_opti_omp(vimg_bin_test, tmp1_SIMD, tmp2_SIMD, vimg_filtered_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test);
+        case PIPELINE_FUSION_OMP :
+            morpho_3_SIMD_pipeline_fusion_omp(vimg_bin_test, tmp1_SIMD, tmp2_SIMD, vimg_filtered_test, vmi0_test, vmi1_test, vmj0_test, vmj1_test);
             break;
         default :
             break;
@@ -298,7 +298,7 @@ int equal_SIMD(uint8 ** A, uint8 ** B, int mi0, int mi1, int mj0, int mj1){
 
 void tests_unitaires_SIMD(){
     printf("===============================\n");
-    display_type_opti(SIMD);puts("");
+    display_type_unroll(SIMD);puts("");
     test_unitaire_SIMD(EROSION3, SIMD);
     test_unitaire_SIMD(EROSION5, SIMD);
     test_unitaire_SIMD(DILATATION3, SIMD);
@@ -306,19 +306,19 @@ void tests_unitaires_SIMD(){
     test_unitaire_SIMD(MORPHO3, SIMD);
     test_unitaire_SIMD(MORPHO5, SIMD);
     printf("===============================\n");
-    display_type_opti(SIMD_OPTI);puts("");
-    test_unitaire_SIMD(EROSION3, SIMD_OPTI);
-    test_unitaire_SIMD(EROSION5, SIMD_OPTI);
-    test_unitaire_SIMD(DILATATION3, SIMD_OPTI);
-    test_unitaire_SIMD(DILATATION5, SIMD_OPTI);
-    test_unitaire_SIMD(MORPHO3, SIMD_OPTI);
-    test_unitaire_SIMD(MORPHO5, SIMD_OPTI);
+    display_type_unroll(SIMD_UNROLL);puts("");
+    test_unitaire_SIMD(EROSION3, SIMD_UNROLL);
+    test_unitaire_SIMD(EROSION5, SIMD_UNROLL);
+    test_unitaire_SIMD(DILATATION3, SIMD_UNROLL);
+    test_unitaire_SIMD(DILATATION5, SIMD_UNROLL);
+    test_unitaire_SIMD(MORPHO3, SIMD_UNROLL);
+    test_unitaire_SIMD(MORPHO5, SIMD_UNROLL);
     printf("===============================\n");
-    display_type_opti(PIPELINE);puts("");
+    display_type_unroll(PIPELINE);puts("");
     test_unitaire_SIMD(MORPHO3, PIPELINE);
     printf("===============================\n");
-    display_type_opti(PIPELINE_OPTI);puts("");
-    test_unitaire_SIMD(MORPHO3, PIPELINE_OPTI);
+    display_type_unroll(PIPELINE_FUSION);puts("");
+    test_unitaire_SIMD(MORPHO3, PIPELINE_FUSION);
     printf("===============================\n");
 
 }
@@ -396,8 +396,8 @@ void ui8matrix_to_vui8matrix_wb_morpho(int card, int vmi0b, int vmi1b, int vmj0b
 
 void main_test_morpho_SIMD(int argc, char *argv[])
 {
-    test_unitaire_SIMD(MORPHO3, PIPELINE_OPTI);
-    //test_unitaire_SIMD(DILATATION5, SIMD_OPTI);
+    test_unitaire_SIMD(MORPHO3, PIPELINE_FUSION);
+    //test_unitaire_SIMD(DILATATION5, SIMD_UNROLL);
     //tests_unitaires_SIMD();
     
 }

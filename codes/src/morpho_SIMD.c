@@ -106,7 +106,7 @@ void erosion_3_SIMD_omp(vuint8 ** vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0
     }
 }
 
-void erosion_3_SIMD_opti(vuint8 ** vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0, int vmj1){
+void erosion_3_SIMD_unroll(vuint8 ** vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0, int vmj1){
     //vecteur aligné
     vuint8 a0, a1, a4, a7, a10;
     vuint8 b0, b1, b4, b7, b10;
@@ -239,7 +239,7 @@ void erosion_3_SIMD_opti(vuint8 ** vX, vuint8 ** vY, int vmi0, int vmi1, int vmj
     }
 }
 
-void erosion_3_SIMD_opti_omp(vuint8 ** vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0, int vmj1){
+void erosion_3_SIMD_unroll_omp(vuint8 ** vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0, int vmj1){
     //vecteur aligné
     vuint8 a0, a1, a4, a7, a10;
     vuint8 b0, b1, b4, b7, b10;
@@ -541,7 +541,7 @@ void erosion_5_SIMD_omp(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0,
     }
 }
 
-void erosion_5_SIMD_opti(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0, int vmj1) {
+void erosion_5_SIMD_unroll(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0, int vmj1) {
     
     //vecteur aligné
     vuint8 a0, a3, a8, a13, a18, a23, a26;
@@ -1194,7 +1194,7 @@ void erosion_5_SIMD_opti(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0
     }
 }
 
-void erosion_5_SIMD_opti_omp(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0, int vmj1) {
+void erosion_5_SIMD_unroll_omp(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0, int vmj1) {
     
     //vecteur aligné
     vuint8 a0, a3, a8, a13, a18, a23, a26;
@@ -1952,7 +1952,7 @@ void dilatation_3_SIMD_omp(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int vm
     }
 }
 
-void dilatation_3_SIMD_opti(vuint8 ** vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0, int vmj1){
+void dilatation_3_SIMD_unroll(vuint8 ** vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0, int vmj1){
 
 
     //vecteur aligné
@@ -2087,7 +2087,7 @@ void dilatation_3_SIMD_opti(vuint8 ** vX, vuint8 ** vY, int vmi0, int vmi1, int 
     }
 }
 
-void dilatation_3_SIMD_opti_omp(vuint8 ** vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0, int vmj1){
+void dilatation_3_SIMD_unroll_omp(vuint8 ** vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0, int vmj1){
 
 
     //vecteur aligné
@@ -2390,7 +2390,7 @@ void dilatation_5_SIMD_omp(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int vm
     }
 }
 
-void dilatation_5_SIMD_opti(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0, int vmj1) {
+void dilatation_5_SIMD_unroll(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0, int vmj1) {
     
        
     //vecteur aligné
@@ -3039,7 +3039,7 @@ void dilatation_5_SIMD_opti(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int v
     }
 }
 
-void dilatation_5_SIMD_opti_omp(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0, int vmj1) {
+void dilatation_5_SIMD_unroll_omp(vuint8 **vX, vuint8 ** vY, int vmi0, int vmi1, int vmj0, int vmj1) {
     
        
     //vecteur aligné
@@ -3704,20 +3704,20 @@ void morpho_3_SIMD_omp(vuint8 **vX, vuint8 ** vY, vuint8 ** tmp1, vuint8 ** tmp2
     erosion_3_SIMD_omp(tmp1, vY, vmi0, vmi1, vmj0, vmj1);
 }
 
-void morpho_3_SIMD_opti(vuint8 **vX, vuint8 ** vY, vuint8 ** tmp1, vuint8 ** tmp2, int vmi0, int vmi1, int vmj0, int vmj1) {
+void morpho_3_SIMD_unroll(vuint8 **vX, vuint8 ** vY, vuint8 ** tmp1, vuint8 ** tmp2, int vmi0, int vmi1, int vmj0, int vmj1) {
 
-    erosion_3_SIMD_opti(vX, tmp1, vmi0, vmi1, vmj0, vmj1);
-    dilatation_3_SIMD_opti(tmp1, tmp2, vmi0, vmi1, vmj0, vmj1);
-    dilatation_3_SIMD_opti(tmp2, tmp1, vmi0, vmi1, vmj0, vmj1);
-    erosion_3_SIMD_opti(tmp1, vY, vmi0, vmi1, vmj0, vmj1);
+    erosion_3_SIMD_unroll(vX, tmp1, vmi0, vmi1, vmj0, vmj1);
+    dilatation_3_SIMD_unroll(tmp1, tmp2, vmi0, vmi1, vmj0, vmj1);
+    dilatation_3_SIMD_unroll(tmp2, tmp1, vmi0, vmi1, vmj0, vmj1);
+    erosion_3_SIMD_unroll(tmp1, vY, vmi0, vmi1, vmj0, vmj1);
 }
 
-void morpho_3_SIMD_opti_omp(vuint8 **vX, vuint8 ** vY, vuint8 ** tmp1, vuint8 ** tmp2, int vmi0, int vmi1, int vmj0, int vmj1) {
+void morpho_3_SIMD_unroll_omp(vuint8 **vX, vuint8 ** vY, vuint8 ** tmp1, vuint8 ** tmp2, int vmi0, int vmi1, int vmj0, int vmj1) {
 
-    erosion_3_SIMD_opti_omp(vX, tmp1, vmi0, vmi1, vmj0, vmj1);
-    dilatation_3_SIMD_opti_omp(tmp1, tmp2, vmi0, vmi1, vmj0, vmj1);
-    dilatation_3_SIMD_opti_omp(tmp2, tmp1, vmi0, vmi1, vmj0, vmj1);
-    erosion_3_SIMD_opti_omp(tmp1, vY, vmi0, vmi1, vmj0, vmj1);
+    erosion_3_SIMD_unroll_omp(vX, tmp1, vmi0, vmi1, vmj0, vmj1);
+    dilatation_3_SIMD_unroll_omp(tmp1, tmp2, vmi0, vmi1, vmj0, vmj1);
+    dilatation_3_SIMD_unroll_omp(tmp2, tmp1, vmi0, vmi1, vmj0, vmj1);
+    erosion_3_SIMD_unroll_omp(tmp1, vY, vmi0, vmi1, vmj0, vmj1);
 }
 
 void morpho_5_SIMD(vuint8 **vX, vuint8 **vY, vuint8 ** tmp1, vuint8 ** tmp2, int vmi0, int vmi1, int vmj0, int vmj1){
@@ -3746,20 +3746,20 @@ void morpho_5_SIMD_omp(vuint8 **vX, vuint8 **vY, vuint8 ** tmp1, vuint8 ** tmp2,
     erosion_5_SIMD_omp(tmp1, vY, vmi0, vmi1, vmj0, vmj1);
 }
 
-void morpho_5_SIMD_opti(vuint8 **vX, vuint8 **vY, vuint8 ** tmp1, vuint8 ** tmp2, int vmi0, int vmi1, int vmj0, int vmj1){
+void morpho_5_SIMD_unroll(vuint8 **vX, vuint8 **vY, vuint8 ** tmp1, vuint8 ** tmp2, int vmi0, int vmi1, int vmj0, int vmj1){
 
-    erosion_5_SIMD_opti(vX, tmp1, vmi0, vmi1, vmj0, vmj1);
-    dilatation_5_SIMD_opti(tmp1, tmp2, vmi0, vmi1, vmj0, vmj1);
-    dilatation_5_SIMD_opti(tmp2, tmp1, vmi0, vmi1, vmj0, vmj1);
-    erosion_5_SIMD_opti(tmp1, vY, vmi0, vmi1, vmj0, vmj1);
+    erosion_5_SIMD_unroll(vX, tmp1, vmi0, vmi1, vmj0, vmj1);
+    dilatation_5_SIMD_unroll(tmp1, tmp2, vmi0, vmi1, vmj0, vmj1);
+    dilatation_5_SIMD_unroll(tmp2, tmp1, vmi0, vmi1, vmj0, vmj1);
+    erosion_5_SIMD_unroll(tmp1, vY, vmi0, vmi1, vmj0, vmj1);
 }
 
-void morpho_5_SIMD_opti_omp(vuint8 **vX, vuint8 **vY, vuint8 ** tmp1, vuint8 ** tmp2, int vmi0, int vmi1, int vmj0, int vmj1){
+void morpho_5_SIMD_unroll_omp(vuint8 **vX, vuint8 **vY, vuint8 ** tmp1, vuint8 ** tmp2, int vmi0, int vmi1, int vmj0, int vmj1){
 
-    erosion_5_SIMD_opti_omp(vX, tmp1, vmi0, vmi1, vmj0, vmj1);
-    dilatation_5_SIMD_opti_omp(tmp1, tmp2, vmi0, vmi1, vmj0, vmj1);
-    dilatation_5_SIMD_opti_omp(tmp2, tmp1, vmi0, vmi1, vmj0, vmj1);
-    erosion_5_SIMD_opti_omp(tmp1, vY, vmi0, vmi1, vmj0, vmj1);
+    erosion_5_SIMD_unroll_omp(vX, tmp1, vmi0, vmi1, vmj0, vmj1);
+    dilatation_5_SIMD_unroll_omp(tmp1, tmp2, vmi0, vmi1, vmj0, vmj1);
+    dilatation_5_SIMD_unroll_omp(tmp2, tmp1, vmi0, vmi1, vmj0, vmj1);
+    erosion_5_SIMD_unroll_omp(tmp1, vY, vmi0, vmi1, vmj0, vmj1);
 }
 
 void morpho_3_SIMD_pipeline(vuint8 **vX, vuint8 **tmp1, vuint8 **tmp2, vuint8 **tmp3, vuint8 ** vY, int vmi0, int vmi1, int vmj0, int vmj1){
@@ -4225,7 +4225,7 @@ void morpho_3_SIMD_pipeline_omp(vuint8 **vX, vuint8 **tmp1, vuint8 **tmp2, vuint
     erosion_3_SIMD(tmp1, vY, vmi1 - 2, vmi1, vmj0, vmj1);
 }
 
-void morpho_3_SIMD_pipeline_opti(vuint8 **vX, vuint8 **tmp1, vuint8 **tmp2, vuint8 ** vY, int vmi0, int vmi1, int vmj0, int vmj1){
+void morpho_3_SIMD_pipeline_fusion(vuint8 **vX, vuint8 **tmp1, vuint8 **tmp2, vuint8 ** vY, int vmi0, int vmi1, int vmj0, int vmj1){
 
     //DEBUG(printf("vmi0 = %d, vmi1 = %d, vmj0 = %d, vmj1 = %d\n", vmi0, vmi1, vmj0, vmj1));
 
@@ -4241,10 +4241,10 @@ void morpho_3_SIMD_pipeline_opti(vuint8 **vX, vuint8 **tmp1, vuint8 **tmp2, vuin
     //printf("1\n");
 
     // 1ere erosion sur les 3 premieres lignes
-    erosion_3_SIMD_opti(vX, tmp2, vmi0, vmi0 + 2, vmj0, vmj1);
+    erosion_3_SIMD_unroll(vX, tmp2, vmi0, vmi0 + 2, vmj0, vmj1);
     //printf("VOILA\n");
     // dilation 5 sur la 1ere ligne
-    dilatation_5_SIMD_opti(tmp2, tmp1, vmi0, vmi0, vmj0, vmj1);
+    dilatation_5_SIMD_unroll(tmp2, tmp1, vmi0, vmi0, vmj0, vmj1);
 
     //printf("2\n");
 
@@ -4282,10 +4282,10 @@ void morpho_3_SIMD_pipeline_opti(vuint8 **vX, vuint8 **tmp1, vuint8 **tmp2, vuin
         // PROLOGUE BOUCLE
 
         // 1ere erosion sur la ligne 3 et la colonne 2
-        erosion_3_SIMD_opti(vX, tmp2, i, i, j - 2, j - 1);
+        erosion_3_SIMD_unroll(vX, tmp2, i, i, j - 2, j - 1);
 
         // dilation sur la ...
-        dilatation_5_SIMD_opti(tmp2, tmp1, i - 2, i - 2, j - 2, j - 2); //<3
+        dilatation_5_SIMD_unroll(tmp2, tmp1, i - 2, i - 2, j - 2, j - 2); //<3
 
         // on considère i et j pour la ligne jaune
 
@@ -4459,7 +4459,7 @@ void morpho_3_SIMD_pipeline_opti(vuint8 **vX, vuint8 **tmp1, vuint8 **tmp2, vuin
         //printf("4\n");
 
         // erosion 3 sur l'avant avant avant derniere ligne et les 2 dernières colonnes de l'iteration courante
-        erosion_3_SIMD_opti(tmp1, vY, i - 3, i - 3, vmj1 - 1, vmj1);
+        erosion_3_SIMD_unroll(tmp1, vY, i - 3, i - 3, vmj1 - 1, vmj1);
     }
 
     // EPILOGUE GLOBAL
@@ -4467,15 +4467,15 @@ void morpho_3_SIMD_pipeline_opti(vuint8 **vX, vuint8 **tmp1, vuint8 **tmp2, vuin
     //printf("5\n");
 
     // dilatation 5 sur les 2 dernieres lignes
-    dilatation_5_SIMD_opti(tmp2, tmp1, vmi1 - 1, vmi1, vmj0, vmj1);
+    dilatation_5_SIMD_unroll(tmp2, tmp1, vmi1 - 1, vmi1, vmj0, vmj1);
 
     //printf("6\n");
 
     // erosion 3 sur les 3 dernieres lignes
-    erosion_3_SIMD_opti(tmp1, vY, vmi1 - 2, vmi1, vmj0, vmj1);
+    erosion_3_SIMD_unroll(tmp1, vY, vmi1 - 2, vmi1, vmj0, vmj1);
 }
 
-void morpho_3_SIMD_pipeline_opti_omp(vuint8 **vX, vuint8 **tmp1, vuint8 **tmp2, vuint8 ** vY, int vmi0, int vmi1, int vmj0, int vmj1){
+void morpho_3_SIMD_pipeline_fusion_omp(vuint8 **vX, vuint8 **tmp1, vuint8 **tmp2, vuint8 ** vY, int vmi0, int vmi1, int vmj0, int vmj1){
 
     //DEBUG(printf("vmi0 = %d, vmi1 = %d, vmj0 = %d, vmj1 = %d\n", vmi0, vmi1, vmj0, vmj1));
 
@@ -4491,10 +4491,10 @@ void morpho_3_SIMD_pipeline_opti_omp(vuint8 **vX, vuint8 **tmp1, vuint8 **tmp2, 
     //printf("1\n");
 
     // 1ere erosion sur les 3 premieres lignes
-    erosion_3_SIMD_opti(vX, tmp2, vmi0, vmi0 + 2, vmj0, vmj1);
+    erosion_3_SIMD_unroll(vX, tmp2, vmi0, vmi0 + 2, vmj0, vmj1);
     //printf("VOILA\n");
     // dilation 5 sur la 1ere ligne
-    dilatation_5_SIMD_opti(tmp2, tmp1, vmi0, vmi0, vmj0, vmj1);
+    dilatation_5_SIMD_unroll(tmp2, tmp1, vmi0, vmi0, vmj0, vmj1);
 
     //printf("2\n");
 
@@ -4533,10 +4533,10 @@ void morpho_3_SIMD_pipeline_opti_omp(vuint8 **vX, vuint8 **tmp1, vuint8 **tmp2, 
         // PROLOGUE BOUCLE
 
         // 1ere erosion sur la ligne 3 et la colonne 2
-        erosion_3_SIMD_opti(vX, tmp2, i, i, j - 2, j - 1);
+        erosion_3_SIMD_unroll(vX, tmp2, i, i, j - 2, j - 1);
 
         // dilation sur la ...
-        dilatation_5_SIMD_opti(tmp2, tmp1, i - 2, i - 2, j - 2, j - 2); //<3
+        dilatation_5_SIMD_unroll(tmp2, tmp1, i - 2, i - 2, j - 2, j - 2); //<3
 
         // on considère i et j pour la ligne jaune
 
@@ -4710,7 +4710,7 @@ void morpho_3_SIMD_pipeline_opti_omp(vuint8 **vX, vuint8 **tmp1, vuint8 **tmp2, 
         //printf("4\n");
 
         // erosion 3 sur l'avant avant avant derniere ligne et les 2 dernières colonnes de l'iteration courante
-        erosion_3_SIMD_opti(tmp1, vY, i - 3, i - 3, vmj1 - 1, vmj1);
+        erosion_3_SIMD_unroll(tmp1, vY, i - 3, i - 3, vmj1 - 1, vmj1);
     }
 
     // EPILOGUE GLOBAL
@@ -4718,11 +4718,11 @@ void morpho_3_SIMD_pipeline_opti_omp(vuint8 **vX, vuint8 **tmp1, vuint8 **tmp2, 
     //printf("5\n");
 
     // dilatation 5 sur les 2 dernieres lignes
-    dilatation_5_SIMD_opti(tmp2, tmp1, vmi1 - 1, vmi1, vmj0, vmj1);
+    dilatation_5_SIMD_unroll(tmp2, tmp1, vmi1 - 1, vmi1, vmj0, vmj1);
 
     //printf("6\n");
 
     // erosion 3 sur les 3 dernieres lignes
-    erosion_3_SIMD_opti(tmp1, vY, vmi1 - 2, vmi1, vmj0, vmj1);
+    erosion_3_SIMD_unroll(tmp1, vY, vmi1 - 2, vmi1, vmj0, vmj1);
 }
 
