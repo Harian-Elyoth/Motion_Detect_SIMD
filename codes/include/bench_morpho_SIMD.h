@@ -31,7 +31,7 @@ extern "C" {
 #endif
 
 
-
+void bench_morpho_SIMD_graphic();
 void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPTI, int fract);
 // fonction principale     
 void main_bench_morpho_SIMD(int argc, char *argv[]);

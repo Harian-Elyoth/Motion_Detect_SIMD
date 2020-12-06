@@ -29,7 +29,7 @@
 #pragma message ("C++")
 extern "C" {
 #endif
-
+void bench_mouvement_morpho_SIMD_graphic();
 void bench_mouvement_morpho_SIMD_car(bool is_visual);
 void bench_mouvement_morpho_SIMD_dataset();
 

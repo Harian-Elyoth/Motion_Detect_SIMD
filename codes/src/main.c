@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
     // main_bench_mouvement_morpho(argc, argv);
 
     // main_test_morpho_SIMD(argc, argv);
-    main_bench_morpho_SIMD(argc, argv);
+    // main_bench_morpho_SIMD(argc, argv);
 
     // main_test_mouvement_morpho(argc, argv);
     // main_bench_mouvement_morpho(argc, argv);
@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
     // main_bench_mouvement_SIMD(argc, argv);
 
     // main_test_mouvement_morpho_SIMD(argc, argv);
-    // main_bench_mouvement_morpho_SIMD(argc, argv);
+    main_bench_mouvement_morpho_SIMD(argc, argv);
 
     return 0;   
 }
