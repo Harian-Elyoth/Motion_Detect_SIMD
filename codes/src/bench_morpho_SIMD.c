@@ -902,9 +902,11 @@ void bench_morpho_SIMD_graphic(){
 
 	// init fichier csv
 	FILE* fichier_csv = fopen("csv_files/perf_morpho_SIMD.csv","w");
-	fprintf(fichier_csv, ";%s;;;;;%s;;;;;%s;;;;;%s;;;;;%s;;;;;%s;;;;;%s;;;;;%s\n", "Morpho 3 SIMD", "Morpho 3 SIMD OMP", "Morpho 3 SIMD UNROLL", "Morpho 3 SIMD UNROLL OMP", "Morpho 3 SIMD PIPELINE", "Morpho 3 SIMD PIPELINE OMP", "Morpho 3 SIMD PIPELINE UNROLL", "Morpho 3 SIMD PIPELINE UNROLL OMP");
+	fprintf(fichier_csv, ";%s;;;;%s;;;;%s;;;;%s;;;;%s;;;;%s;;;;%s;;;;%s;;;;%s;;;;%s\n", "Morpho 3 SIMD", "Morpho 3 SIMD OMP", "Morpho 3 SIMD UNROLL", "Morpho 3 SIMD UNROLL OMP", "Morpho 3 SIMD PIPELINE", "Morpho 3 SIMD PIPELINE OMP", "Morpho 3 SIMD PIPELINE UNROLL", "Morpho 3 SIMD PIPELINE UNROLL OMP", "Morpho 3 SIMD C", "Morpho 3 SIMD UNROLL C");
 	fprintf(fichier_csv, "%s;%s;%s;%s;", "Taille (pixels)", "Temps (ms)", "Cycle par point (cpp)", "Debit (pixel/seconde)");
 	fprintf(fichier_csv, ";%s;%s;%s;", "Temps (ms)", "Cycle par point (cpp)", "Debit (pixel/seconde)");
+    fprintf(fichier_csv, ";%s;%s;%s;", "Temps (ms)", "Cycle par point (cpp)", "Debit (pixel/seconde)");
+    fprintf(fichier_csv, ";%s;%s;%s;", "Temps (ms)", "Cycle par point (cpp)", "Debit (pixel/seconde)");
     fprintf(fichier_csv, ";%s;%s;%s;", "Temps (ms)", "Cycle par point (cpp)", "Debit (pixel/seconde)");
     fprintf(fichier_csv, ";%s;%s;%s;", "Temps (ms)", "Cycle par point (cpp)", "Debit (pixel/seconde)");
     fprintf(fichier_csv, ";%s;%s;%s;", "Temps (ms)", "Cycle par point (cpp)", "Debit (pixel/seconde)");
@@ -934,12 +936,14 @@ void bench_morpho_SIMD_graphic(){
 
     // calcul cpp
 	double cycles_dataset, cycles_morpho_3, cycles_morpho_3_unroll, cycles_morpho_3_pipeline, cycles_morpho_3_pipeline_fusion, cycles_morpho_3_omp, cycles_morpho_3_unroll_omp, cycles_morpho_3_pipeline_omp, cycles_morpho_3_pipeline_fusion_omp;
-
+    double cycles_morpho_3_c, cycles_morpho_3_c_unroll;
 	// calcul temps
 	double time_dataset, time_morpho_3, time_morpho_3_unroll, time_morpho_3_pipeline, time_morpho_3_pipeline_fusion, time_morpho_3_omp, time_morpho_3_unroll_omp, time_morpho_3_pipeline_omp, time_morpho_3_pipeline_fusion_omp;
+	double time_morpho_3_c, time_morpho_3_c_unroll;
 
 	// calcul debit
-	double debit_dataset, debit_morpho_3, debit_morpho_3_unroll, debit_morpho_3_pipeline, debit_morpho_3_pipeline_fusion, debit_morpho_3_omp, debit_morpho_3_unroll_omp, debit_morpho_3_pipeline_omp, debit_morpho_3_pipeline_fusion_omp;
+	double debit_morpho_3, debit_morpho_3_unroll, debit_morpho_3_pipeline, debit_morpho_3_pipeline_fusion, debit_morpho_3_omp, debit_morpho_3_unroll_omp, debit_morpho_3_pipeline_omp, debit_morpho_3_pipeline_fusion_omp;
+	double debit_morpho_3_c, debit_morpho_3_c_unroll;
 
     puts("=========================================");
 	puts("=== benchmark mouvement SIMD graphics ===");
@@ -1057,6 +1061,14 @@ void bench_morpho_SIMD_graphic(){
         time_morpho_3 = (double)(cycles_morpho_3/CLK_PROC);
         debit_morpho_3 = width*height / time_morpho_3;
 
+        CHRONO(morpho_3_SIMD_c(img_bin, img_filtered, tmp1_SIMD, tmp2_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_morpho_3_c);
+        time_morpho_3_c = (double)(cycles_morpho_3_c/CLK_PROC);
+        debit_morpho_3_c = width*height / time_morpho_3_c;
+
+        CHRONO(morpho_3_SIMD_c_unroll(img_bin, img_filtered, tmp1_SIMD, tmp2_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_morpho_3_c_unroll);
+        time_morpho_3_c_unroll = (double)(cycles_morpho_3_c_unroll/CLK_PROC);
+        debit_morpho_3_c_unroll = width*height / time_morpho_3_c_unroll;
+
         CHRONO(morpho_3_SIMD_omp(img_bin, img_filtered, tmp1_SIMD, tmp2_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_morpho_3_omp);
         time_morpho_3_omp = (double)(cycles_morpho_3_omp/CLK_PROC);
         debit_morpho_3_omp = width*height / time_morpho_3_omp;
@@ -1116,7 +1128,15 @@ void bench_morpho_SIMD_graphic(){
 
         fprintf(fichier_csv, ";%f;", time_morpho_3_pipeline_fusion_omp*1000);
 		fprintf(fichier_csv, "%f;", cycles_morpho_3_pipeline_fusion_omp/(height*width));
-		fprintf(fichier_csv, "%f\n;", debit_morpho_3_pipeline_fusion_omp);
+		fprintf(fichier_csv, "%f;", debit_morpho_3_pipeline_fusion_omp);
+
+        fprintf(fichier_csv, ";%f;", time_morpho_3_c*1000);
+		fprintf(fichier_csv, "%f;", cycles_morpho_3_c/(height*width));
+		fprintf(fichier_csv, "%f;", debit_morpho_3_c);
+
+        fprintf(fichier_csv, ";%f;", time_morpho_3_c_unroll*1000);
+		fprintf(fichier_csv, "%f;", cycles_morpho_3_c_unroll/(height*width));
+		fprintf(fichier_csv, "%f\n;", debit_morpho_3_c_unroll);
 
 		// ---------- //
 		// -- free -- //
