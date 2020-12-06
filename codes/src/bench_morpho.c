@@ -667,6 +667,174 @@ void bench_morpho_dataset(){
 	free_ui8matrix(img_bin, mi0b, mi1b, mj0b, mj1b);
 }
 
+void bench_morpho_graphic(){
+
+    // init fichier csv
+    FILE* fichier_csv = fopen("csv_files/perf_morpho.csv","w");
+    fprintf(fichier_csv, ";%s;;;;;%s\n", "Morpho 3", "Morpho 3 OPTI");
+    fprintf(fichier_csv, "%s;%s;%s;%s;", "Taille (pixels)", "Temps (ms)", "Cycle par point (cpp)", "Debit (pixel/seconde)");
+    fprintf(fichier_csv, ";%s;%s;%s\n", "Temps (ms)", "Cycle par point (cpp)", "Debit (pixel/seconde)");
+
+    // BORD
+    int b;
+
+    int mi0, mi1, mj0, mj1;     // indices scalaire
+    int mi0b, mi1b, mj0b, mj1b; // indices scalaires avec bord
+
+    // chronometrie
+    int iter, niter = 4;
+    int run, nrun = 5;
+    double t0, t1, dt, tmin, t;
+
+    char *format = "%d ";
+
+    // calcul cpp
+    double cycles_morpho_3, cycles_morpho_3_opti;
+
+    // calcul temps
+    double time_morpho_3, time_morpho_3_opti;
+
+    // calcul debit
+    double debit_morpho_3, debit_morpho_3_opti;
+
+    puts("====================================");
+    puts("=== benchmark mouvement graphics ===");
+    puts("====================================");
+
+    // 1 for 3x3 / 2 for 5x5
+    b = 1; 
+    
+    // Dimension initial des matrices générés
+    int height = 32;
+    int width  = 32;
+
+    for (int i = 0; i < 300; ++i)
+    {
+
+        // commence a 8 x 8
+        height += 16;
+        width  += 16;
+
+        // ------------------------- //
+        // -- calculs des indices -- //
+        // ------------------------- //
+
+        // indices matrices
+        mi0 = 0; mi1 = height-1;
+        mj0 = 0; mj1 = width-1;
+
+        // indices matrices avec bord
+        mi0b = mi0-b; mi1b = mi1+b;
+        mj0b = mj0-b; mj1b = mj1+b;
+
+        // DEBUG(printf("mi0b = %d, mi1b = %d, mj0b = %d, mj1b = %d\n", mi0b, mi1b, mj0b, mj1b));
+        // DEBUG(printf("vmi0b = %d, vmi1b = %d, vmj0b = %d, vmj1b = %d\n", vmi0b, vmi1b, vmj0b, vmj1b));
+
+        // ---------------- //
+        // -- allocation -- //
+        // ---------------- //
+
+        uint8 ** image_init     = ui8matrix(mi0, mi1, mj0, mj1);
+
+        // images
+        uint8** image           = ui8matrix(mi0, mi1, mj0, mj1);
+
+        // moyennes
+        uint8** mean0           = ui8matrix(mi0, mi1, mj0, mj1);
+        uint8** mean1           = ui8matrix(mi0, mi1, mj0, mj1);
+
+        // ecart-types
+        uint8** std0            = ui8matrix(mi0, mi1, mj0, mj1);
+        uint8** std1            = ui8matrix(mi0, mi1, mj0, mj1);
+
+        // image de différence
+        uint8 ** img_diff       = ui8matrix(mi0, mi1, mj0, mj1);
+        
+        // image binaire (sortie)
+        uint8 ** img_bin        = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+        uint8 ** img_filtered   = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+
+        uint8 ** tmp1           = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+        uint8 ** tmp2           = ui8matrix(mi0b, mi1b, mj0b, mj1b);
+
+        for (int i = mi0; i <= mi1; ++i)
+        {
+            for (int j = mj0; j <= mj1; ++j)
+            {
+                // Générer des valeurs de pixels avec un motif qui evoluent avec la taille
+                // Génére 2 images censé etre tres similaire (seul quelques pixels doivent varier)
+                int val1 = (i + j)*10 + j;
+                int val2 = (i + j)*10 + j + i;
+                if(val1 > 255)  val1 = val1 / 255;
+                if(val2 > 255)  val2 = val2 / 255;
+
+                image_init [i][j]       = val1;
+                image[i][j]             = val2; 
+            }
+        }
+
+        // initiate mean0 et std0 for first iteration
+        for (int i = mi0; i <= mi1; ++i)
+        {
+            for (int j = mj0; j <= mj1; ++j)
+            {
+                mean0[i][j] = image[i][j];
+                std0[i][j]  = VMIN;
+            }
+        }
+
+        SigmaDelta_full_opti(mi0, mi1, mj0, mj1, image, mean0, mean1, std0, std1, img_bin);
+
+        duplicate_border(mi0, mi1, mj0, mj1, b, img_bin);
+
+        // ----------------- //
+        // -- traitements -- //
+        // ----------------- //
+
+        CHRONO(morpho_3(img_bin, img_filtered, tmp1, tmp2, mi0, mi1, mj0, mj1), cycles_morpho_3);
+        time_morpho_3 = (double)(cycles_morpho_3/CLK_PROC);
+        debit_morpho_3 = width*height / time_morpho_3;
+
+        CHRONO(morpho_3_opti(img_bin, img_filtered, tmp1, tmp2, mi0, mi1, mj0, mj1), cycles_morpho_3_opti);
+        time_morpho_3_opti = (double)(cycles_morpho_3_opti/CLK_PROC);
+        debit_morpho_3_opti = width*height / time_morpho_3_opti;
+
+        // ecrire les donnees dans un fichier csv
+        fprintf(fichier_csv, "%d;", height);
+        fprintf(fichier_csv, "%f;", time_morpho_3 * 1000);
+        fprintf(fichier_csv, "%f;", cycles_morpho_3 / (height*width));
+        fprintf(fichier_csv, "%f;", debit_morpho_3);
+
+        fprintf(fichier_csv, ";%f;", time_morpho_3_opti * 1000);
+        fprintf(fichier_csv, "%f;" , cycles_morpho_3_opti / (height*width));
+        fprintf(fichier_csv, "%f\n", debit_morpho_3_opti);
+
+        // ---------- //
+        // -- free -- //
+        // ---------- //
+
+        free_ui8matrix(image_init, mi0, mi1, mj0, mj1);
+        
+        free_ui8matrix(image, mi0, mi1, mj0, mj1);
+            
+        free_ui8matrix(mean0, mi0, mi1, mj0, mj1);
+        free_ui8matrix(mean1, mi0, mi1, mj0, mj1);
+
+        free_ui8matrix(std0, mi0, mi1, mj0, mj1);
+        free_ui8matrix(std1, mi0, mi1, mj0, mj1);
+        
+        free_ui8matrix(img_diff, mi0, mi1, mj0, mj1);
+
+        free_ui8matrix(img_bin, mi0b, mi1b, mj0b, mj1b);
+        free_ui8matrix(img_filtered, mi0b, mi1b, mj0b, mj1b);
+
+        free_ui8matrix(tmp1, mi0b, mi1b, mj0b, mj1b);
+        free_ui8matrix(tmp2, mi0b, mi1b, mj0b, mj1b);
+    }
+
+    fclose(fichier_csv);
+}
+
 void main_bench_morpho(int argc, char *argv[]){
 
 	// Affiche les métriques de performance
@@ -679,13 +847,16 @@ void main_bench_morpho(int argc, char *argv[]){
 
     // bench_morpho_car(false, EROSION3, SCALAIRE, 1);
     
-    bench_morpho_car(false, MORPHO3, SCALAIRE, 0);
-    bench_morpho_car(false, MORPHO3, SCALAIRE_OPTI, 0);
+    // bench_morpho_car(false, MORPHO3, SCALAIRE, 0);
+    // bench_morpho_car(false, MORPHO3, SCALAIRE_OPTI, 0);
 
     // bench_morpho_car(false, MORPHO5, SCALAIRE, 0);
     // bench_morpho_car(false, MORPHO5, SCALAIRE_OPTI, 0);
 
     // bench_morpho_car(false, MORPHO5, SCALAIRE_OPTI, 1);
+
 	// benchmark global sur tout le dataset
-	// bench_mouvement_morpho_dataset();
+	// bench_morpho_dataset();
+
+    bench_morpho_graphic();
 }

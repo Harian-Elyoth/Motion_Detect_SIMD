@@ -34,6 +34,7 @@ extern "C" {
 
 void bench_morpho_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPTI, int fract);
 void bench_morpho_dataset();
+void bench_morpho_SIMD_graphic();
 
 // fonction principale     
 void main_bench_morpho(int argc, char *argv[]);
