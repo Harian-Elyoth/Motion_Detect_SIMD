@@ -31,20 +31,20 @@ void display_type_opti(type_opti_t OPTI){
         case SIMD :
             printf("SIMD");
             break;
-        case SIMD_OPTI :
-            printf("SIMD OPTI");
+        case SIMD_UNROLL :
+            printf("SIMD UNROLL");
             break;
         case SCALAIRE :
             printf("SCALAIRE");
             break;
-        case SCALAIRE_OPTI :
-            printf("SCALAIRE OPTI");
+        case SCALAIRE_UNROLL :
+            printf("SCALAIRE UNROLL");
             break;
         case PIPELINE :
             printf("PIPELINE");
             break;
-        case PIPELINE_OPTI :
-            printf("PIPELINE_OPTI");
+        case PIPELINE_FUSION :
+            printf("PIPELINE_FUSION");
         default : 
             break;
     }

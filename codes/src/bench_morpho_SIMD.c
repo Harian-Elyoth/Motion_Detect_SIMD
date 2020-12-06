@@ -5,7 +5,7 @@
 
 #include "bench_morpho_SIMD.h"
 
-void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPTI, int fract){
+void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t UNROLL, int fract){
 
 	int width, height;
 
@@ -158,7 +158,7 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
 
     duplicate_vborder(mi0, mi1, mj0, mj1, b, img_bin);
 
-    if(OPTI == SIMD){
+    if(UNROLL == SIMD){
         switch(MORPHO){
             case EROSION3 :
                 
@@ -320,10 +320,10 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
         }
     }
 
-    else if(OPTI == SIMD_OPTI) {
+    else if(UNROLL == SIMD_UNROLL) {
         switch(MORPHO){
             case EROSION3 :
-                CHRONO(erosion_3_SIMD_opti(img_bin, tmp1_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_erosion_1); 
+                CHRONO(erosion_3_SIMD_unroll(img_bin, tmp1_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_erosion_1); 
                 time_erosion_1 = (double)(cycles_erosion_1/CLK_PROC);
                 debit_erosion_1 = (WIDTH*HEIGHT) / time_erosion_1;
                 time_erosion_1 *= 1000; 
@@ -331,13 +331,13 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
                 BENCH(printf("temps (ms) \t    = %0.6f", time_erosion_1)); BENCH(puts(""));
                 BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_erosion_1/(WIDTH*HEIGHT))); BENCH(puts(""));
                 BENCH(printf("debit (pixel/sec)   = %0.2f", debit_erosion_1)); BENCH(puts("")); BENCH(puts(""));
-                dilatation_3_SIMD_opti(tmp1_SIMD, tmp2_SIMD,  vmi0, vmi1, vmj0, vmj1);
-                dilatation_3_SIMD_opti(tmp2_SIMD, tmp1_SIMD,  vmi0, vmi1, vmj0, vmj1);
-                erosion_3_SIMD_opti(tmp1_SIMD, img_filtered,  vmi0, vmi1, vmj0, vmj1); 
+                dilatation_3_SIMD_unroll(tmp1_SIMD, tmp2_SIMD,  vmi0, vmi1, vmj0, vmj1);
+                dilatation_3_SIMD_unroll(tmp2_SIMD, tmp1_SIMD,  vmi0, vmi1, vmj0, vmj1);
+                erosion_3_SIMD_unroll(tmp1_SIMD, img_filtered,  vmi0, vmi1, vmj0, vmj1); 
                 break;
             case DILATATION3 :
-                erosion_3_SIMD_opti(img_bin, tmp1_SIMD, vmi0, vmi1, vmj0, vmj1);
-                CHRONO(dilatation_3_SIMD_opti(tmp1_SIMD, tmp2_SIMD,  vmi0, vmi1, vmj0, vmj1), cycles_dilatation_1); 
+                erosion_3_SIMD_unroll(img_bin, tmp1_SIMD, vmi0, vmi1, vmj0, vmj1);
+                CHRONO(dilatation_3_SIMD_unroll(tmp1_SIMD, tmp2_SIMD,  vmi0, vmi1, vmj0, vmj1), cycles_dilatation_1); 
                 time_dilatation_1 = (double)(cycles_dilatation_1/CLK_PROC);
                 debit_dilatation_1 = (WIDTH*HEIGHT) / time_dilatation_1;
                 time_dilatation_1 *= 1000;
@@ -345,13 +345,13 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
                 BENCH(printf("temps (ms) \t    = %0.6f", time_dilatation_1)); BENCH(puts(""));
                 BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_dilatation_1/(WIDTH*HEIGHT))); BENCH(puts(""));
                 BENCH(printf("debit (pixel/sec)   = %0.2f", debit_dilatation_1)); BENCH(puts("")); BENCH(puts("")); 
-                dilatation_3_SIMD_opti(tmp2_SIMD, tmp1_SIMD,  vmi0, vmi1, vmj0, vmj1);
-                erosion_3_SIMD_opti(tmp1_SIMD, img_filtered,  vmi0, vmi1, vmj0, vmj1); 
+                dilatation_3_SIMD_unroll(tmp2_SIMD, tmp1_SIMD,  vmi0, vmi1, vmj0, vmj1);
+                erosion_3_SIMD_unroll(tmp1_SIMD, img_filtered,  vmi0, vmi1, vmj0, vmj1); 
                 break;
             case MORPHO3 :
                 if(fract){
                     BENCH(printf("====== Morphologie 3 fractionnée : ======")); BENCH(puts(""));
-                    CHRONO(erosion_3_SIMD_opti(img_bin, tmp1_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_erosion_1); 
+                    CHRONO(erosion_3_SIMD_unroll(img_bin, tmp1_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_erosion_1); 
                     time_erosion_1 = (double)(cycles_erosion_1/CLK_PROC);
                     debit_erosion_1 = (WIDTH*HEIGHT) / time_erosion_1;
                     time_erosion_1 *= 1000;
@@ -359,7 +359,7 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
                     BENCH(printf("temps (ms) \t    = %0.6f", time_erosion_1)); BENCH(puts(""));
                     BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_erosion_1/(WIDTH*HEIGHT))); BENCH(puts(""));
                     BENCH(printf("debit (pixel/sec)   = %0.2f", debit_erosion_1)); BENCH(puts("")); BENCH(puts(""));
-                    CHRONO(dilatation_3_SIMD_opti(tmp1_SIMD, tmp2_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_dilatation_1); 
+                    CHRONO(dilatation_3_SIMD_unroll(tmp1_SIMD, tmp2_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_dilatation_1); 
                     time_dilatation_1 = (double)(cycles_dilatation_1/CLK_PROC);
                     debit_dilatation_1 = (WIDTH*HEIGHT) / time_dilatation_1;
                     time_dilatation_1 *= 1000;
@@ -367,7 +367,7 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
                     BENCH(printf("temps (ms) \t    = %0.6f", time_dilatation_1)); BENCH(puts(""));
                     BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_dilatation_1/(WIDTH*HEIGHT))); BENCH(puts(""));
                     BENCH(printf("debit (pixel/sec)   = %0.2f", debit_dilatation_1)); BENCH(puts("")); BENCH(puts(""));
-                    CHRONO(dilatation_3_SIMD_opti(tmp2_SIMD, tmp1_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_dilatation_2); 
+                    CHRONO(dilatation_3_SIMD_unroll(tmp2_SIMD, tmp1_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_dilatation_2); 
                     time_dilatation_2 = (double)(cycles_dilatation_2/CLK_PROC);
                     debit_dilatation_2 = (WIDTH*HEIGHT) / time_dilatation_2;
                     time_dilatation_2 *= 1000;
@@ -375,7 +375,7 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
                     BENCH(printf("temps (ms) \t    = %0.6f", time_dilatation_2)); BENCH(puts(""));
                     BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_dilatation_2/(WIDTH*HEIGHT))); BENCH(puts(""));
                     BENCH(printf("debit (pixel/sec)   = %0.2f", debit_dilatation_2)); BENCH(puts("")); BENCH(puts(""));
-                    CHRONO(erosion_3_SIMD_opti(tmp1_SIMD, img_filtered, vmi0, vmi1, vmj0, vmj1), cycles_erosion_2); 
+                    CHRONO(erosion_3_SIMD_unroll(tmp1_SIMD, img_filtered, vmi0, vmi1, vmj0, vmj1), cycles_erosion_2); 
                     time_erosion_2 = (double)(cycles_erosion_2/CLK_PROC);
                     debit_erosion_2 = (WIDTH*HEIGHT) / time_erosion_2;
                     time_erosion_2 *= 1000;
@@ -386,7 +386,7 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
                     BENCH(printf("=========================================")); BENCH(puts(""));
                 }
                 else {
-                    CHRONO(morpho_3_SIMD_opti(img_bin, img_filtered, tmp1_SIMD, tmp2_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_morpho); 
+                    CHRONO(morpho_3_SIMD_unroll(img_bin, img_filtered, tmp1_SIMD, tmp2_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_morpho); 
                     time_morpho = (double)(cycles_morpho/CLK_PROC);
                     debit_morpho = (WIDTH*HEIGHT) / time_morpho;
                     time_morpho *= 1000;
@@ -397,7 +397,7 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
                 }
                 break;
             case EROSION5 :
-                CHRONO(erosion_5_SIMD_opti(img_bin, tmp1_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_erosion_1); 
+                CHRONO(erosion_5_SIMD_unroll(img_bin, tmp1_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_erosion_1); 
                 time_erosion_1 = (double)(cycles_erosion_1/CLK_PROC);
                 debit_erosion_1 = (WIDTH*HEIGHT) / time_erosion_1;
                 time_erosion_1 *= 1000; 
@@ -405,13 +405,13 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
                 BENCH(printf("temps (ms) \t    = %0.6f", time_erosion_1)); BENCH(puts(""));
                 BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_erosion_1/(WIDTH*HEIGHT))); BENCH(puts(""));
                 BENCH(printf("debit (pixel/sec)   = %0.2f", debit_erosion_1)); BENCH(puts("")); BENCH(puts(""));
-                dilatation_5_SIMD_opti(tmp1_SIMD, tmp2_SIMD,  vmi0, vmi1, vmj0, vmj1);
-                dilatation_5_SIMD_opti(tmp2_SIMD, tmp1_SIMD,  vmi0, vmi1, vmj0, vmj1);
-                erosion_5_SIMD_opti(tmp1_SIMD, img_filtered,  vmi0, vmi1, vmj0, vmj1); 
+                dilatation_5_SIMD_unroll(tmp1_SIMD, tmp2_SIMD,  vmi0, vmi1, vmj0, vmj1);
+                dilatation_5_SIMD_unroll(tmp2_SIMD, tmp1_SIMD,  vmi0, vmi1, vmj0, vmj1);
+                erosion_5_SIMD_unroll(tmp1_SIMD, img_filtered,  vmi0, vmi1, vmj0, vmj1); 
                 break;
             case DILATATION5 :
-                erosion_5_SIMD_opti(img_bin, tmp1_SIMD, vmi0, vmi1, vmj0, vmj1);
-                CHRONO(dilatation_5_SIMD_opti(tmp1_SIMD, tmp2_SIMD,  vmi0, vmi1, vmj0, vmj1), cycles_dilatation_1); 
+                erosion_5_SIMD_unroll(img_bin, tmp1_SIMD, vmi0, vmi1, vmj0, vmj1);
+                CHRONO(dilatation_5_SIMD_unroll(tmp1_SIMD, tmp2_SIMD,  vmi0, vmi1, vmj0, vmj1), cycles_dilatation_1); 
                 time_dilatation_1 = (double)(cycles_dilatation_1/CLK_PROC);
                 debit_dilatation_1 = (WIDTH*HEIGHT) / time_dilatation_1;
                 time_dilatation_1 *= 1000; 
@@ -419,13 +419,13 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
                 BENCH(printf("temps (ms) \t    = %0.6f", time_dilatation_1)); BENCH(puts(""));
                 BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_dilatation_1/(WIDTH*HEIGHT))); BENCH(puts(""));
                 BENCH(printf("debit (pixel/sec)   = %0.2f", debit_dilatation_1)); BENCH(puts("")); BENCH(puts(""));
-                dilatation_5_SIMD_opti(tmp2_SIMD, tmp1_SIMD,  vmi0, vmi1, vmj0, vmj1);
-                erosion_5_SIMD_opti(tmp1_SIMD, img_filtered,  vmi0, vmi1, vmj0, vmj1); 
+                dilatation_5_SIMD_unroll(tmp2_SIMD, tmp1_SIMD,  vmi0, vmi1, vmj0, vmj1);
+                erosion_5_SIMD_unroll(tmp1_SIMD, img_filtered,  vmi0, vmi1, vmj0, vmj1); 
                 break;
             case MORPHO5 :
                 if(fract){
                     BENCH(printf("====== Morphologie 5 fractionnée : ======")); BENCH(puts(""));
-                    CHRONO(erosion_5_SIMD_opti(img_bin, tmp1_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_erosion_1); 
+                    CHRONO(erosion_5_SIMD_unroll(img_bin, tmp1_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_erosion_1); 
                     time_erosion_1 = (double)(cycles_erosion_1/CLK_PROC);
                     debit_erosion_1 = (WIDTH*HEIGHT) / time_erosion_1;
                     time_erosion_1 *= 1000;
@@ -433,7 +433,7 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
                     BENCH(printf("temps (ms) \t    = %0.6f", time_erosion_1)); BENCH(puts(""));
                     BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_erosion_1/(WIDTH*HEIGHT))); BENCH(puts(""));
                     BENCH(printf("debit (pixel/sec)   = %0.2f", debit_erosion_1)); BENCH(puts("")); BENCH(puts(""));
-                    CHRONO(dilatation_5_SIMD_opti(tmp1_SIMD, tmp2_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_dilatation_1); 
+                    CHRONO(dilatation_5_SIMD_unroll(tmp1_SIMD, tmp2_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_dilatation_1); 
                     time_dilatation_1 = (double)(cycles_dilatation_1/CLK_PROC);
                     debit_dilatation_1 = (WIDTH*HEIGHT) / time_dilatation_1;
                     time_dilatation_1 *= 1000;
@@ -441,7 +441,7 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
                     BENCH(printf("temps (ms) \t    = %0.6f", time_dilatation_1)); BENCH(puts(""));
                     BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_dilatation_1/(WIDTH*HEIGHT))); BENCH(puts(""));
                     BENCH(printf("debit (pixel/sec)   = %0.2f", debit_dilatation_1)); BENCH(puts("")); BENCH(puts(""));
-                    CHRONO(dilatation_5_SIMD_opti(tmp2_SIMD, tmp1_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_dilatation_2); 
+                    CHRONO(dilatation_5_SIMD_unroll(tmp2_SIMD, tmp1_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_dilatation_2); 
                     time_dilatation_2 = (double)(cycles_dilatation_2/CLK_PROC);
                     debit_dilatation_2 = (WIDTH*HEIGHT) / time_dilatation_2;
                     time_dilatation_2 *= 1000;
@@ -449,7 +449,7 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
                     BENCH(printf("temps (ms) \t    = %0.6f", time_dilatation_2)); BENCH(puts(""));
                     BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_dilatation_2/(WIDTH*HEIGHT))); BENCH(puts(""));
                     BENCH(printf("debit (pixel/sec)   = %0.2f", debit_dilatation_2)); BENCH(puts("")); BENCH(puts(""));
-                    CHRONO(erosion_5_SIMD_opti(tmp1_SIMD, img_filtered, vmi0, vmi1, vmj0, vmj1), cycles_erosion_2); 
+                    CHRONO(erosion_5_SIMD_unroll(tmp1_SIMD, img_filtered, vmi0, vmi1, vmj0, vmj1), cycles_erosion_2); 
                     time_erosion_2 = (double)(cycles_erosion_2/CLK_PROC);
                     debit_erosion_2 = (WIDTH*HEIGHT) / time_erosion_2;
                     time_erosion_2 *= 1000;
@@ -468,7 +468,7 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
                     BENCH(printf("=========================================")); BENCH(puts(""));
                 }
                 else {
-                    CHRONO(morpho_5_SIMD_opti(img_bin, img_filtered, tmp1_SIMD, tmp2_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_morpho); 
+                    CHRONO(morpho_5_SIMD_unroll(img_bin, img_filtered, tmp1_SIMD, tmp2_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_morpho); 
                     time_morpho = (double)(cycles_morpho/CLK_PROC);
                     debit_morpho = (WIDTH*HEIGHT) / time_morpho;
                     time_morpho *= 1000;
@@ -483,7 +483,7 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
         }
     }
 
-    else if (OPTI == PIPELINE){
+    else if (UNROLL == PIPELINE){
         switch(MORPHO){
 
             case MORPHO3:
@@ -500,12 +500,12 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
         }
     }
 
-    else if (OPTI == PIPELINE_OPTI){
+    else if (UNROLL == PIPELINE_FUSION){
         switch(MORPHO){
 
             case MORPHO5:
 
-                CHRONO(morpho_3_SIMD_pipeline_opti(img_bin, tmp1_SIMD, tmp2_SIMD, img_filtered, vmi0, vmi1, vmj0, vmj1), cycles_morpho); 
+                CHRONO(morpho_3_SIMD_pipeline_fusion(img_bin, tmp1_SIMD, tmp2_SIMD, img_filtered, vmi0, vmi1, vmj0, vmj1), cycles_morpho); 
                 time_morpho = (double)(cycles_morpho/CLK_PROC);
                 debit_morpho = (WIDTH*HEIGHT) / time_morpho;
                 time_morpho *= 1000;
@@ -517,7 +517,7 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
         }
     }
 
-    else if(OPTI == SIMD_OMP) {
+    else if(UNROLL == SIMD_OMP) {
 
         switch(MORPHO){
             case EROSION3 :
@@ -674,10 +674,10 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
         }
     }
 
-    else if (OPTI == SIMD_OPTI_OMP){
+    else if (UNROLL == SIMD_UNROLL_OMP){
         switch(MORPHO){
             case EROSION3 :
-                CHRONO(erosion_3_SIMD_opti_omp(img_bin, tmp1_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_erosion_1); 
+                CHRONO(erosion_3_SIMD_unroll_omp(img_bin, tmp1_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_erosion_1); 
                 time_erosion_1 = (double)(cycles_erosion_1/CLK_PROC);
                 debit_erosion_1 = (WIDTH*HEIGHT) / time_erosion_1;
                 time_erosion_1 *= 1000; 
@@ -685,13 +685,13 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
                 BENCH(printf("temps (ms) \t    = %0.6f", time_erosion_1)); BENCH(puts(""));
                 BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_erosion_1/(WIDTH*HEIGHT))); BENCH(puts(""));
                 BENCH(printf("debit (pixel/sec)   = %0.2f", debit_erosion_1)); BENCH(puts("")); BENCH(puts(""));
-                dilatation_3_SIMD_opti_omp(tmp1_SIMD, tmp2_SIMD,  vmi0, vmi1, vmj0, vmj1);
-                dilatation_3_SIMD_opti_omp(tmp2_SIMD, tmp1_SIMD,  vmi0, vmi1, vmj0, vmj1);
-                erosion_3_SIMD_opti_omp(tmp1_SIMD, img_filtered,  vmi0, vmi1, vmj0, vmj1); 
+                dilatation_3_SIMD_unroll_omp(tmp1_SIMD, tmp2_SIMD,  vmi0, vmi1, vmj0, vmj1);
+                dilatation_3_SIMD_unroll_omp(tmp2_SIMD, tmp1_SIMD,  vmi0, vmi1, vmj0, vmj1);
+                erosion_3_SIMD_unroll_omp(tmp1_SIMD, img_filtered,  vmi0, vmi1, vmj0, vmj1); 
                 break;
             case DILATATION3 :
-                erosion_3_SIMD_opti_omp(img_bin, tmp1_SIMD, vmi0, vmi1, vmj0, vmj1);
-                CHRONO(dilatation_3_SIMD_opti_omp(tmp1_SIMD, tmp2_SIMD,  vmi0, vmi1, vmj0, vmj1), cycles_dilatation_1); 
+                erosion_3_SIMD_unroll_omp(img_bin, tmp1_SIMD, vmi0, vmi1, vmj0, vmj1);
+                CHRONO(dilatation_3_SIMD_unroll_omp(tmp1_SIMD, tmp2_SIMD,  vmi0, vmi1, vmj0, vmj1), cycles_dilatation_1); 
                 time_dilatation_1 = (double)(cycles_dilatation_1/CLK_PROC);
                 debit_dilatation_1 = (WIDTH*HEIGHT) / time_dilatation_1;
                 time_dilatation_1 *= 1000;
@@ -699,13 +699,13 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
                 BENCH(printf("temps (ms) \t    = %0.6f", time_dilatation_1)); BENCH(puts(""));
                 BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_dilatation_1/(WIDTH*HEIGHT))); BENCH(puts(""));
                 BENCH(printf("debit (pixel/sec)   = %0.2f", debit_dilatation_1)); BENCH(puts("")); BENCH(puts("")); 
-                dilatation_3_SIMD_opti_omp(tmp2_SIMD, tmp1_SIMD,  vmi0, vmi1, vmj0, vmj1);
-                erosion_3_SIMD_opti_omp(tmp1_SIMD, img_filtered,  vmi0, vmi1, vmj0, vmj1); 
+                dilatation_3_SIMD_unroll_omp(tmp2_SIMD, tmp1_SIMD,  vmi0, vmi1, vmj0, vmj1);
+                erosion_3_SIMD_unroll_omp(tmp1_SIMD, img_filtered,  vmi0, vmi1, vmj0, vmj1); 
                 break;
             case MORPHO3 :
                 if(fract){
                     BENCH(printf("====== Morphologie 3 fractionnée : ======")); BENCH(puts(""));
-                    CHRONO(erosion_3_SIMD_opti_omp(img_bin, tmp1_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_erosion_1); 
+                    CHRONO(erosion_3_SIMD_unroll_omp(img_bin, tmp1_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_erosion_1); 
                     time_erosion_1 = (double)(cycles_erosion_1/CLK_PROC);
                     debit_erosion_1 = (WIDTH*HEIGHT) / time_erosion_1;
                     time_erosion_1 *= 1000;
@@ -713,7 +713,7 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
                     BENCH(printf("temps (ms) \t    = %0.6f", time_erosion_1)); BENCH(puts(""));
                     BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_erosion_1/(WIDTH*HEIGHT))); BENCH(puts(""));
                     BENCH(printf("debit (pixel/sec)   = %0.2f", debit_erosion_1)); BENCH(puts("")); BENCH(puts(""));
-                    CHRONO(dilatation_3_SIMD_opti_omp(tmp1_SIMD, tmp2_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_dilatation_1); 
+                    CHRONO(dilatation_3_SIMD_unroll_omp(tmp1_SIMD, tmp2_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_dilatation_1); 
                     time_dilatation_1 = (double)(cycles_dilatation_1/CLK_PROC);
                     debit_dilatation_1 = (WIDTH*HEIGHT) / time_dilatation_1;
                     time_dilatation_1 *= 1000;
@@ -721,7 +721,7 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
                     BENCH(printf("temps (ms) \t    = %0.6f", time_dilatation_1)); BENCH(puts(""));
                     BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_dilatation_1/(WIDTH*HEIGHT))); BENCH(puts(""));
                     BENCH(printf("debit (pixel/sec)   = %0.2f", debit_dilatation_1)); BENCH(puts("")); BENCH(puts(""));
-                    CHRONO(dilatation_3_SIMD_opti_omp(tmp2_SIMD, tmp1_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_dilatation_2); 
+                    CHRONO(dilatation_3_SIMD_unroll_omp(tmp2_SIMD, tmp1_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_dilatation_2); 
                     time_dilatation_2 = (double)(cycles_dilatation_2/CLK_PROC);
                     debit_dilatation_2 = (WIDTH*HEIGHT) / time_dilatation_2;
                     time_dilatation_2 *= 1000;
@@ -729,7 +729,7 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
                     BENCH(printf("temps (ms) \t    = %0.6f", time_dilatation_2)); BENCH(puts(""));
                     BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_dilatation_2/(WIDTH*HEIGHT))); BENCH(puts(""));
                     BENCH(printf("debit (pixel/sec)   = %0.2f", debit_dilatation_2)); BENCH(puts("")); BENCH(puts(""));
-                    CHRONO(erosion_3_SIMD_opti_omp(tmp1_SIMD, img_filtered, vmi0, vmi1, vmj0, vmj1), cycles_erosion_2); 
+                    CHRONO(erosion_3_SIMD_unroll_omp(tmp1_SIMD, img_filtered, vmi0, vmi1, vmj0, vmj1), cycles_erosion_2); 
                     time_erosion_2 = (double)(cycles_erosion_2/CLK_PROC);
                     debit_erosion_2 = (WIDTH*HEIGHT) / time_erosion_2;
                     time_erosion_2 *= 1000;
@@ -740,7 +740,7 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
                     BENCH(printf("=========================================")); BENCH(puts(""));
                 }
                 else {
-                    CHRONO(morpho_3_SIMD_opti_omp(img_bin, img_filtered, tmp1_SIMD, tmp2_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_morpho); 
+                    CHRONO(morpho_3_SIMD_unroll_omp(img_bin, img_filtered, tmp1_SIMD, tmp2_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_morpho); 
                     time_morpho = (double)(cycles_morpho/CLK_PROC);
                     debit_morpho = (WIDTH*HEIGHT) / time_morpho;
                     time_morpho *= 1000;
@@ -751,7 +751,7 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
                 }
                 break;
             case EROSION5 :
-                CHRONO(erosion_5_SIMD_opti_omp(img_bin, tmp1_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_erosion_1); 
+                CHRONO(erosion_5_SIMD_unroll_omp(img_bin, tmp1_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_erosion_1); 
                 time_erosion_1 = (double)(cycles_erosion_1/CLK_PROC);
                 debit_erosion_1 = (WIDTH*HEIGHT) / time_erosion_1;
                 time_erosion_1 *= 1000; 
@@ -759,13 +759,13 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
                 BENCH(printf("temps (ms) \t    = %0.6f", time_erosion_1)); BENCH(puts(""));
                 BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_erosion_1/(WIDTH*HEIGHT))); BENCH(puts(""));
                 BENCH(printf("debit (pixel/sec)   = %0.2f", debit_erosion_1)); BENCH(puts("")); BENCH(puts(""));
-                dilatation_5_SIMD_opti_omp(tmp1_SIMD, tmp2_SIMD,  vmi0, vmi1, vmj0, vmj1);
-                dilatation_5_SIMD_opti_omp(tmp2_SIMD, tmp1_SIMD,  vmi0, vmi1, vmj0, vmj1);
-                erosion_5_SIMD_opti_omp(tmp1_SIMD, img_filtered,  vmi0, vmi1, vmj0, vmj1); 
+                dilatation_5_SIMD_unroll_omp(tmp1_SIMD, tmp2_SIMD,  vmi0, vmi1, vmj0, vmj1);
+                dilatation_5_SIMD_unroll_omp(tmp2_SIMD, tmp1_SIMD,  vmi0, vmi1, vmj0, vmj1);
+                erosion_5_SIMD_unroll_omp(tmp1_SIMD, img_filtered,  vmi0, vmi1, vmj0, vmj1); 
                 break;
             case DILATATION5 :
-                erosion_5_SIMD_opti_omp(img_bin, tmp1_SIMD, vmi0, vmi1, vmj0, vmj1);
-                CHRONO(dilatation_5_SIMD_opti_omp(tmp1_SIMD, tmp2_SIMD,  vmi0, vmi1, vmj0, vmj1), cycles_dilatation_1); 
+                erosion_5_SIMD_unroll_omp(img_bin, tmp1_SIMD, vmi0, vmi1, vmj0, vmj1);
+                CHRONO(dilatation_5_SIMD_unroll_omp(tmp1_SIMD, tmp2_SIMD,  vmi0, vmi1, vmj0, vmj1), cycles_dilatation_1); 
                 time_dilatation_1 = (double)(cycles_dilatation_1/CLK_PROC);
                 debit_dilatation_1 = (WIDTH*HEIGHT) / time_dilatation_1;
                 time_dilatation_1 *= 1000; 
@@ -773,13 +773,13 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
                 BENCH(printf("temps (ms) \t    = %0.6f", time_dilatation_1)); BENCH(puts(""));
                 BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_dilatation_1/(WIDTH*HEIGHT))); BENCH(puts(""));
                 BENCH(printf("debit (pixel/sec)   = %0.2f", debit_dilatation_1)); BENCH(puts("")); BENCH(puts(""));
-                dilatation_5_SIMD_opti_omp(tmp2_SIMD, tmp1_SIMD,  vmi0, vmi1, vmj0, vmj1);
-                erosion_5_SIMD_opti_omp(tmp1_SIMD, img_filtered,  vmi0, vmi1, vmj0, vmj1); 
+                dilatation_5_SIMD_unroll_omp(tmp2_SIMD, tmp1_SIMD,  vmi0, vmi1, vmj0, vmj1);
+                erosion_5_SIMD_unroll_omp(tmp1_SIMD, img_filtered,  vmi0, vmi1, vmj0, vmj1); 
                 break;
             case MORPHO5 :
                 if(fract){
                     BENCH(printf("====== Morphologie 5 fractionnée : ======")); BENCH(puts(""));
-                    CHRONO(erosion_5_SIMD_opti_omp(img_bin, tmp1_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_erosion_1); 
+                    CHRONO(erosion_5_SIMD_unroll_omp(img_bin, tmp1_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_erosion_1); 
                     time_erosion_1 = (double)(cycles_erosion_1/CLK_PROC);
                     debit_erosion_1 = (WIDTH*HEIGHT) / time_erosion_1;
                     time_erosion_1 *= 1000;
@@ -787,7 +787,7 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
                     BENCH(printf("temps (ms) \t    = %0.6f", time_erosion_1)); BENCH(puts(""));
                     BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_erosion_1/(WIDTH*HEIGHT))); BENCH(puts(""));
                     BENCH(printf("debit (pixel/sec)   = %0.2f", debit_erosion_1)); BENCH(puts("")); BENCH(puts(""));
-                    CHRONO(dilatation_5_SIMD_opti_omp(tmp1_SIMD, tmp2_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_dilatation_1); 
+                    CHRONO(dilatation_5_SIMD_unroll_omp(tmp1_SIMD, tmp2_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_dilatation_1); 
                     time_dilatation_1 = (double)(cycles_dilatation_1/CLK_PROC);
                     debit_dilatation_1 = (WIDTH*HEIGHT) / time_dilatation_1;
                     time_dilatation_1 *= 1000;
@@ -795,7 +795,7 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
                     BENCH(printf("temps (ms) \t    = %0.6f", time_dilatation_1)); BENCH(puts(""));
                     BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_dilatation_1/(WIDTH*HEIGHT))); BENCH(puts(""));
                     BENCH(printf("debit (pixel/sec)   = %0.2f", debit_dilatation_1)); BENCH(puts("")); BENCH(puts(""));
-                    CHRONO(dilatation_5_SIMD_opti_omp(tmp2_SIMD, tmp1_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_dilatation_2); 
+                    CHRONO(dilatation_5_SIMD_unroll_omp(tmp2_SIMD, tmp1_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_dilatation_2); 
                     time_dilatation_2 = (double)(cycles_dilatation_2/CLK_PROC);
                     debit_dilatation_2 = (WIDTH*HEIGHT) / time_dilatation_2;
                     time_dilatation_2 *= 1000;
@@ -803,7 +803,7 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
                     BENCH(printf("temps (ms) \t    = %0.6f", time_dilatation_2)); BENCH(puts(""));
                     BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_dilatation_2/(WIDTH*HEIGHT))); BENCH(puts(""));
                     BENCH(printf("debit (pixel/sec)   = %0.2f", debit_dilatation_2)); BENCH(puts("")); BENCH(puts(""));
-                    CHRONO(erosion_5_SIMD_opti_omp(tmp1_SIMD, img_filtered, vmi0, vmi1, vmj0, vmj1), cycles_erosion_2); 
+                    CHRONO(erosion_5_SIMD_unroll_omp(tmp1_SIMD, img_filtered, vmi0, vmi1, vmj0, vmj1), cycles_erosion_2); 
                     time_erosion_2 = (double)(cycles_erosion_2/CLK_PROC);
                     debit_erosion_2 = (WIDTH*HEIGHT) / time_erosion_2;
                     time_erosion_2 *= 1000;
@@ -822,7 +822,7 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
                     BENCH(printf("=========================================")); BENCH(puts(""));
                 }
                 else {
-                    CHRONO(morpho_5_SIMD_opti_omp(img_bin, img_filtered, tmp1_SIMD, tmp2_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_morpho); 
+                    CHRONO(morpho_5_SIMD_unroll_omp(img_bin, img_filtered, tmp1_SIMD, tmp2_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_morpho); 
                     time_morpho = (double)(cycles_morpho/CLK_PROC);
                     debit_morpho = (WIDTH*HEIGHT) / time_morpho;
                     time_morpho *= 1000;
@@ -837,7 +837,7 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
         }
     }
 
-    else if (OPTI == PIPELINE_OMP){
+    else if (UNROLL == PIPELINE_OMP){
 
         switch(MORPHO){
             case MORPHO3:
@@ -854,11 +854,11 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t OPT
         }
     }
 
-    else if (OPTI == PIPELINE_OPTI_OMP){
+    else if (UNROLL == PIPELINE_FUSION_OMP){
         switch(MORPHO){
             case MORPHO5:
 
-                CHRONO(morpho_3_SIMD_pipeline_opti_omp(img_bin, tmp1_SIMD, tmp2_SIMD, img_filtered, vmi0, vmi1, vmj0, vmj1), cycles_morpho); 
+                CHRONO(morpho_3_SIMD_pipeline_fusion_omp(img_bin, tmp1_SIMD, tmp2_SIMD, img_filtered, vmi0, vmi1, vmj0, vmj1), cycles_morpho); 
                 time_morpho = (double)(cycles_morpho/CLK_PROC);
                 debit_morpho = (WIDTH*HEIGHT) / time_morpho;
                 time_morpho *= 1000;
@@ -902,7 +902,7 @@ void bench_morpho_SIMD_graphic(){
 
 	// init fichier csv
 	FILE* fichier_csv = fopen("csv_files/perf_morpho_SIMD.csv","w");
-	fprintf(fichier_csv, ";%s;;;;;%s;;;;;%s;;;;;%s;;;;;%s;;;;;%s;;;;;%s;;;;;%s\n", "Morpho 3 SIMD", "Morpho 3 SIMD OMP", "Morpho 3 SIMD OPTI", "Morpho 3 SIMD OPTI OMP", "Morpho 3 SIMD PIPELINE", "Morpho 3 SIMD PIPELINE OMP", "Morpho 3 SIMD PIPELINE OPTI", "Morpho 3 SIMD PIPELINE OPTI OMP");
+	fprintf(fichier_csv, ";%s;;;;;%s;;;;;%s;;;;;%s;;;;;%s;;;;;%s;;;;;%s;;;;;%s\n", "Morpho 3 SIMD", "Morpho 3 SIMD OMP", "Morpho 3 SIMD UNROLL", "Morpho 3 SIMD UNROLL OMP", "Morpho 3 SIMD PIPELINE", "Morpho 3 SIMD PIPELINE OMP", "Morpho 3 SIMD PIPELINE UNROLL", "Morpho 3 SIMD PIPELINE UNROLL OMP");
 	fprintf(fichier_csv, "%s;%s;%s;%s;", "Taille (pixels)", "Temps (ms)", "Cycle par point (cpp)", "Debit (pixel/seconde)");
 	fprintf(fichier_csv, ";%s;%s;%s;", "Temps (ms)", "Cycle par point (cpp)", "Debit (pixel/seconde)");
     fprintf(fichier_csv, ";%s;%s;%s;", "Temps (ms)", "Cycle par point (cpp)", "Debit (pixel/seconde)");
@@ -933,13 +933,13 @@ void bench_morpho_SIMD_graphic(){
 	int card = card_vuint8(); // 16
 
     // calcul cpp
-	double cycles_dataset, cycles_morpho_3, cycles_morpho_3_opti, cycles_morpho_3_pipeline, cycles_morpho_3_pipeline_opti, cycles_morpho_3_omp, cycles_morpho_3_opti_omp, cycles_morpho_3_pipeline_omp, cycles_morpho_3_pipeline_opti_omp;
+	double cycles_dataset, cycles_morpho_3, cycles_morpho_3_unroll, cycles_morpho_3_pipeline, cycles_morpho_3_pipeline_fusion, cycles_morpho_3_omp, cycles_morpho_3_unroll_omp, cycles_morpho_3_pipeline_omp, cycles_morpho_3_pipeline_fusion_omp;
 
 	// calcul temps
-	double time_dataset, time_morpho_3, time_morpho_3_opti, time_morpho_3_pipeline, time_morpho_3_pipeline_opti, time_morpho_3_omp, time_morpho_3_opti_omp, time_morpho_3_pipeline_omp, time_morpho_3_pipeline_opti_omp;
+	double time_dataset, time_morpho_3, time_morpho_3_unroll, time_morpho_3_pipeline, time_morpho_3_pipeline_fusion, time_morpho_3_omp, time_morpho_3_unroll_omp, time_morpho_3_pipeline_omp, time_morpho_3_pipeline_fusion_omp;
 
 	// calcul debit
-	double debit_dataset, debit_morpho_3, debit_morpho_3_opti, debit_morpho_3_pipeline, debit_morpho_3_pipeline_opti, debit_morpho_3_omp, debit_morpho_3_opti_omp, debit_morpho_3_pipeline_omp, debit_morpho_3_pipeline_opti_omp;
+	double debit_dataset, debit_morpho_3, debit_morpho_3_unroll, debit_morpho_3_pipeline, debit_morpho_3_pipeline_fusion, debit_morpho_3_omp, debit_morpho_3_unroll_omp, debit_morpho_3_pipeline_omp, debit_morpho_3_pipeline_fusion_omp;
 
     puts("=========================================");
 	puts("=== benchmark mouvement SIMD graphics ===");
@@ -1061,13 +1061,13 @@ void bench_morpho_SIMD_graphic(){
         time_morpho_3_omp = (double)(cycles_morpho_3_omp/CLK_PROC);
         debit_morpho_3_omp = width*height / time_morpho_3_omp;
 
-        CHRONO(morpho_3_SIMD_opti(img_bin, img_filtered, tmp1_SIMD, tmp2_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_morpho_3_opti);
-        time_morpho_3_opti = (double)(cycles_morpho_3_opti/CLK_PROC);
-        debit_morpho_3_opti = width*height / time_morpho_3_opti;
+        CHRONO(morpho_3_SIMD_unroll(img_bin, img_filtered, tmp1_SIMD, tmp2_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_morpho_3_unroll);
+        time_morpho_3_unroll = (double)(cycles_morpho_3_unroll/CLK_PROC);
+        debit_morpho_3_unroll = width*height / time_morpho_3_unroll;
 
-        CHRONO(morpho_3_SIMD_opti_omp(img_bin, img_filtered, tmp1_SIMD, tmp2_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_morpho_3_opti_omp);
-        time_morpho_3_opti_omp = (double)(cycles_morpho_3_opti_omp/CLK_PROC);
-        debit_morpho_3_opti_omp = width*height / time_morpho_3_opti_omp;
+        CHRONO(morpho_3_SIMD_unroll_omp(img_bin, img_filtered, tmp1_SIMD, tmp2_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_morpho_3_unroll_omp);
+        time_morpho_3_unroll_omp = (double)(cycles_morpho_3_unroll_omp/CLK_PROC);
+        debit_morpho_3_unroll_omp = width*height / time_morpho_3_unroll_omp;
 
         CHRONO(morpho_3_SIMD_pipeline(img_bin, tmp1_SIMD, tmp2_SIMD, tmp3_SIMD, img_filtered,vmi0, vmi1, vmj0, vmj1), cycles_morpho_3_pipeline);
         time_morpho_3_pipeline = (double)(cycles_morpho_3_pipeline/CLK_PROC);
@@ -1077,13 +1077,13 @@ void bench_morpho_SIMD_graphic(){
         time_morpho_3_pipeline_omp = (double)(cycles_morpho_3_pipeline_omp/CLK_PROC);
         debit_morpho_3_pipeline_omp = width*height / time_morpho_3_pipeline_omp;
 
-        CHRONO(morpho_3_SIMD_pipeline_opti(img_bin, tmp1_SIMD, tmp2_SIMD, img_filtered,vmi0, vmi1, vmj0, vmj1), cycles_morpho_3_pipeline_opti);
-        time_morpho_3_pipeline_opti = (double)(cycles_morpho_3_pipeline_opti/CLK_PROC);
-        debit_morpho_3_pipeline_opti = width*height / time_morpho_3_pipeline_opti;
+        CHRONO(morpho_3_SIMD_pipeline_fusion(img_bin, tmp1_SIMD, tmp2_SIMD, img_filtered,vmi0, vmi1, vmj0, vmj1), cycles_morpho_3_pipeline_fusion);
+        time_morpho_3_pipeline_fusion = (double)(cycles_morpho_3_pipeline_fusion/CLK_PROC);
+        debit_morpho_3_pipeline_fusion = width*height / time_morpho_3_pipeline_fusion;
 
-        CHRONO(morpho_3_SIMD_pipeline_opti_omp(img_bin, tmp1_SIMD, tmp2_SIMD, img_filtered,vmi0, vmi1, vmj0, vmj1), cycles_morpho_3_pipeline_opti_omp);
-        time_morpho_3_pipeline_opti_omp = (double)(cycles_morpho_3_pipeline_opti_omp/CLK_PROC);
-        debit_morpho_3_pipeline_opti_omp = width*height / time_morpho_3_pipeline_opti_omp;
+        CHRONO(morpho_3_SIMD_pipeline_fusion_omp(img_bin, tmp1_SIMD, tmp2_SIMD, img_filtered,vmi0, vmi1, vmj0, vmj1), cycles_morpho_3_pipeline_fusion_omp);
+        time_morpho_3_pipeline_fusion_omp = (double)(cycles_morpho_3_pipeline_fusion_omp/CLK_PROC);
+        debit_morpho_3_pipeline_fusion_omp = width*height / time_morpho_3_pipeline_fusion_omp;
 		// ecrire les donnees dans un fichier csv
 		fprintf(fichier_csv, "%d;", height);
 		fprintf(fichier_csv, "%f;", time_morpho_3*1000);
@@ -1094,13 +1094,13 @@ void bench_morpho_SIMD_graphic(){
 		fprintf(fichier_csv, "%f;", cycles_morpho_3_omp/(height*width));
 		fprintf(fichier_csv, "%f;", debit_morpho_3_omp);
 
-        fprintf(fichier_csv, ";%f;", time_morpho_3_opti*1000);
-		fprintf(fichier_csv, "%f;", cycles_morpho_3_opti/(height*width));
-		fprintf(fichier_csv, "%f;", debit_morpho_3_opti);
+        fprintf(fichier_csv, ";%f;", time_morpho_3_unroll*1000);
+		fprintf(fichier_csv, "%f;", cycles_morpho_3_unroll/(height*width));
+		fprintf(fichier_csv, "%f;", debit_morpho_3_unroll);
 
-        fprintf(fichier_csv, ";%f;", time_morpho_3_opti_omp*1000);
-		fprintf(fichier_csv, "%f;", cycles_morpho_3_opti_omp/(height*width));
-		fprintf(fichier_csv, "%f;", debit_morpho_3_opti_omp);
+        fprintf(fichier_csv, ";%f;", time_morpho_3_unroll_omp*1000);
+		fprintf(fichier_csv, "%f;", cycles_morpho_3_unroll_omp/(height*width));
+		fprintf(fichier_csv, "%f;", debit_morpho_3_unroll_omp);
 
         fprintf(fichier_csv, ";%f;", time_morpho_3_pipeline*1000);
 		fprintf(fichier_csv, "%f;", cycles_morpho_3_pipeline/(height*width));
@@ -1110,13 +1110,13 @@ void bench_morpho_SIMD_graphic(){
 		fprintf(fichier_csv, "%f;", cycles_morpho_3_pipeline_omp/(height*width));
 		fprintf(fichier_csv, "%f;", debit_morpho_3_pipeline_omp);
 
-        fprintf(fichier_csv, ";%f;", time_morpho_3_pipeline_opti*1000);
-		fprintf(fichier_csv, "%f;", cycles_morpho_3_pipeline_opti/(height*width));
-		fprintf(fichier_csv, "%f;", debit_morpho_3_pipeline_opti);
+        fprintf(fichier_csv, ";%f;", time_morpho_3_pipeline_fusion*1000);
+		fprintf(fichier_csv, "%f;", cycles_morpho_3_pipeline_fusion/(height*width));
+		fprintf(fichier_csv, "%f;", debit_morpho_3_pipeline_fusion);
 
-        fprintf(fichier_csv, ";%f;", time_morpho_3_pipeline_opti_omp*1000);
-		fprintf(fichier_csv, "%f;", cycles_morpho_3_pipeline_opti_omp/(height*width));
-		fprintf(fichier_csv, "%f\n;", debit_morpho_3_pipeline_opti_omp);
+        fprintf(fichier_csv, ";%f;", time_morpho_3_pipeline_fusion_omp*1000);
+		fprintf(fichier_csv, "%f;", cycles_morpho_3_pipeline_fusion_omp/(height*width));
+		fprintf(fichier_csv, "%f\n;", debit_morpho_3_pipeline_fusion_omp);
 
 		// ---------- //
 		// -- free -- //
@@ -1160,17 +1160,17 @@ void main_bench_morpho_SIMD(int argc, char *argv[]){
     // bench_morpho_SIMD_car(false, MORPHO5, SIMD, 0);
     // bench_morpho_SIMD_car(false, MORPHO5, SIMD, 1);
 
-    // bench_morpho_SIMD_car(false, EROSION3, SIMD_OPTI, 0);
-    // bench_morpho_SIMD_car(false, EROSION5, SIMD_OPTI, 0);
-    // bench_morpho_SIMD_car(false, DILATATION3, SIMD_OPTI, 0);
-    // bench_morpho_SIMD_car(false, DILATATION5, SIMD_OPTI, 0);
-    // bench_morpho_SIMD_car(false, MORPHO3, SIMD_OPTI, 0);
-    // bench_morpho_SIMD_car(false, MORPHO3, SIMD_OPTI, 1);
-    // bench_morpho_SIMD_car(false, MORPHO5, SIMD_OPTI, 0);
-    // bench_morpho_SIMD_car(false, MORPHO5, SIMD_OPTI, 1);
+    // bench_morpho_SIMD_car(false, EROSION3, SIMD_UNROLL, 0);
+    // bench_morpho_SIMD_car(false, EROSION5, SIMD_UNROLL, 0);
+    // bench_morpho_SIMD_car(false, DILATATION3, SIMD_UNROLL, 0);
+    // bench_morpho_SIMD_car(false, DILATATION5, SIMD_UNROLL, 0);
+    // bench_morpho_SIMD_car(false, MORPHO3, SIMD_UNROLL, 0);
+    // bench_morpho_SIMD_car(false, MORPHO3, SIMD_UNROLL, 1);
+    // bench_morpho_SIMD_car(false, MORPHO5, SIMD_UNROLL, 0);
+    // bench_morpho_SIMD_car(false, MORPHO5, SIMD_UNROLL, 1);
     // printf("===============================\n");
     // bench_morpho_SIMD_car(false, MORPHO3, PIPELINE, 0);
-    // bench_morpho_SIMD_car(false, MORPHO5, PIPELINE_OPTI, 0);
+    // bench_morpho_SIMD_car(false, MORPHO5, PIPELINE_FUSION, 0);
     // printf("===============================\n");
     bench_morpho_SIMD_graphic();
 

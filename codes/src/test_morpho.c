@@ -159,25 +159,25 @@ void test_unitaire(type_morpho_t MORPHO, type_opti_t OPTI){
                     break;
             }
             break;
-        case SCALAIRE_OPTI :
+        case SCALAIRE_UNROLL :
             switch(MORPHO){
                 case EROSION3 : 
-                    erosion_3_opti(img_bin_test, img_filtered_test , mi0_test, mi1_test, mj0_test, mj1_test);
+                    erosion_3_unroll(img_bin_test, img_filtered_test , mi0_test, mi1_test, mj0_test, mj1_test);
                     break;
                 case EROSION5 :
-                    erosion_5_opti(img_bin_test, img_filtered_test , mi0_test, mi1_test, mj0_test, mj1_test);
+                    erosion_5_unroll(img_bin_test, img_filtered_test , mi0_test, mi1_test, mj0_test, mj1_test);
                     break;
                 case DILATATION3 : 
-                    dilatation_3_opti(img_bin_test, img_filtered_test , mi0_test, mi1_test, mj0_test, mj1_test);
+                    dilatation_3_unroll(img_bin_test, img_filtered_test , mi0_test, mi1_test, mj0_test, mj1_test);
                     break;
                 case DILATATION5 :
-                    dilatation_5_opti(img_bin_test, img_filtered_test , mi0_test, mi1_test, mj0_test, mj1_test);
+                    dilatation_5_unroll(img_bin_test, img_filtered_test , mi0_test, mi1_test, mj0_test, mj1_test);
                     break;
                 case MORPHO3 :
-                    morpho_3_opti(img_bin_test, img_filtered_test, tmp1, tmp2, mi0_test, mi1_test, mj0_test, mj1_test);
+                    morpho_3_unroll(img_bin_test, img_filtered_test, tmp1, tmp2, mi0_test, mi1_test, mj0_test, mj1_test);
                     break;
                 case MORPHO5 :
-                    morpho_5_opti(img_bin_test, img_filtered_test, tmp1, tmp2, mi0_test, mi1_test, mj0_test, mj1_test);
+                    morpho_5_unroll(img_bin_test, img_filtered_test, tmp1, tmp2, mi0_test, mi1_test, mj0_test, mj1_test);
                     break;
                 default :
                     break;
@@ -216,13 +216,13 @@ void test_unitaires(){
     test_unitaire(MORPHO3, SCALAIRE);
     test_unitaire(MORPHO5, SCALAIRE);
     printf("===============================\n");
-    display_type_opti(SCALAIRE_OPTI);puts("");
-    test_unitaire(EROSION5, SCALAIRE_OPTI);
-    test_unitaire(EROSION5, SCALAIRE_OPTI);
-    test_unitaire(DILATATION3, SCALAIRE_OPTI);
-    test_unitaire(DILATATION5, SCALAIRE_OPTI);
-    test_unitaire(MORPHO3, SCALAIRE_OPTI);
-    test_unitaire(MORPHO5, SCALAIRE_OPTI);
+    display_type_opti(SCALAIRE_UNROLL);puts("");
+    test_unitaire(EROSION5, SCALAIRE_UNROLL);
+    test_unitaire(EROSION5, SCALAIRE_UNROLL);
+    test_unitaire(DILATATION3, SCALAIRE_UNROLL);
+    test_unitaire(DILATATION5, SCALAIRE_UNROLL);
+    test_unitaire(MORPHO3, SCALAIRE_UNROLL);
+    test_unitaire(MORPHO5, SCALAIRE_UNROLL);
     printf("===============================\n");
 }
 

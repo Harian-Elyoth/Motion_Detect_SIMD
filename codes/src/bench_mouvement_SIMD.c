@@ -121,7 +121,7 @@ void bench_mouvement_SIMD_car(){
 	BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_step1/(WIDTH*HEIGHT))); BENCH(puts("")); 
 	BENCH(printf("debit (pixel/sec)   = %0.2f", debit_step1)); BENCH(puts("")); BENCH(puts(""));
 
-	// STEP 1 OPTI
+	// STEP 1 UNROLL
 	CHRONO(SigmaDelta_step1_simd_opti(vmi0, vmi1, vmj0, vmj1, mean0, mean1, image), cycles_step1_opti);
 	time_step1_opti = (double)(cycles_step1_opti/CLK_PROC);
 	debit_step1_opti = (WIDTH*HEIGHT) / time_step1_opti;
@@ -144,7 +144,7 @@ void bench_mouvement_SIMD_car(){
 	BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_step2/(WIDTH*HEIGHT))); BENCH(puts(""));
 	BENCH(printf("debit (pixel/sec)   = %0.2f", debit_step2)); BENCH(puts("")); BENCH(puts(""));
 
-	// STEP 2 OPTI
+	// STEP 2 UNROLL
 	CHRONO(SigmaDelta_step2_simd_opti(vmi0, vmi1, vmj0, vmj1, image, mean1, img_diff), cycles_step2_opti);
 	time_step2_opti = (double)(cycles_step2_opti/CLK_PROC);
 	debit_step2_opti = (WIDTH*HEIGHT) / time_step2_opti;
@@ -167,7 +167,7 @@ void bench_mouvement_SIMD_car(){
 	BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_step3/(WIDTH*HEIGHT))); BENCH(puts(""));
 	BENCH(printf("debit (pixel/sec)   = %0.2f", debit_step3)); BENCH(puts("")); BENCH(puts(""));
 
-	// STEP 3 OPTI
+	// STEP 3 UNROLL
 	CHRONO(SigmaDelta_step3_simd_opti(vmi0, vmi1, vmj0, vmj1, std0, std1, img_diff), cycles_step3_opti);
 	time_step3_opti = (double)(cycles_step3_opti/CLK_PROC);
 	debit_step3_opti = (WIDTH*HEIGHT) / time_step3_opti;
@@ -190,7 +190,7 @@ void bench_mouvement_SIMD_car(){
 	BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_step4/(WIDTH*HEIGHT))); BENCH(puts(""));
 	BENCH(printf("debit (pixel/sec)   = %0.2f", debit_step4)); BENCH(puts("")); BENCH(puts(""));
 
-	// STEP 4 OPTI
+	// STEP 4 UNROLL
 	CHRONO(SigmaDelta_step4_simd_opti(vmi0, vmi1, vmj0, vmj1, std1, img_diff, img_bin), cycles_step4_opti);
 	time_step4_opti = (double)(cycles_step4_opti/CLK_PROC);
 	debit_step4_opti = (WIDTH*HEIGHT) / time_step4_opti;
@@ -213,7 +213,7 @@ void bench_mouvement_SIMD_car(){
 	BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_total/(WIDTH*HEIGHT))); BENCH(puts(""));
 	BENCH(printf("debit (pixel/sec)   = %0.2f", debit_total)); BENCH(puts("")); BENCH(puts(""));
 
-	// TOTAL OPTI
+	// TOTAL UNROLL
 	cycles_total_opti = cycles_step1_opti + cycles_step2_opti + cycles_step3_opti + cycles_step4_opti;
 	time_total_opti   = time_step1_opti   + time_step2_opti   + time_step3_opti   + time_step4_opti;
 	debit_total_opti  = (WIDTH*HEIGHT) / time_total_opti;
@@ -237,7 +237,7 @@ void bench_mouvement_SIMD_car(){
 	BENCH(printf("cpp   (cycle/pixel) = %0.6f", cycles_total_full/(WIDTH*HEIGHT))); BENCH(puts(""));
 	BENCH(printf("debit (pixel/sec)   = %0.2f", debit_total_full)); BENCH(puts("")); BENCH(puts(""));	
 
-	// FULL OPTI
+	// FULL UNROLL
 	CHRONO(SigmaDelta_simd_full_opti(vmi0, vmi1, vmj0, vmj1, image, mean0, mean1, std0, std1, img_bin), cycles_total_full_opti);
 	time_total_full_opti = (double)(cycles_total_full_opti/CLK_PROC);
 	debit_total_full_opti = (WIDTH*HEIGHT) / time_total_full_opti;
@@ -457,9 +457,9 @@ void bench_mouvement_SIMD_dataset(type_sd_t TYPE_SD, type_opti_t TYPE_OPTI){
 
 	    				break;
 
-	    			case SIMD_OPTI:
+	    			case SIMD_UNROLL:
 
-		    			// STEP 1 OPTI
+		    			// STEP 1 UNROLL
 						CHRONO(SigmaDelta_step1_simd_opti(vmi0, vmi1, vmj0, vmj1, mean0, mean1, image), cycles_step1_opti);
 						time_step1_opti 	= (double)(cycles_step1_opti/CLK_PROC);
 						debit_step1_opti 	= (width*height) / time_step1_opti;
@@ -469,7 +469,7 @@ void bench_mouvement_SIMD_dataset(type_sd_t TYPE_SD, type_opti_t TYPE_OPTI){
 						time_step1_opti_mean  		+= time_step1_opti;
 						debit_step1_opti_mean 		+= debit_step1_opti;
 
-						// STEP 2 OPTI
+						// STEP 2 UNROLL
 						CHRONO(SigmaDelta_step2_simd_opti(vmi0, vmi1, vmj0, vmj1, image, mean1, img_diff), cycles_step2_opti);
 						time_step2_opti  = (double)(cycles_step2_opti/CLK_PROC);
 						debit_step2_opti = (width*height) / time_step2_opti;
@@ -479,7 +479,7 @@ void bench_mouvement_SIMD_dataset(type_sd_t TYPE_SD, type_opti_t TYPE_OPTI){
 						time_step2_opti_mean  		+= time_step2_opti;
 						debit_step2_opti_mean 		+= debit_step2_opti;
 
-						// STEP 3 OPTI
+						// STEP 3 UNROLL
 						CHRONO(SigmaDelta_step3_simd_opti(vmi0, vmi1, vmj0, vmj1, std0, std1, img_diff), cycles_step3_opti);
 						time_step3_opti  = (double)(cycles_step3_opti/CLK_PROC);
 						debit_step3_opti = (width*height) / time_step3_opti;
@@ -489,7 +489,7 @@ void bench_mouvement_SIMD_dataset(type_sd_t TYPE_SD, type_opti_t TYPE_OPTI){
 						time_step3_opti_mean  		+= time_step3_opti;
 						debit_step3_opti_mean 		+= debit_step3_opti;
 
-						// STEP 4 OPTI
+						// STEP 4 UNROLL
 						CHRONO(SigmaDelta_step4_simd_opti(vmi0, vmi1, vmj0, vmj1, std1, img_diff, img_bin), cycles_step4_opti);
 						time_step4_opti  = (double)(cycles_step4_opti/CLK_PROC);
 						debit_step4_opti = (width*height) / time_step4_opti;
@@ -531,9 +531,9 @@ void bench_mouvement_SIMD_dataset(type_sd_t TYPE_SD, type_opti_t TYPE_OPTI){
 
 	    				break;
 
-	    			case SIMD_OPTI:
+	    			case SIMD_UNROLL:
 
-	    				// FULL OPTI
+	    				// FULL UNROLL
 						CHRONO(SigmaDelta_simd_full_opti(vmi0, vmi1, vmj0, vmj1, image, mean0, mean1, std0, std1, img_bin), cycles_total_full_opti);
 						time_total_full_opti  = (double)(cycles_total_full_opti/CLK_PROC);
 						debit_total_full_opti = (width*height) / time_total_full_opti;
@@ -559,9 +559,9 @@ void bench_mouvement_SIMD_dataset(type_sd_t TYPE_SD, type_opti_t TYPE_OPTI){
 
 	    				break;
 
-	    			case SIMD_OPTI_OMP:
+	    			case SIMD_UNROLL_OMP:
 
-	    				// FULL OPTI OPEN MP
+	    				// FULL UNROLL OPEN MP
 						CHRONO(SigmaDelta_simd_full_opti_openMP(vmi0, vmi1, vmj0, vmj1, image, mean0, mean1, std0, std1, img_bin), cycles_total_full_opti_omp);
 						time_total_full_opti_omp  = (double)(cycles_total_full_opti_omp/CLK_PROC);
 						debit_total_full_opti_omp = (width*height) / time_total_full_opti_omp;
@@ -627,7 +627,7 @@ void bench_mouvement_SIMD_dataset(type_sd_t TYPE_SD, type_opti_t TYPE_OPTI){
 
 	    				break;
 
-	    			case SIMD_OPTI:
+	    			case SIMD_UNROLL:
 
 	    				BENCH(printf("step 1 optimisée :")); BENCH(puts(""));
 						BENCH(printf("temps (ms) \t    = %0.6f", time_step1_opti_mean/NB_IMG)); BENCH(puts(""));
@@ -673,7 +673,7 @@ void bench_mouvement_SIMD_dataset(type_sd_t TYPE_SD, type_opti_t TYPE_OPTI){
 
 	    				break;
 
-	    			case SIMD_OPTI:
+	    			case SIMD_UNROLL:
 
 	    				BENCH(printf("Total full optimisé :")); BENCH(puts(""));
 						BENCH(printf("temps (ms) \t    = %0.6f", time_total_full_opti_mean/NB_IMG)); BENCH(puts(""));
@@ -691,7 +691,7 @@ void bench_mouvement_SIMD_dataset(type_sd_t TYPE_SD, type_opti_t TYPE_OPTI){
 
     				break;
 
-	    			case SIMD_OPTI_OMP:
+	    			case SIMD_UNROLL_OMP:
 
 	    				BENCH(printf("Total full optimisé Open MP :")); BENCH(puts(""));
 						BENCH(printf("temps (ms) \t    = %0.6f", time_total_full_opti_mean_omp/NB_IMG)); BENCH(puts(""));
@@ -869,12 +869,12 @@ void bench_mouvement_SIMD_graphic(){
 		time_total   = time_step1   + time_step2   + time_step3   + time_step4;
 		debit_total  = (width*height) / time_total;
 
-		// FULL OPTI
+		// FULL UNROLL
 		CHRONO(SigmaDelta_simd_full_opti(vmi0, vmi1, vmj0, vmj1, image, mean0, mean1, std0, std1, img_bin), cycles_total_full_opti);
 		time_total_full_opti = (double)(cycles_total_full_opti/CLK_PROC);
 		debit_total_full_opti = (width*height) / time_total_full_opti;
 
-		// FULL OPTI OMP
+		// FULL UNROLL OMP
 		CHRONO(SigmaDelta_simd_full_opti_openMP(vmi0, vmi1, vmj0, vmj1, image, mean0, mean1, std0, std1, img_bin), cycles_total_full_opti_omp);
 		time_total_full_opti_omp = (double)(cycles_total_full_opti_omp/CLK_PROC);
 		debit_total_full_opti_omp = (width*height) / time_total_full_opti_omp;
@@ -935,11 +935,11 @@ void main_bench_mouvement_SIMD(int argc, char *argv[]){
 
 	// bench_mouvement_SIMD_dataset(SD_FULL, SIMD);
 
-	// bench_mouvement_SIMD_dataset(SD_FULL, SIMD_OPTI);
+	// bench_mouvement_SIMD_dataset(SD_FULL, SIMD_UNROLL);
 
 	// bench_mouvement_SIMD_dataset(SD_FULL, SIMD_OMP);
 
-	// bench_mouvement_SIMD_dataset(SD_FULL, SIMD_OPTI_OMP);
+	// bench_mouvement_SIMD_dataset(SD_FULL, SIMD_UNROLL_OMP);
 
 	// benchmark sur images generees pour fichier csv
 	bench_mouvement_SIMD_graphic();
