@@ -5,7 +5,6 @@
 #include "bench_mouvement_morpho_SIMD.h"
 
 
-
 void bench_mouvement_morpho_SIMD_car(bool is_visual){
 
 	int width, height;
@@ -39,8 +38,6 @@ void bench_mouvement_morpho_SIMD_car(bool is_visual){
 	// calcul debit
 	double debit_total, debit_step1, debit_step2, debit_step3, debit_step4, debit_morpho;
 
-	// taille noyau de convolution	
-    int kernel_size = 3;
 
 	puts("==================================================");
 	puts("=== benchmark mouvement + morpho unitaire SIMD ===");
@@ -491,7 +488,7 @@ void bench_mouvement_morpho_SIMD_graphic(){
 	double time_total, time_total_full_opti, time_step1, time_step2, time_step3, time_step4, time_morpho_3, time_morpho_3_opti;
 
 	// calcul debit
-	double debit_total, debit_total_full_opti, debit_step1, debit_step2, debit_step3, debit_step4, debit_morpho_3, debit_morpho_3_opti;
+	double debit_total, debit_total_full_opti, debit_morpho_3, debit_morpho_3_opti;
 
     puts("=========================================");
 	puts("=== benchmark mouvement SIMD graphics ===");
@@ -567,8 +564,13 @@ void bench_mouvement_morpho_SIMD_graphic(){
 	   		{
 	   			// Générer des valeurs de pixels avec un motif qui evoluent avec la taille
 	   			// Génére 2 images censé etre tres similaire (seul quelques pixels doivent varier)
-	   			image_init [i][j]   	= (i + j)*10 + j;
-	   			img_temp[i][j]  		= (i + j)*10 + j + i; 
+	   			int val1 = (i + j)*10 + j;
+	   			int val2 = (i + j)*10 + j + i;
+	   			if(val1 > 255)	val1 = val1 / 255;
+	   			if(val2 > 255)	val2 = val2 / 255;
+
+	   			image_init [i][j]   	= val1;
+	   			img_temp[i][j]  		= val2; 
 	   		}
 	   	}
 
@@ -586,6 +588,10 @@ void bench_mouvement_morpho_SIMD_graphic(){
 				std0[i][j]  = init_vuint8(VMIN);
 			}
 		}
+
+		// ----------------- //
+	    // -- traitements -- //
+	    // ----------------- //
 
 		// transfert ui8matrix à vui8matrix init
 		ui8matrix_to_vui8matrix(card, vmi0, vmi1, vmj0, vmj1, img_temp, image);
@@ -618,7 +624,7 @@ void bench_mouvement_morpho_SIMD_graphic(){
 		fprintf(fichier_csv, "%f;", debit_total);
 
 		// FULL OPTI
-		CHRONO(SigmaDelta_simd_full_opti(vmi0, vmi1, vmj0, vmj1, image, mean0, std0, img_bin), cycles_total_full_opti);
+		CHRONO(SigmaDelta_simd_full_opti(vmi0, vmi1, vmj0, vmj1, image, mean0, mean1, std0, std1, img_bin), cycles_total_full_opti);
 		time_total_full_opti = (double)(cycles_total_full_opti/CLK_PROC);
 
 		duplicate_vborder(vmi0, vmi1, vmj0, vmj1, b, img_bin);
@@ -632,15 +638,10 @@ void bench_mouvement_morpho_SIMD_graphic(){
 		fprintf(fichier_csv, "%f;", cycles_total/(height*width));
 		fprintf(fichier_csv, "%f\n", debit_total);
 
-		// ----------------- //
-	    // -- traitements -- //
-	    // ----------------- //
-
-
-
 		// ---------- //
 		// -- free -- //
 		// ---------- //
+
 		free_ui8matrix(image_init, mi0, mi1, mj0, mj1);
 		free_ui8matrix(img_temp, mi0, mi1, mj0, mj1);
 		free_vui8matrix(image, vmi0, vmi1, vmj0, vmj1);
@@ -663,7 +664,6 @@ void bench_mouvement_morpho_SIMD_graphic(){
 
     fclose(fichier_csv);
 }
-
 
 void main_bench_mouvement_morpho_SIMD(int argc, char *argv[]){
 

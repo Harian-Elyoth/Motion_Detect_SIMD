@@ -455,7 +455,7 @@ void SigmaDelta_full(int mi0, int mi1, int mj0, int mj1,  uint8** image, uint8**
 	}
 }
 
-void SigmaDelta_full_opti(int mi0, int mi1, int mj0, int mj1,  uint8** image, uint8** mean0, uint8** std0, uint8** img_bin){
+void SigmaDelta_full_opti(int mi0, int mi1, int mj0, int mj1,  uint8** image, uint8** mean0, uint8** mean1, uint8** std0, uint8** std1, uint8** img_bin){
 
 	int k = 4; 
 	int r = (mj1+1) % k;
@@ -488,6 +488,8 @@ void SigmaDelta_full_opti(int mi0, int mi1, int mj0, int mj1,  uint8** image, ui
 				mean1_reg = mean0_reg;
 			}
 
+			mean1[i][j] = mean1_reg;
+
 			/*---------------------------------------------------*/
 
 			// STEP 2
@@ -508,6 +510,8 @@ void SigmaDelta_full_opti(int mi0, int mi1, int mj0, int mj1,  uint8** image, ui
 
 			// clamp to [Vmin,Vmax]
 			std1_reg = MAX(MIN(std1_reg, VMAX), VMIN);
+
+			std1[i][j] = std1_reg;
 
 			/*---------------------------------------------------*/
 
@@ -533,6 +537,8 @@ void SigmaDelta_full_opti(int mi0, int mi1, int mj0, int mj1,  uint8** image, ui
 			}
 			else{ mean1_reg = mean0_reg; }
 
+			mean1[i][j + 1] = mean1_reg;
+
 			/*---------------------------------------------------*/
 
 			// STEP 2
@@ -553,6 +559,8 @@ void SigmaDelta_full_opti(int mi0, int mi1, int mj0, int mj1,  uint8** image, ui
 
 			// clamp to [Vmin,Vmax]
 			std1_reg = MAX(MIN(std1_reg, VMAX), VMIN);
+
+			std1[i][j + 1] = std1_reg;
 
 			/*---------------------------------------------------*/
 
@@ -578,6 +586,8 @@ void SigmaDelta_full_opti(int mi0, int mi1, int mj0, int mj1,  uint8** image, ui
 			}
 			else{ mean1_reg = mean0_reg; }
 
+			mean1[i][j + 2] = mean1_reg;
+
 			/*---------------------------------------------------*/
 
 			// STEP 2
@@ -598,6 +608,8 @@ void SigmaDelta_full_opti(int mi0, int mi1, int mj0, int mj1,  uint8** image, ui
 
 			// clamp to [Vmin,Vmax]
 			std1_reg = MAX(MIN(std1_reg, VMAX), VMIN);
+
+			std1[i][j + 2] = std1_reg;
 
 			/*---------------------------------------------------*/
 
@@ -625,6 +637,8 @@ void SigmaDelta_full_opti(int mi0, int mi1, int mj0, int mj1,  uint8** image, ui
 				mean1_reg = mean0_reg;
 			}
 
+			mean1[i][j + 3] = mean1_reg;
+
 			/*---------------------------------------------------*/
 
 			// STEP 2
@@ -645,6 +659,8 @@ void SigmaDelta_full_opti(int mi0, int mi1, int mj0, int mj1,  uint8** image, ui
 
 			// clamp to [Vmin,Vmax]
 			std1_reg = MAX(MIN(std1_reg, VMAX), VMIN);
+
+			std1[i][j + 3] = std1_reg;
 
 			/*---------------------------------------------------*/
 
@@ -671,6 +687,8 @@ void SigmaDelta_full_opti(int mi0, int mi1, int mj0, int mj1,  uint8** image, ui
 				}
 				else{ mean1_reg = mean0_reg; }
 
+				mean1[i][mj1 - 2] = mean1_reg;
+
 				// STEP 2
 				img_diff_reg = abs(mean1_reg - image_reg);
 
@@ -686,6 +704,8 @@ void SigmaDelta_full_opti(int mi0, int mi1, int mj0, int mj1,  uint8** image, ui
 				else{ std1_reg = std0_reg; }
 
 				std1_reg = MAX(MIN(std1_reg, VMAX), VMIN);
+
+				std1[i][mj1 - 2] = std1_reg;
 
 				// STEP 4
 				if (img_diff_reg < std1_reg){
@@ -706,6 +726,8 @@ void SigmaDelta_full_opti(int mi0, int mi1, int mj0, int mj1,  uint8** image, ui
 				}
 				else{ mean1_reg = mean0_reg; }
 
+				mean1[i][mj1 - 1] = mean1_reg;
+
 				// STEP 2
 				img_diff_reg = abs(mean1_reg - image_reg);
 
@@ -721,6 +743,8 @@ void SigmaDelta_full_opti(int mi0, int mi1, int mj0, int mj1,  uint8** image, ui
 				else{ std1_reg = std0_reg; }
 
 				std1_reg = MAX(MIN(std1_reg, VMAX), VMIN);
+
+				std1[i][mj1 - 1] = std1_reg;
 
 				// STEP 4
 				if (img_diff_reg < std1_reg){
@@ -741,6 +765,8 @@ void SigmaDelta_full_opti(int mi0, int mi1, int mj0, int mj1,  uint8** image, ui
 				}
 				else{ mean1_reg = mean0_reg; }
 
+				mean1[i][mj1] = mean1_reg;
+
 				// STEP 2
 				img_diff_reg = abs(mean1_reg - image_reg);
 
@@ -756,6 +782,8 @@ void SigmaDelta_full_opti(int mi0, int mi1, int mj0, int mj1,  uint8** image, ui
 				else{ std1_reg = std0_reg; }
 
 				std1_reg = MAX(MIN(std1_reg, VMAX), VMIN);
+
+				std1[i][mj1] = std1_reg;
 
 				// STEP 4
 				if (img_diff_reg < std1_reg){

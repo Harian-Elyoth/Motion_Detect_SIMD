@@ -34,6 +34,7 @@ extern "C" {
 
 void bench_mouvement_morpho_car(bool is_visual);
 void bench_mouvement_morpho_dataset();
+void bench_mouvement_morpho_graphic();
 
 // fonction principale     
 void main_bench_mouvement_morpho(int argc, char *argv[]);
