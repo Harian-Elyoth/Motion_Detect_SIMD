@@ -901,8 +901,11 @@ void bench_morpho_SIMD_car(bool is_visual, type_morpho_t MORPHO, type_opti_t UNR
 void bench_morpho_SIMD_graphic(){
 
 	// init fichier csv
+    printf("Bonjour !\n\n");
 	FILE* fichier_csv = fopen("csv_files/perf_morpho_SIMD.csv","w");
+    printf("Bonjour !\n\n");
 	fprintf(fichier_csv, ";%s;;;;%s;;;;%s;;;;%s;;;;%s;;;;%s;;;;%s;;;;%s;;;;%s;;;;%s\n", "Morpho 3 SIMD", "Morpho 3 SIMD OMP", "Morpho 3 SIMD UNROLL", "Morpho 3 SIMD UNROLL OMP", "Morpho 3 SIMD PIPELINE", "Morpho 3 SIMD PIPELINE OMP", "Morpho 3 SIMD PIPELINE UNROLL", "Morpho 3 SIMD PIPELINE UNROLL OMP", "Morpho 3 SIMD C", "Morpho 3 SIMD UNROLL C");
+    printf("Bonjour !\n\n");
 	fprintf(fichier_csv, "%s;%s;%s;%s;", "Taille (pixels)", "Temps (ms)", "Cycle par point (cpp)", "Debit (pixel/seconde)");
 	fprintf(fichier_csv, ";%s;%s;%s;", "Temps (ms)", "Cycle par point (cpp)", "Debit (pixel/seconde)");
     fprintf(fichier_csv, ";%s;%s;%s;", "Temps (ms)", "Cycle par point (cpp)", "Debit (pixel/seconde)");
@@ -915,6 +918,7 @@ void bench_morpho_SIMD_graphic(){
     fprintf(fichier_csv, ";%s;%s;%s\n", "Temps (ms)", "Cycle par point (cpp)", "Debit (pixel/seconde)");
 
 	// BORD
+    printf("Bonjour !\n\n");
 	int b;
 
 	int mi0, mi1, mj0, mj1; 	// indices scalaire
@@ -933,7 +937,7 @@ void bench_morpho_SIMD_graphic(){
 
     // cardinalité des registres
 	int card = card_vuint8(); // 16
-
+    printf("Bonjour !\n\n");
     // calcul cpp
 	double cycles_dataset, cycles_morpho_3, cycles_morpho_3_unroll, cycles_morpho_3_pipeline, cycles_morpho_3_pipeline_fusion, cycles_morpho_3_omp, cycles_morpho_3_unroll_omp, cycles_morpho_3_pipeline_omp, cycles_morpho_3_pipeline_fusion_omp;
     double cycles_morpho_3_c, cycles_morpho_3_c_unroll;
@@ -1003,7 +1007,7 @@ void bench_morpho_SIMD_graphic(){
 		// ecart-types
 		vuint8** std0 			= vui8matrix(vmi0, vmi1, vmj0, vmj1);
 		vuint8** std1 			= vui8matrix(vmi0, vmi1, vmj0, vmj1);			
-
+        printf("Bonjour !\n\n");
 		// image de différence
 		vuint8 ** img_diff 		= vui8matrix(vmi0, vmi1, vmj0, vmj1);	
         vuint8 ** tmp1_SIMD     = vui8matrix(vmi0b, vmi1b, vmj0b, vmj1b);
@@ -1056,7 +1060,7 @@ void bench_morpho_SIMD_graphic(){
 		// ----------------- //
 	    // -- traitements -- //
 	    // ----------------- //
-
+        printf("Bonjour !\n\n");
         CHRONO(morpho_3_SIMD(img_bin, img_filtered, tmp1_SIMD, tmp2_SIMD, vmi0, vmi1, vmj0, vmj1), cycles_morpho_3);
         time_morpho_3 = (double)(cycles_morpho_3/CLK_PROC);
         debit_morpho_3 = width*height / time_morpho_3;
@@ -1137,7 +1141,7 @@ void bench_morpho_SIMD_graphic(){
         fprintf(fichier_csv, ";%f;", time_morpho_3_c_unroll*1000);
 		fprintf(fichier_csv, "%f;", cycles_morpho_3_c_unroll/(height*width));
 		fprintf(fichier_csv, "%f\n;", debit_morpho_3_c_unroll);
-
+        printf("Bonjour !\n\n");
 		// ---------- //
 		// -- free -- //
 		// ---------- //
@@ -1160,7 +1164,7 @@ void bench_morpho_SIMD_graphic(){
 		// free_vui8matrix(tmp1_SIMD, vmi0, vmi1, vmj0, vmj1);
         // printf("Bonjour !\n\n");
 		// free_vui8matrix(tmp2_SIMD, vmi0, vmi1, vmj0, vmj1);
-        // printf("Bonjour !\n\n");
+        printf("Bonjour !\n\n");
 		// free_vui8matrix(tmp3_SIMD, vmi0, vmi1, vmj0, vmj1);
 
     }
