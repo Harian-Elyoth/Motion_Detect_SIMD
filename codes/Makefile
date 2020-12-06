@@ -26,7 +26,7 @@ INC_PATH = include
 CONFIG = CLI
 
 # -- Macros ----------
-CC = gcc-10.1
+CC = gcc
 AR = ar -rc
 
 # -- Flags ----------
